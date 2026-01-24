@@ -2,8 +2,8 @@
 
 This folder contains investigations where the **primary detection surface and evidence source is host-level telemetry** from Windows endpoints. These cases simulate how SOC analysts identify, validate, and scope suspicious activity occurring directly on compromised systems.
 
-<blockquote>
-**Note on categorization:** Investigations are grouped here based on **host-level compromise and persistence mechanisms** being the primary investigation focus, not solely on how the attacker initially gained access. Even when phishing, exploitation, or lateral movement precedes the activity, cases are categorized here when **endpoint telemetry and local artifacts drive detection and validation**.
+> **Note on categorization:**
+> Investigations are grouped here based on **host-level compromise and persistence mechanisms** being the primary investigation focus, not solely on how the attacker initially gained access. Even when phishing, exploitation, or lateral movement precedes the activity, cases are categorized here when **endpoint telemetry and local artifacts drive detection and validation**.
 
 </blockquote>
 
@@ -74,3 +74,4 @@ Together, these documents separate **host investigation workflow**, **artifact v
 ## Ongoing Development
 
 Future investigations may expand into additional persistence mechanisms, credential dumping, or memory-based attacks. New cases will continue to reflect how endpoint compromise and post-exploitation behavior are investigated in operational SOC environments.
+
