@@ -19,90 +19,41 @@ The investigation demonstrates how an analyst:
 
 ## What This Investigation Covers
 
-This case simulates a real-world scenario in which an automated detection must be manually reviewed and classified.
+This case simulates a real-world scenario where an automated detection must be manually reviewed and classified. 
 
-The investigation walks through how the analyst:
+The investigation identifies the executable responsible for the alert (`cudominer.exe`), correlates the alert to Windows process creation events (Event ID 4688), attributes execution to user `Chris.Fort` on host `HR_02`, evaluates the execution path (`C:\Users\Chris.Fort\temp\cudominer.exe`) for risk, and reviews the SIEM detection rule to validate expected triggering behavior. 
 
-- Identifies the executable responsible for the alert (`cudominer.exe`)
-- Correlates the alert to **Windows process creation events (Event ID 4688)**
-- Attributes execution to the user **Chris.Fort** on host **HR_02**
-- Reviews the execution path (`C:\Users\Chris.Fort\temp\cudominer.exe`) to assess risk
-- Examines the SIEM detection rule to validate expected triggering behavior
-
-Rather than relying on the alert alone, the walkthrough explains:
-
-- **Why specific log pivots were required**
-- **Which event fields were used for attribution**
-- **How execution context influenced classification**
-
-This reflects how alert-driven investigations progress from detection to confirmation and response decision-making.
+Rather than relying on the alert alone, the walkthrough explains why specific log pivots were required, which event fields were used for attribution, and how execution context influenced final classification, reflecting how alert-driven investigations progress from detection to confirmation and response decision-making.
 
 ---
 
 ## Environment, Data Sources, and Tools
 
-This investigation focuses on validating suspicious software execution on a Windows endpoint using host-based process telemetry and basic artifact inspection to determine whether unauthorized cryptocurrency mining activity was present.
+This investigation focuses on validating suspicious software execution on a Windows endpoint using host-based process telemetry and artifact inspection to determine whether unauthorized cryptocurrency mining activity was present.
 
-### At-a-Glance Summary
+### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
-|------|---------|
+|--------|---------|
 | **Environment Type** | Windows endpoint (host-focused investigation) |
-| **Affected Assets** | Workstation where suspicious executable launched from a user-writable location |
+| **Affected Assets** | Windows workstation where suspicious executable launched from a user-writable directory |
+| **Victim Operating System** | Windows workstation where suspicious or malicious execution occurred |
+| **Analyst Operating System** | Windows-based analyst workstation used to query centralized logs and validate host artifacts |
 | **Primary Platforms / Services** | Windows endpoint logging subsystem; Splunk SIEM platform |
-| **Telemetry Sources Reviewed** | Windows Security Event Logs (Event ID 4688 — Process Creation); host identity + user context fields; file path / naming artifacts |
-| **Evidence Types** | Process execution patterns and command-line context; user/process lineage; suspicious binary location consistent with dropper/miner behavior |
-| **Tools Used** | Splunk (SPL queries for filtering + pivoting); local file system inspection for validation; basic malware heuristics for triage decisions |
-| **Investigation Focus** | Validate suspicious execution as cryptominer-like activity using process telemetry and host artifact confirmation |
+| **Investigation Focus** | Validate suspicious execution as cryptominer-like activity using host telemetry and artifact confirmation |
 
-### Operating Systems
+### Data Sources, Evidence, and Analysis Techniques
 
-- **Affected System (Victim Environment):**  
-  Windows workstation where the suspicious executable was launched from a user-writable directory.
-
-- **Analyst Environment:**  
-  Windows-based analyst workstation used to query centralized logs and validate host artifacts.
-
-### Platforms and Services
-
-- **Windows Endpoint Logging Subsystem**  
-  Generated native process creation telemetry used to identify executable names, file paths, and parent-child process relationships.
-
-- **Splunk SIEM Platform**  
-  Used to aggregate and search Windows Security Event Logs and correlate execution activity to specific hosts and users.
-
-### Data Sources Reviewed
-
-- **Windows Security Event Logs (Event ID 4688 — Process Creation)**  
-  Reviewed to identify:
-  - Execution of suspicious binaries
-  - File paths indicating execution from temporary directories
-  - Associated user accounts and hostnames
-
-- **Host Identity and User Context Fields**  
-  Used to attribute execution to a specific endpoint and logged-in user.
-
-- **File Path and Naming Artifacts**  
-  Reviewed to assess whether executable names and locations aligned with known cryptocurrency mining behavior.
-
-### Tools and Analysis Techniques
-
-- **Splunk (SPL Queries)**  
-  Used to:
-  - Filter for Event ID 4688 process creation events
-  - Identify rare or suspicious executable names
-  - Pivot on host and user fields to scope potential spread
-
-- **File System Inspection (Local Validation)**  
-  Used to confirm:
-  - Executable placement in user-writable directories
-  - Absence of legitimate application installation paths
-
-- **Basic Malware Heuristics**  
-  Used to evaluate miner-like behavior based on:
-  - Executable naming conventions
-  - Execution location
-  - Potential for sustained CPU usage
+| Area | Details |
+|--------|---------|
+| **Primary Telemetry Sources** | Windows Security Event Logs (Event ID 4688 — Process Creation), including executable names, file paths, command-line arguments, parent-child process relationships, host identity fields, and associated user context |
+| **Host Identity and User Context** | Hostname and user account fields used to attribute execution events to specific endpoints and logged-in users |
+| **File Path and Naming Artifacts** | Executable names and directory locations reviewed to assess alignment with known cryptominer and dropper behavior, including execution from temporary or user-writable directories |
+| **Evidence Types Reviewed** | Process execution patterns, command-line context, process lineage, executable placement, and indicators consistent with unauthorized resource consumption |
+| **Splunk Analysis Techniques** | SPL queries used to filter Event ID 4688 events, identify rare or suspicious executable names, pivot across host and user fields, and scope potential repeat or spread of execution activity |
+| **Host Validation Techniques** | Local file system inspection to confirm executable placement and validate absence of legitimate installation paths |
+| **Malware Assessment Heuristics** | Behavioral evaluation based on executable naming conventions, execution location, and potential indicators of sustained CPU utilization |
+| **Operational Workflow Context** | Demonstrates rapid endpoint triage workflows used by SOC analysts to validate suspicious execution alerts prior to escalation to full malware response procedures |
 
 This investigation demonstrates rapid endpoint triage workflows used by SOC analysts to validate suspicious execution alerts before escalating to full malware response procedures.
 
@@ -113,100 +64,16 @@ This investigation demonstrates rapid endpoint triage workflows used by SOC anal
 
 All investigation outputs are separated into focused reports to reflect common incident documentation practices.
 
-### `investigation-walkthrough.md`
-
-Provides a structured alert validation workflow showing how a SIEM detection was correlated with endpoint telemetry to determine whether the activity represented benign behavior or malicious resource abuse.
-
-The walkthrough documents:
-
-- Review of alert metadata and triggering conditions  
-- Pivoting from alert context to raw Windows process creation logs  
-- Attribution of execution to a specific user and endpoint  
-- Evaluation of executable naming and execution path legitimacy  
-- Validation of detection rule behavior and classification decision  
-
-The walkthrough emphasizes evidence-based alert triage and classification rather than reliance on alert labels alone.
-
-
-### `images`
-
-Contains all screenshots referenced throughout the investigation, including:
-
-- Original SIEM alert views
-- Correlated Windows event logs
-- Detection rule configuration evidence
-
-These images visually support each analytical step and conclusion documented in the reports.
-
-
-### `case-report.md`
-
-Provides a structured incident case record including:
-
-- Alert context
-- Scope definition
-- Evidence reviewed
-- Final classification decision
-
-Written in a format consistent with internal security case documentation.
-
-
-### `detection-artifact-report.md`
-
-Documents technical indicators and behaviors such as:
-
-- Executable naming patterns
-- Execution path characteristics
-- Relevant Windows event fields
-
-These artifacts can be translated into SIEM detection logic or threat hunting queries.
-
-
-### `incident-response-report.md`
-
-Details recommended response actions, including:
-
-- Endpoint containment considerations
-- Credential hygiene steps
-- Validation and cleanup guidance
-
-This report focuses on operational handling following confirmation of malicious activity.
-
-
-### `incident-summary.md`
-
-Provides a concise overview intended for non-technical stakeholders, covering:
-
-- What occurred
-- Why it matters
-- Recommended next actions
-
-This format supports communication with management, compliance, and IT leadership.
-
-
-### `detection-and-hardening-recommendations.md`
-
-Focuses on endpoint monitoring and execution control improvements related to unauthorized process activity and resource abuse.
-
-Includes recommendations covering:
-
-- Application allowlisting and execution restrictions  
-- Detection tuning for cryptocurrency mining indicators  
-- Monitoring of user-writable directory execution  
-- Resource utilization anomaly detection  
-- Host-based isolation workflows following confirmed abuse  
-
-This file reflects how security teams document hardening and alerting improvements following validated SIEM detections.
-
-
-### `MITRE-ATT&CK-mapping.md`
-
-Maps observed behaviors to MITRE ATT\&CK techniques, including:
-
-- User execution of suspicious binaries
-- Resource hijacking through unauthorized mining activity
-
-Includes both narrative explanations and a table-based mapping format for reporting and analysis.
+| File / Folder | Purpose | Contents and Focus |
+|-------------|--------|--------------------|
+| `investigation-walkthrough.md` | Structured alert validation workflow showing how a SIEM detection was correlated with endpoint telemetry to determine whether activity represented benign behavior or malicious resource abuse. | Documents review of alert metadata and triggering conditions, pivots from alert context to raw Windows process creation logs, attribution of execution to a specific user and endpoint, evaluation of executable naming and execution path legitimacy, and validation of detection rule behavior and final classification. Emphasizes evidence-based alert triage rather than reliance on alert labels alone. |
+| `images/` | Visual evidence supporting analytical steps and conclusions documented in the reports. | Contains screenshots of original SIEM alert views, correlated Windows event logs, and detection rule configuration evidence that visually support each analytical step and conclusion. |
+| `case-report.md` | Structured incident case record aligned with internal security case documentation formats. | Includes alert context, scope definition, evidence reviewed, and final classification decision in a format consistent with internal SOC case management records. |
+| `detection-artifact-report.md` | Technical indicators and behavioral artifacts that can be converted into detections or hunts. | Documents executable naming patterns, execution path characteristics, and relevant Windows event fields suitable for translation into SIEM detection logic or threat hunting queries. |
+| `incident-response-report.md` | Operational handling and response actions following confirmation of malicious activity. | Covers endpoint containment considerations, credential hygiene steps, and validation and cleanup guidance for post-incident remediation. |
+| `incident-summary.md` | Executive-style overview for non-technical stakeholders. | Summarizes what occurred, why it matters, and recommended next actions to support communication with management, compliance, and IT leadership. |
+| `detection-and-hardening-recommendations.md` | Endpoint monitoring and execution control improvements related to unauthorized process activity and resource abuse. | Includes recommendations for application allowlisting and execution restrictions, detection tuning for cryptocurrency mining indicators, monitoring of user-writable directory execution, resource utilization anomaly detection, and host-based isolation workflows following confirmed abuse, reflecting post-incident security improvement practices. |
+| `MITRE-ATT&CK-mapping.md` | Behavioral mapping of observed activity to ATT&CK techniques for reporting and analysis. | Maps behaviors such as user execution of suspicious binaries and resource hijacking through unauthorized mining activity, using both narrative explanations and table-based technique mapping formats. |
 
 ---
 
@@ -231,3 +98,4 @@ Even single-event alerts benefit from systematic investigation to avoid misclass
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical alert analysis, log correlation methodology, and professional incident documentation aligned with real operational workflows.
+
