@@ -13,6 +13,8 @@ This investigation analyzes suspicious process execution detected by a SIEM, whe
 
 The analysis focuses on validating the alert using correlated Windows process creation telemetry, user attribution, and execution path analysis to determine whether the detection represents a true security incident.
 
+---
+
 ### What This Investigation Covers
 
 This case simulates a real-world scenario where an automated detection must be manually reviewed and classified. 
@@ -31,6 +33,8 @@ If you want to follow the investigation step by step, start with:
 
 **`investigation-walkthrough.md`**
 
+---
+
 ### Repository Structure & Supporting Documents
 
 All investigation outputs are separated into focused reports to reflect common incident documentation practices.
@@ -45,7 +49,6 @@ All investigation outputs are separated into focused reports to reflect common i
 | `incident-summary.md` | Executive-style overview for non-technical stakeholders. | Summarizes what occurred, why it matters, and recommended next actions to support communication with management, compliance, and IT leadership. |
 | `detection-and-hardening-recommendations.md` | Endpoint monitoring and execution control improvements related to unauthorized process activity and resource abuse. | Includes recommendations for application allowlisting and execution restrictions, detection tuning for cryptocurrency mining indicators, monitoring of user-writable directory execution, resource utilization anomaly detection, and host-based isolation workflows following confirmed abuse, reflecting post-incident security improvement practices. |
 | `MITRE-ATT&CK-mapping.md` | Behavioral mapping of observed activity to ATT&CK techniques for reporting and analysis. | Maps behaviors such as user execution of suspicious binaries and resource hijacking through unauthorized mining activity, using both narrative explanations and table-based technique mapping formats. |
-
 
 ---
 
@@ -102,5 +105,6 @@ Even single-event alerts benefit from systematic investigation to avoid misclass
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical alert analysis, log correlation methodology, and professional incident documentation aligned with real operational workflows.
+
 
 
