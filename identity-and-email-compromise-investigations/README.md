@@ -22,7 +22,7 @@ Each investigation is contained in its **own dedicated folder** and represents *
 Current investigations include:
 
 - **Business Email Compromise (BEC) — Mailbox Rule Abuse and Account Takeover Investigation**  
-  (`bec-mailbox-rule-abuse-investigation`)  
+  (`business-email-compromise-mailbox-rule-abuse-investigation`)  
   Examines how an attacker abuses Exchange inbox rules to conceal financial communications after credential compromise, validating unauthorized rule creation, identity access patterns, and the scope of mailbox manipulation.
 
 ---
@@ -49,3 +49,4 @@ Together, these documents separate **identity compromise validation**, **mailbox
 ### Ongoing Development
 
 Future investigations may expand into OAuth consent abuse, token theft, session hijacking, or collaboration-platform phishing campaigns. New cases will continue to reflect how identity and messaging-based threats are investigated in operational SOC environments.
+
