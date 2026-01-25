@@ -1,30 +1,29 @@
 # Web Application Compromise Investigations
 
-This folder contains investigations where the **primary attack surface is a web application or CMS platform**. These cases simulate how SOC analysts detect and validate exploitation of application-layer vulnerabilities and authentication workflows.
+This folder contains investigations where the **primary attack surface is a web application or CMS platform**. These cases simulate how SOC analysts detect and validate exploitation of application-layer vulnerabilities and authentication workflows using HTTP and application telemetry.
 
-<blockquote>
-**Note on categorization:** Investigations are grouped here based on **application-layer attack surfaces and HTTP-driven exploitation**, not strictly by the downstream impact of the incident. Even when compromised accounts or host artifacts are involved, cases are categorized here when **web requests and application behavior are the primary detection and investigation surfaces**.
-</blockquote>
+> **Note on categorization:**  
+> Investigations are grouped here when **web requests and application behavior are the primary detection and investigation surfaces**, not simply based on downstream impact. Even when compromised accounts or host artifacts are involved, cases are categorized here when **initial access and validation rely primarily on HTTP and application logs**.
 
 Investigations in this category typically focus on:
 
-- **Authentication abuse**, including brute-force login attempts and credential-stuffing behavior.
-- **Application exploitation**, such as file upload vulnerabilities that enable script deployment or web shell access.
-- **Post-exploitation web activity**, including defacement or secondary payload execution originating from compromised web servers.
+- **Authentication abuse**, including brute-force login attempts and credential-stuffing behavior  
+- **Application exploitation**, such as file upload vulnerabilities enabling script deployment or web shell access  
+- **Post-exploitation web activity**, including defacement or secondary payload delivery originating from compromised web servers  
 
-Although these incidents may later involve host-level artifacts or network indicators, they are organized here when the **initial access vector and primary telemetry come from HTTP and application logs**.
+Although later stages may involve host or network indicators, investigations are organized here when the **core investigative surface is the web application itself rather than endpoint or identity infrastructure**.
 
 ---
 
-## What’s in This Folder
+### What’s in This Folder
 
-Each investigation is contained in its **own dedicated folder** with full supporting documentation, including walkthroughs, case reports, artifact analysis, response reporting, defensive recommendations, and MITRE ATT&CK mapping.
+Each investigation is contained in its **own dedicated folder** and represents **one complete web compromise scenario documented end-to-end**, including walkthroughs, evidence analysis, response actions, and defensive recommendations.
 
 Current investigations include:
 
 - **Web Application Account Compromise — Brute-Force Authentication Abuse Investigation**  
   (`web-authentication-brute-force-account-compromise-investigation`)  
-  Analyzes repeated authentication attempts against a web login endpoint that result in successful account takeover, validated through application authentication telemetry.
+  Analyzes automated authentication attempts against a web login endpoint that result in successful account takeover, validated through application authentication telemetry and HTTP metadata.
 
 - **Web Server Defacement — Malicious File Upload Exploitation Investigation**  
   (`web-server-defacement-malicious-file-upload-investigation`)  
@@ -32,40 +31,25 @@ Current investigations include:
 
 ---
 
-## Investigation Documentation Structure
+### Investigation Documentation Structure
 
-Each investigation in this folder is contained in its **own dedicated case folder** and includes supporting documents that reflect how web-focused incidents are handled in real SOC workflows.
+Each investigation is fully self-contained in its own case folder and includes documentation aligned with how web-focused incidents are handled in operational SOC workflows.
 
-Typical files include:
+| File / Folder | Purpose | Contents and Focus |
+|--------|--------|--------------------|
+| **`investigation-walkthrough.md`** | Exploitation and validation walkthrough | Step-by-step analysis of HTTP requests, authentication events, and application behavior used to confirm exploitation |
+| **`case-report.md`** | Incident narrative | Vulnerability exploited, attacker actions, and impact to the web application |
+| **`incident-summary.md`** | Executive overview | Business impact, exposure, and final investigation outcome |
+| **`detection-artifact-report.md`** | Evidence and detection analysis | HTTP logs, IDS alerts, firewall events, and file artifacts supporting compromise confirmation |
+| **`detection-and-hardening-recommendations.md`** | Defensive improvements | WAF tuning, authentication protections, logging enhancements, and application patching |
+| **`incident-response-report.md`** | Remediation guidance | File cleanup, credential resets, vulnerability mitigation, and monitoring |
+| **`mitre-attack-mapping.md`** | ATT&CK framework mapping | Exploitation and post-exploitation techniques mapped to ATT&CK using investigation evidence |
+| **`images/` or `screenshots/`** | Validation artifacts | Visual proof of HTTP artifacts, IDS alerts, and application exploitation evidence |
 
-- **Investigation walkthrough (`investigation-walkthrough.md`)**  
-  Step-by-step analysis of HTTP requests, authentication events, and application behavior used to confirm exploitation.
-
-- **Case report (`case-report.md`)**  
-  Narrative describing the vulnerability exploited, attacker actions, and impact to the web application.
-
-- **Incident summary (`incident-summary.md`)**  
-  Executive-level summary focused on business impact and exposure of the web service.
-
-- **Detection and artifact analysis (`detection-artifact-report.md`)**  
-  Detailed breakdown of HTTP logs, IDS alerts, firewall events, and file artifacts supporting compromise confirmation.
-
-- **Detection and hardening recommendations (`detection-and-hardening-recommendations.md`)**  
-  Defensive improvements such as WAF tuning, authentication protections, logging enhancements, and application patching.
-
-- **Incident response report (`incident-response-report.md`)**  
-  Containment and remediation considerations including file cleanup, credential resets, and vulnerability mitigation.
-
-- **MITRE ATT&CK mapping (`mitre-attack-mapping.md`)**  
-  ATT&CK techniques mapped to exploitation and post-exploitation behaviors validated during investigation.
-
-- **Screenshots and supporting evidence (`images/` or `screenshots/`)**  
-  Visual proof of HTTP artifacts, IDS alerts, and application-level exploitation evidence.
-
-Together, these documents reflect how **application-layer compromises are investigated and validated in operational SOC environments**.
+Together, these documents demonstrate how **application-layer compromises are detected, validated, and remediated using correlated web, network, and host telemetry**.
 
 ---
 
-## Ongoing Development
+### Ongoing Development
 
-Future investigations may expand into API abuse, SQL injection, or authentication bypass vulnerabilities. New cases will continue to reflect realistic web-based intrusion scenarios.
+Future investigations may expand into API abuse, SQL injection, authentication bypass vulnerabilities, or cloud-hosted application misconfigurations. New cases will continue to reflect realistic web-based intrusion scenarios and operational investigation workflows.
