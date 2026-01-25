@@ -15,7 +15,7 @@ Although individual hosts may exhibit malware or persistence mechanisms, investi
 
 ---
 
-## What’s in This Folder
+### What’s in This Folder
 
 Each investigation is contained in its **own dedicated folder** and represents **one complete intrusion scenario documented end-to-end**, including walkthroughs, reports, evidence, response actions, and defensive recommendations.
 
@@ -31,7 +31,7 @@ Current investigations include:
 
 ---
 
-## Investigation Documentation Structure
+### Investigation Documentation Structure
 
 Each investigation is fully self-contained in its own case folder and includes documentation aligned with how intrusion-focused incidents are handled in real SOC workflows.
 
@@ -50,6 +50,7 @@ Together, these documents support **multi-system investigation workflows** and e
 
 ---
 
-## Ongoing Development
+### Ongoing Development
 
 Future investigations may expand into Active Directory attacks, pass-the-hash techniques, Kerberos abuse, or internal reconnaissance activity. New cases will continue to focus on tracing attacker movement and validating full intrusion scope using cross-domain telemetry.
+
