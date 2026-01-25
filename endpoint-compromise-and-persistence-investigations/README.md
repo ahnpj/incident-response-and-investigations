@@ -1,77 +1,59 @@
 # Endpoint Compromise and Persistence Investigations
 
-This folder contains investigations where the **primary detection surface and evidence source is host-level telemetry** from Windows endpoints. These cases simulate how SOC analysts identify, validate, and scope suspicious activity occurring directly on compromised systems.
+This folder contains investigations where the **primary detection surface and evidence source is host-level telemetry from Windows endpoints**. These cases simulate how SOC analysts identify, validate, and scope suspicious activity occurring directly on compromised systems using endpoint logs and local artifacts.
 
-> **Note on categorization:**
-> Investigations are grouped here based on **host-level compromise and persistence mechanisms** being the primary investigation focus, not solely on how the attacker initially gained access. Even when phishing, exploitation, or lateral movement precedes the activity, cases are categorized here when **endpoint telemetry and local artifacts drive detection and validation**.
-
-</blockquote>
+> **Note on categorization:**  
+> Investigations are grouped here when **host-level compromise and persistence mechanisms are the primary investigation focus**, not solely based on how the attacker initially gained access. Even if phishing, exploitation, or lateral movement precedes the activity, cases are categorized here when **endpoint telemetry and local artifacts drive detection, validation, and scoping**.
 
 Investigations in this category typically focus on:
 
-- **Malware execution and suspicious process behavior**, including binaries launched from abnormal locations or using suspicious command-line arguments.
-- **Persistence mechanisms**, such as registry autorun keys, scheduled tasks, service abuse, or unauthorized account creation used to maintain long-term access.
-- **Post-exploitation host activity**, where attackers leverage built-in system tools (Living-off-the-Land techniques) to blend into normal administrative behavior.
+- **Malware execution and abnormal process behavior**, including suspicious binaries, unusual execution paths, and anomalous command-line activity  
+- **Persistence mechanisms**, such as registry autoruns, scheduled tasks, service abuse, or unauthorized account creation used to maintain access  
+- **Post-exploitation host activity**, including Living-off-the-Land techniques where built-in system tools are abused to blend into normal administrative behavior  
 
-Although initial access may occur through phishing, exploitation, or lateral movement, cases are organized here when the **core investigation relies on endpoint logs and host artifacts to validate compromise and persistence**.
+Although initial access may occur elsewhere, cases are organized here when the **core investigation relies on endpoint logs and host artifacts to confirm compromise and persistence**.
 
 ---
 
-## What’s in This Folder
+### What’s in This Folder
 
-Each investigation is contained in its **own dedicated folder** with full supporting documentation, including walkthroughs, case reports, artifact analysis, response reporting, defensive recommendations, and MITRE ATT&CK mapping.
+Each investigation is contained in its **own dedicated folder** and represents **one complete incident scenario documented end-to-end**, including walkthroughs, reports, artifacts, and defensive recommendations.
 
 Current investigations include:
 
 - **Endpoint Cryptominer Infection — Suspicious Process Execution Investigation**  
   (`endpoint-cryptominer-suspicious-process-investigation`)  
-  Focuses on detecting abnormal process execution patterns consistent with cryptomining malware, validating suspicious binaries, and confirming malicious behavior using Windows process telemetry.
+  Detects abnormal execution patterns consistent with cryptomining malware, validates suspicious binaries, and confirms malicious behavior using Windows process telemetry.
 
 - **Windows Host Compromise — Backdoor Account and Registry Persistence Investigation**  
   (`windows-backdoor-account-registry-persistence-investigation`)  
-  Documents unauthorized local account creation and registry-based autorun persistence mechanisms used to maintain long-term access to a compromised workstation.
+  Documents unauthorized local account creation and registry-based autorun persistence mechanisms used to maintain long-term access.
 
 - **Windows Malware Triage — Living-off-the-Land Binary (LoLBin) Abuse and Payload Validation Investigation**  
   (`windows-malware-triage-lolbin-validation-investigation`)  
-  Validates suspicious payloads and persistence techniques by analyzing digital signatures, scheduled tasks, registry startup entries, and file reputation using threat intelligence services.
+  Validates suspicious payloads and persistence techniques using digital signatures, scheduled tasks, registry startup entries, and file reputation via threat intelligence services.
 
 ---
 
-## Investigation Documentation Structure
+### Investigation Documentation Structure
 
-Each investigation in this folder is contained in its **own dedicated case folder** and includes supporting documents that reflect how endpoint-focused incidents are handled in real SOC workflows.
+Each investigation is fully self-contained in its own case folder and includes documentation aligned with how endpoint-focused incidents are handled in real SOC workflows.
 
-Typical files include:
+| File / Folder | Purpose | Contents and Focus |
+|--------|--------|--------------------|
+| **`investigation-walkthrough.md`** | Analyst workflow and validation steps | Step-by-step actions used to identify malicious execution, validate persistence mechanisms, and correlate host artifacts |
+| **`case-report.md`** | Formal incident narrative | Scope, investigation methodology, confirmed findings, and host-level compromise indicators |
+| **`incident-summary.md`** | Executive-level overview | What occurred, how it was detected, and final investigative outcome |
+| **`detection-artifact-report.md`** | Evidence and detection analysis | Detailed breakdown of process events, registry changes, account activity, scheduled tasks, and file artifacts |
+| **`detection-and-hardening-recommendations.md`** | Defensive improvements | Endpoint monitoring gaps, persistence detection opportunities, and system hardening guidance |
+| **`incident-response-report.md`** | Remediation considerations | Host isolation, persistence removal, credential hygiene, and recovery actions |
+| **`mitre-attack-mapping.md`** | ATT&CK framework mapping | Evidence-backed mapping of observed behaviors to ATT&CK techniques tied to investigation steps |
+| **`images/` or `screenshots/`** | Validation artifacts | Log excerpts, registry views, task listings, and supporting visual evidence |
 
-- **Investigation walkthrough (`investigation-walkthrough.md`)**  
-  Step-by-step analyst actions and pivots used to identify malicious execution, validate persistence mechanisms, and correlate host artifacts during the investigation.
-
-- **Case report (`case-report.md`)**  
-  Formal narrative of the incident, including scope, investigation methodology, confirmed findings, and host-level compromise indicators.
-
-- **Incident summary (`incident-summary.md`)**  
-  Executive-level overview summarizing what occurred, how it was detected, and the final investigative outcome.
-
-- **Detection and artifact analysis (`detection-artifact-report.md`)**  
-  Detailed breakdown of process events, registry modifications, account changes, scheduled tasks, and file artifacts with evidence-based conclusions.
-
-- **Detection and hardening recommendations (`detection-and-hardening-recommendations.md`)**  
-  Defensive improvements related to endpoint monitoring, logging coverage, persistence detection, and system hardening.
-
-- **Incident response report (`incident-response-report.md`)**  
-  Containment and remediation considerations such as isolating hosts, removing persistence, and credential hygiene.
-
-- **MITRE ATT&CK mapping (`mitre-attack-mapping.md`)**  
-  Evidence-backed ATT&CK techniques mapped directly to host artifacts and investigation steps.
-
-- **Screenshots and supporting evidence (`images/` or `screenshots/`)**  
-  Visual documentation of logs, registry keys, scheduled tasks, and validation steps.
-
-Together, these documents separate **host investigation workflow**, **artifact validation**, and **response considerations** into clearly reviewable components tied to the same incident narrative.
+Together, these files separate **host investigation workflow**, **artifact validation**, and **response planning** into clearly reviewable components while remaining tied to the same incident narrative.
 
 ---
 
-## Ongoing Development
+### Ongoing Development
 
-Future investigations may expand into additional persistence mechanisms, credential dumping, or memory-based attacks. New cases will continue to reflect how endpoint compromise and post-exploitation behavior are investigated in operational SOC environments.
-
+Future investigations may expand into additional persistence techniques, credential dumping, or memory-based attacks. New cases will continue to reflect how endpoint compromise and post-exploitation behavior are investigated in operational SOC environments.
