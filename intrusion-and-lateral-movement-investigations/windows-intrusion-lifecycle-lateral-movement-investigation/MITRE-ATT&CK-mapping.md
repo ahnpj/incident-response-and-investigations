@@ -42,8 +42,6 @@ ATT&CK defines Active Scanning as probing of target systems to identify exposed 
 - Multiple unrelated service ports targeted in short time window
 
 
----
-
 ### (2) Initial Access
 
 #### External Remote Services (T1133)
@@ -80,7 +78,7 @@ Brute Force describes repeated authentication attempts against an account until 
 | Source Consistency | Same source IP and targeted account | Supports brute-force leading to compromise |
 
 
-#### (4) Valid Accounts (T1078)
+### (4) Valid Accounts (T1078)
 
 **Observed Behavior**  
 After successful brute-force authentication, all subsequent attacker actions were performed under the context of legitimate user accounts, beginning with the built-in `Administrator` account and later using the attacker-created `sysadmin` account.
@@ -112,7 +110,6 @@ Creating new local accounts is a common persistence mechanism that allows attack
 | Windows Security Logs | Event ID 4720 — user account created | Confirms new account creation |
 | Account Name | `sysadmin` | Identifies attacker-created account |
 | Temporal Correlation | Occurs after successful SSH authentication | Links account creation to intrusion |
-
 
 #### (5B) Boot or Logon Autostart Execution (T1547) & Registry Run Keys / Startup Folder (T1547.001)
 
@@ -274,4 +271,5 @@ Associated detection logic and control recommendations are documented in:
 - Mapping focuses on host-level compromise and persistence mechanisms observed during the investigation.
 
 This mapping reflects how ATT&CK is applied during full intrusion lifecycle investigations using correlated network and endpoint telemetry.
+
 
