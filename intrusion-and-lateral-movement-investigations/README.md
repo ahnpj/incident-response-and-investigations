@@ -22,7 +22,7 @@ Each investigation is contained in its **own dedicated folder** and represents *
 Current investigations include:
 
 - **Windows Service Exploitation — Print Spooler Remote Code Execution (RCE) Investigation**  
-  (`windows-print-spooler-rce-investigation`)  
+  (`windows-service-print-spooler-remote-code-execution-investigation`)  
   Examines exploitation of the Windows Print Spooler service leading to remote code execution and elevated privileges on a server, validated using host and network telemetry.
 
 - **Intrusion Lifecycle Investigation — Lateral Movement Across Windows Hosts**  
@@ -53,4 +53,5 @@ Together, these documents support **multi-system investigation workflows** and e
 ### Ongoing Development
 
 Future investigations may expand into Active Directory attacks, pass-the-hash techniques, Kerberos abuse, or internal reconnaissance activity. New cases will continue to focus on tracing attacker movement and validating full intrusion scope using cross-domain telemetry.
+
 
