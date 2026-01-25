@@ -2,6 +2,8 @@
 
 This repository contains **hands-on security investigations** modeled after real SOC and blue-team workflows. Each case simulates how suspicious activity or alerts are triaged, validated, scoped, and resolved using multiple sources of telemetry.
 
+The repository is organized into **category folders based on primary attack surface and investigation focus** (such as identity, endpoint, intrusion, and web applications). Each category contains multiple fully self-contained investigations, with each folder representing **one complete incident scenario documented end-to-end** — including analysis, evidence, and response considerations.
+
 Rather than focusing on isolated tools or one-off techniques, these investigations emphasize:
 
 - Evidence-based analysis
@@ -10,21 +12,6 @@ Rather than focusing on isolated tools or one-off techniques, these investigatio
 - Clear documentation of investigative reasoning and outcomes
 
 Each investigation is written as a self-contained case file, showing how an analyst moves from initial signal to confirmed findings and response considerations.
-
-## Navigation
-
-- [How This Repository Is Organized](#how-this-repository-is-organized)
-- [How Investigations Are Structured & Organized](#how-investigations-are-structured--organized)
-- [How These Investigations Are Designed](#how-these-investigations-are-designed)
-- [Standard Files in Each Investigation Folder](#standard-files-in-each-investigation-folder)
-- [Category Folders and Current Investigations](#category-folders-and-current-investigations)
-- [Identity and Email Compromise Investigations](#identity-and-email-compromise-investigations)
-- [Endpoint Compromise and Persistence Investigations](#endpoint-compromise-and-persistence-investigations)
-- [Intrusion and Lateral Movement Investigations](#intrusion-and-lateral-movement-investigations)
-- [Web Application Compromise Investigations](#web-application-compromise-investigations)
-- [Overlap Between Categories](#overlap-between-categories)
-- [Relationship to Workflows and Playbooks](#relationship-to-workflows-and-playbooks)
-- [Ongoing Development](#ongoing-development)
 
 ---
 
@@ -194,5 +181,6 @@ Where relevant, investigations may reference related workflows to demonstrate ho
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
+
 
 
