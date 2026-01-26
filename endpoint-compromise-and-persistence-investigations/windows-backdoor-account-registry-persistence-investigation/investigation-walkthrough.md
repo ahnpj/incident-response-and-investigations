@@ -63,6 +63,7 @@ The investigation began by establishing the overall dataset size in the `main` i
 ```spl
 index=main
 | stats count
+```
 
 This query returns a single row with a count field, providing the total number of events available for analysis. In addition to confirming that the correct index was being queried and that ingestion was present, the event count provided a quick sense of scale for the investigation.
 
@@ -90,6 +91,7 @@ A starting point was searching for `net user` activity, including explicit accou
 
 ```spl
 index=main ("net user" OR "net user /add")
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-03.png?raw=true&v=2" 
@@ -119,6 +121,7 @@ To validate account creation from an account management perspective, Windows Sec
 
 ```spl
 index=main EventID=4720
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-04.png?raw=true&v=2" 
@@ -137,6 +140,7 @@ Because the created username was known (`A1berto`), the search focused on regist
 
 ```spl
 index=main Hostname="Micheal.Beaven" EventID=12 A1berto
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-05.png?raw=true&v=2" 
@@ -164,6 +168,7 @@ A broad sweep across logs was performed to examine username patterns:
 
 ```spl
 index=main
+```
 
 During review of the `User` field patterns in the field sidebar, the legitimate username Alberto stood out. The adversary-created backdoor user A1berto differed by a single character swap, a common masquerading pattern that can deceive analysts during sorting or grouping of events. This observation supported the assessment that the adversary intended to blend in as the legitimate user while performing unauthorized actions.
 
@@ -182,11 +187,13 @@ Process creation events were filtered using:
 
 ```spl
 index=main EventID=4688
+```
 
 Within returned events, the `CommandLine` field contained a command that connected the account creation to remote execution. The adversary executed WMIC from a remote host to run `net user /add` against the target machine:
 
 ```text
 C:\windows\System32\Wbem\WMIC.exe /node:WORKSTATION6 process call create "net user /add A1berto paw0rd1"
+```
 
 This confirmed the adversary was operating remotely rather than being physically or interactively logged onto the compromised host. WMIC (Windows Management Instrumentation Command-line) is a built-in Windows utility commonly used for querying system information, starting processes, managing services, or controlling remote systems without requiring RDP or an interactive login. Because it is native to Windows environments, it can blend into legitimate administrative activity and enables remote command execution without additional tooling. This command indicated two key points: the adversary executed actions remotely and abused a legitimate administrative tool to create the backdoor account without relying on external malware.
 
@@ -206,6 +213,7 @@ Events referencing the backdoor username were searched using:
 
 ```spl
 index=main A1berto
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-08.png?raw=true&v=2" 
@@ -241,6 +249,7 @@ PowerShell-related logs were searched using:
 
 ```spl
 index=main PowerShell
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-11.png?raw=true&v=2" 
@@ -265,6 +274,7 @@ With the affected host identified, analysis measured the extent of suspicious Po
 
 ```spl
 index=main EventID=4103
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-13.png?raw=true&v=2" 
@@ -282,6 +292,7 @@ After establishing **James.browne** as the host generating suspicious PowerShell
 
 ```spl
 index=main PowerShell
+```
 
 <p align="left">
   <img src="images/splunk-backdoor-and-registry-investigation-14.png?raw=true&v=2" 
@@ -471,5 +482,6 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Command and Control | **Application Layer Protocol: Web (T1071.001)** | Outbound web communication confirmed attacker command-and-control. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 ---
