@@ -72,6 +72,7 @@ ATT&CK classifies exposure of recoverable credentials in files or logs as unsecu
 | Value Reuse | Repeated identical encoded values across events | Indicates same credential reused |
 | Decoding Result | Successful Base64 decoding reveals original password | Confirms reversible credential exposure |
 
+<hr width="30%">
 
 #### (2) Discovery
 
@@ -90,7 +91,7 @@ Account discovery includes attempts to identify valid users within an environmen
 | Follow-on Attempts | Subsequent attempts against valid accounts | Shows progression from enumeration to targeting |
 | Temporal Pattern | Enumeration precedes successful access | Establishes attacker workflow sequencing |
 
-
+<hr width="30%">
 
 #### (3) Initial Access / Persistence
 
@@ -108,7 +109,6 @@ ATT&CK defines Valid Accounts as use of legitimate credentials to access systems
 | Invalid Usernames | Authentication logs containing invalid usernames | Indicates discovery of valid account set |
 | Follow-on Attempts | Subsequent attempts against valid accounts | Shows progression from enumeration to targeting |
 | Temporal Pattern | Enumeration precedes successful access | Establishes attacker workflow sequencing |
-
 
 
 ---
@@ -150,5 +150,6 @@ Detection opportunities and preventive control recommendations associated with t
 - Mapping avoids attribution to specific attacker tooling or campaigns and focuses strictly on observable behavior.
 
 This mapping reflects how ATT&CK is commonly applied during application-layer authentication abuse investigations using log-driven reconstruction workflows.
+
 
 
