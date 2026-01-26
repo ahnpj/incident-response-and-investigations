@@ -8,7 +8,7 @@ The purpose of this mapping is to support standardized incident classification, 
 
 ---
 
-## How This Mapping Was Performed
+### How This Mapping Was Performed
 
 Techniques were mapped by reviewing:
 
@@ -22,137 +22,141 @@ Each technique below references the investigative pivots and artifacts that supp
 
 ---
 
-## MITRE ATT&CK Mapping (Narrative View)
+### MITRE ATT&CK Mapping (Narrative View)
 
-### Reconnaissance
+### (1) Reconnaissance
 
 #### Active Scanning (T1595)
 
-**Observed Behavior**  
-An external IP address generated a high volume of HTTP requests targeting CMS-related paths and triggered multiple IDS signatures associated with vulnerability discovery and malformed requests.
+**Observed Behavior:**  
+An external IP address generated a high volume of HTTP requests targeting CMS-related paths and triggered multiple IDS signatures associated with vulnerability discovery and malformed requests. Requests included enumeration of administrative paths and plugin endpoints commonly associated with Joomla installations.
 
-Requests included enumeration of administrative paths and plugin endpoints commonly associated with Joomla installations.
-
-**Evidence Sources**  
-- Suricata IDS alerts containing exploit and malformed header signatures  
-- HTTP GET requests to CMS-specific paths such as `/joomla/administrator/`  
-- User-Agent indicating automated scanning activity (e.g., Acunetix scanner)  
-- Repeated requests from a consistent external source IP
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 Active scanning includes probing of external systems to identify vulnerabilities and exposed services prior to exploitation, which aligns with the observed automated discovery behavior.
 
+**Evidence Sources and Attribution:**  
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| IDS Alerts | Suricata alerts containing exploit and malformed header signatures | Indicates automated exploitation attempts |
+| Target Paths | HTTP GET requests to CMS-specific paths such as `/joomla/administrator/` | Confirms probing for known CMS platforms |
+| User-Agent | User-Agent indicating automated scanning activity (e.g., Acunetix scanner) | Identifies use of automated vulnerability scanner |
+| Source IP | Repeated requests from a consistent external source IP | Links scanning activity to single attacker origin |
 
-### Initial Access
+
+
+### (2) Initial Access
 
 #### Exploit Public-Facing Application (T1190)
 
-**Observed Behavior**  
-After reconnaissance, the attacker targeted the web application’s administrative functionality and gained the ability to authenticate and upload files to the server.
+**Observed Behavior:**  
+After reconnaissance, the attacker targeted the web application’s administrative functionality and gained the ability to authenticate and upload files to the server. Follow-on activity included authenticated requests and file upload actions that required application-level access rather than network-layer compromise.
 
-Follow-on activity included authenticated requests and file upload actions that required application-level access rather than network-layer compromise.
-
-**Evidence Sources**  
-- HTTP POST requests to CMS administrative endpoints  
-- IDS alerts associated with application exploitation patterns  
-- Transition from unauthenticated scanning to authenticated actions
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 T1190 covers exploitation of vulnerabilities or weaknesses in externally accessible applications to gain access or code execution, which matches the observed access path.
 
+**Evidence Sources and Attribution:**  
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| Request Method | HTTP POST requests to CMS administrative endpoints | Indicates attempts to interact with protected functionality |
+| IDS Alerts | Alerts associated with application exploitation patterns | Confirms exploit-focused activity |
+| Activity Shift | Transition from unauthenticated scanning to authenticated actions | Shows progression in attacker behavior |
 
-### Credential Access
+
+
+### (3) Credential Access
 
 #### Brute Force (T1110)
 
-**Observed Behavior**  
-Multiple authentication attempts were observed against the CMS administrative login page, with repeated POST requests containing different credential combinations.
+**Observed Behavior:**  
+Multiple authentication attempts were observed against the CMS administrative login page, with repeated POST requests containing different credential combinations. Analysis of POST body parameters revealed trial-and-error attempts prior to successful authentication.
 
-Analysis of POST body parameters revealed trial-and-error attempts prior to successful authentication.
-
-**Evidence Sources**  
-- HTTP POST requests to `/administrator/index.php`  
-- Repeated authentication failures from external IPs  
-- Transition from failures to a successful login event
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 Brute force includes repeated attempts to guess valid credentials through authentication mechanisms, which directly matches the observed login behavior.
 
+**Evidence Sources and Attribution:**   
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| Request Method | HTTP POST requests to CMS administrative endpoints | Indicates attempts to interact with protected functionality |
+| IDS Alerts | Alerts associated with application exploitation patterns | Confirms exploit-focused activity |
+| Activity Shift | Transition from unauthenticated scanning to authenticated actions | Shows progression in attacker behavior |
 
-### Initial Access / Persistence
+
+### (4) Initial Access / Persistence
 
 #### Valid Accounts (T1078)
 
-**Observed Behavior**  
-Once valid credentials were obtained, the attacker authenticated using legitimate account access and continued performing privileged administrative actions within the CMS.
+**Observed Behavior:**  
+Once valid credentials were obtained, the attacker authenticated using legitimate account access and continued performing privileged administrative actions within the CMS. This access enabled file upload, content modification, and backend configuration changes.
 
-This access enabled file upload, content modification, and backend configuration changes.
-
-**Evidence Sources**  
-- Successful authentication events using recovered credentials  
-- Authenticated CMS administrative actions following login  
-- No further authentication failures during post-compromise phase
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 Use of compromised legitimate credentials to maintain access aligns with the Valid Accounts technique.
 
+**Evidence Sources and Attribution:**   
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| Successful Login | Successful authentication events using recovered credentials | Confirms attacker gained valid access |
+| Admin Actions | Authenticated CMS administrative actions following login | Demonstrates post-auth access usage |
+| Failure Absence | No further authentication failures during post-compromise phase | Supports possession of valid credentials |
 
-### Execution
+
+
+### (5) Execution
 
 #### Command and Scripting Interpreter (T1059)
 
-**Observed Behavior**  
-A Windows executable (`3791.exe`) was uploaded to the web server and executed, confirmed through host-based process creation telemetry.
+**Observed Behavior:**  
+A Windows executable (`3791.exe`) was uploaded to the web server and executed, confirmed through host-based process creation telemetry. Execution occurred shortly after file upload, indicating attacker-controlled code was launched on the system.
 
-Execution occurred shortly after file upload, indicating attacker-controlled code was launched on the system.
-
-**Evidence Sources**  
-- HTTP multipart upload containing `3791.exe`  
-- Sysmon process creation event referencing `3791.exe`  
-- Timestamp correlation between upload and execution
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 Execution of attacker-controlled binaries or scripts using system interpreters or direct execution is covered under T1059 execution techniques.
 
+**Evidence Sources and Attribution:**   
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| Upload Method | HTTP multipart upload containing `3791.exe` | Confirms file delivery via web application |
+| Process Execution | Sysmon process creation event referencing `3791.exe` | Confirms execution of uploaded payload |
+| Timing Correlation | Timestamp correlation between upload and execution | Links web exploit to host compromise |
 
-### Command and Control
+
+
+### (6) Command and Control
 
 #### Application Layer Protocol: Web (T1071.001)
 
-**Observed Behavior**  
-After execution, the compromised host initiated outbound HTTP connections to attacker-controlled infrastructure on a non-standard port.
+**Observed Behavior:**  
+After execution, the compromised host initiated outbound HTTP connections to attacker-controlled infrastructure on a non-standard port. The server repeatedly requested remote resources hosted on the attacker domain.
 
-The server repeatedly requested remote resources hosted on the attacker domain.
-
-**Evidence Sources**  
-- Firewall logs showing outbound connections to external host and port  
-- IDS alerts on outbound HTTP sessions  
-- Requests retrieving remote image payload used in defacement
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 Use of standard web protocols for command-and-control or remote resource retrieval is explicitly covered under Application Layer Protocol techniques.
 
+**Evidence Sources and Attribution:**  
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| Firewall Logs | Outbound connections to external host and port | Indicates external communication |
+| IDS Alerts | Alerts on outbound HTTP sessions | Confirms application-layer outbound traffic |
+| Payload Retrieval | Requests retrieving remote image payload used in defacement | Links outbound traffic to attack objective |
 
-### Impact
+
+### (7) Impact
 
 #### Defacement (T1491)
 
-**Observed Behavior**  
-The website homepage was modified to display attacker-controlled content by referencing a remotely hosted image.
+**Observed Behavior:**  
+The website homepage was modified to display attacker-controlled content by referencing a remotely hosted image. Visitors to the site observed replacement content rather than the original web page.
 
-Visitors to the site observed replacement content rather than the original web page.
-
-**Evidence Sources**  
-- HTTP requests for attacker-hosted image  
-- Web content rendering showing replaced homepage  
-- Correlation between outbound C2 traffic and visible defacement
-
-**Why This Maps to ATT&CK**  
+**Why This Maps to ATT&CK:**  
 Modification of public-facing resources to display attacker content aligns directly with the Defacement impact technique.
+
+**Evidence Sources and Attribution:**  
+| Field | Value | Investigative Use |
+|--------|--------|------------------|
+| HTTP Requests | Requests for attacker-hosted image | Confirms content delivery from attacker source |
+| Web Rendering | Web content showing replaced homepage | Validates visible defacement impact |
+| Activity Correlation | Correlation between outbound C2 traffic and visible defacement | Links attacker communication to site modification |
 
 ---
 
-## MITRE ATT&CK Mapping (Table View)
+### MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique ID | Technique Name | Evidence Summary | Evidence Source |
 |--------|--------------|----------------|------------------|-----------------|
@@ -168,7 +172,7 @@ This table provides a condensed reference suitable for reporting, detection vali
 
 ---
 
-## Detection and Control Relevance
+### Detection and Control Relevance
 
 Mapping behaviors to MITRE ATT&CK supports defensive operations by:
 
@@ -185,10 +189,11 @@ Detection opportunities and preventive control recommendations associated with t
 
 ---
 
-## Notes and Assumptions
+### Notes and Assumptions
 
 - Techniques are mapped solely based on behaviors confirmed in available telemetry.
 - No lateral movement beyond the web server host was observed within scope.
 - Mapping avoids attribution to specific malware families or threat actor groups.
 
 This mapping reflects how ATT&CK is commonly applied during web server compromise and defacement investigations involving application exploitation and post-exploitation activity.
+
