@@ -1,4 +1,4 @@
-# Incident Response and Investigations
+### Incident Response and Investigations
 
 This repository contains **hands-on security investigations** modeled after real SOC and blue-team workflows. Each case simulates how suspicious activity or alerts are triaged, validated, scoped, and resolved using multiple sources of telemetry.
 
@@ -181,6 +181,7 @@ Where relevant, investigations may reference related workflows to demonstrate ho
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
+
 
 
 
