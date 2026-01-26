@@ -40,6 +40,7 @@ The attacker relied on social engineering via email to establish trust and trigg
 | Message Headers | Header fields identifying external sending domains | Validates sender origin and external communication paths |
 | Transaction Content | Transaction-related email content | Establishes legitimacy of business workflow prior to compromise |
 
+<hr width="30%">
 
 ### (2) Credential Access
 
@@ -58,11 +59,11 @@ Use of legitimate credentials to access cloud services matches ATT&CK’s Valid 
 | Source IP Addresses | IPs not previously associated with user activity | Indicates anomalous or suspicious access |
 | Temporal Correlation | Sign-in events preceding mailbox rule creation | Links account access to follow-on abuse activity |
 
+<hr width="30%">
 
+### (3) Persistence
 
-### Persistence
-
-#### (3) Email Collection: Mailbox Manipulation Rules (T1114.003)
+#### Email Collection: Mailbox Manipulation Rules (T1114.003)
 
 **Observed Behavior:**  
 Inbox rules were created to automatically process incoming financial correspondence without user visibility. Rule configuration review revealed conditions matching transaction-related keywords and actions configured to move or delete messages before reaching the inbox.
@@ -78,6 +79,7 @@ Mailbox rule abuse is explicitly documented in ATT&CK as a persistence technique
 | Rule Actions | `MoveToFolder`, `DeleteMessage` | Indicates suppression of victim visibility |
 | Rule Timestamps | Execution times after authentication events | Correlates rule creation with account compromise |
 
+<hr width="30%">
 
 ### (4) Defense Evasion
 
@@ -96,10 +98,11 @@ The attacker deliberately concealed evidence of fraudulent activity from the vic
 | Folder Routing | Non-default mailbox folders | Indicates hiding of messages from inbox |
 | Mailbox Visibility | Absence of financial notifications in inbox | Confirms operational impact of rule behavior |
 
+<hr width="30%">
 
-### Impact
+### (5) Impact
 
-#### (5) Financial Fraud (T1657)
+#### Financial Fraud (T1657)
 
 **Observed Behavior:**  
 Unauthorized pension withdrawal transactions were approved using the compromised executive mailbox after message suppression mechanisms were established. Timeline reconstruction showed that mailbox rule creation occurred prior to the approval of fraudulent transactions, indicating control of the email workflow enabled the financial impact.
@@ -152,4 +155,5 @@ Detection opportunities and preventive control recommendations associated with t
 - Techniques were selected to represent the primary behaviors that enabled the incident while avoiding unnecessary over-classification.
 
 This mapping reflects how ATT&CK is commonly applied during Business Email Compromise investigations in cloud-based enterprise environments.
+
 
