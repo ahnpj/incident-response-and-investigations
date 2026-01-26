@@ -83,7 +83,7 @@ This separation reflects common SOC workflows, where incident narratives and det
 
 <hr width="30%">
 
-### 5.1) Backdoor Account Creation — Command-Line Evidence
+#### 5.1) Backdoor Account Creation — Command-Line Evidence
 
 Process creation telemetry revealed execution of the following command:
 
@@ -99,7 +99,7 @@ The use of `/add` with a clear-text password strongly indicated unauthorized acc
 
 <hr width="30%">
 
-### 5.2) Account Management Confirmation — Security Event Correlation
+#### 5.2) Account Management Confirmation — Security Event Correlation
 
 Windows account management logs confirmed the creation of a new local account:
 
@@ -109,7 +109,7 @@ Security Event ID `4720` validated that Windows successfully registered the acco
 
 <hr width="30%">
 
-### 5.3) Registry Artifact Correlation — SAM Hive Persistence
+#### 5.3) Registry Artifact Correlation — SAM Hive Persistence
 
 Registry telemetry revealed creation of keys under the SAM hive associated with the backdoor account:
 
@@ -119,7 +119,7 @@ These artifacts confirm that Windows wrote account metadata consistent with loca
 
 <hr width="30%">
 
-### 5.4) Impersonation Intent — Look-Alike Username Pattern
+#### 5.4) Impersonation Intent — Look-Alike Username Pattern
 
 Review of user naming patterns revealed that the legitimate user:
 
@@ -133,7 +133,7 @@ This single-character substitution is a common masquerading technique used to bl
 
 <hr width="30%">
 
-### 5.5) Remote Execution — WMIC Abuse
+#### 5.5) Remote Execution — WMIC Abuse
 
 Process creation telemetry revealed that account creation was performed remotely using WMIC:
 
@@ -149,7 +149,7 @@ WMIC abuse is a common lateral movement and remote administration technique in W
 
 <hr width="30%">
 
-### 5.6) Backdoor Account Usage — Authentication Review
+#### 5.6) Backdoor Account Usage — Authentication Review
 
 Searches for logon activity associated with the backdoor account revealed:
 
@@ -159,7 +159,7 @@ This indicates that while the account was created successfully, it was not activ
 
 <hr width="30%">
 
-### 5.7) PowerShell Activity — Encoded Execution and Host Attribution
+#### 5.7) PowerShell Activity — Encoded Execution and Host Attribution
 
 PowerShell telemetry identified encoded command execution originating from:
 
@@ -204,7 +204,7 @@ That report is intended for SOC analysts and detection engineers responsible for
 
 <hr width="30%">
 
-### 7.1) Identity & Account IOCs
+#### 7.1) Identity & Account IOCs
 
 These indicators relate to unauthorized local account creation and potential impersonation of legitimate users. They are useful for identifying persistence mechanisms based on backdoor identities and for detecting masquerading techniques designed to blend into normal account activity.
 
@@ -217,7 +217,7 @@ These indicators relate to unauthorized local account creation and potential imp
 
 <hr width="30%">
 
-### 7.2) Host-Based IOCs
+#### 7.2) Host-Based IOCs
 
 These indicators identify specific endpoints involved in account creation, registry modification, and follow-on PowerShell activity. They support scoping of affected systems and correlation of multi-host behavior within the same intrusion sequence.
 
@@ -230,7 +230,7 @@ These indicators identify specific endpoints involved in account creation, regis
 
 <hr width="30%">
 
-### 7.3) Command-Line IOCs
+#### 7.3) Command-Line IOCs
 
 These indicators capture the exact commands and execution methods used to create the backdoor account and perform remote process execution. They are useful for detecting living-off-the-land abuse involving built-in Windows administrative utilities.
 
@@ -243,7 +243,7 @@ These indicators capture the exact commands and execution methods used to create
 
 <hr width="30%">
 
-### 7.4) Registry IOCs
+#### 7.4) Registry IOCs
 
 These indicators reflect persistence-related artifacts written to the SAM registry hive as part of local account creation. They are useful for detecting long-lived identity persistence even when the backdoor account is not actively used for logon.
 
@@ -255,7 +255,7 @@ These indicators reflect persistence-related artifacts written to the SAM regist
 
 <hr width="30%">
 
-### 7.5) PowerShell & Network IOCs
+#### 7.5) PowerShell & Network IOCs
 
 These indicators relate to encoded PowerShell execution and outbound web communication observed after account creation. They are useful for identifying post-compromise activity, secondary payload delivery, or command-and-control communication.
 
@@ -283,7 +283,7 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 This section highlights immediate and high-impact actions, while the supporting report provides implementation-level detail.
 
-### 9.1) Immediate Containment
+#### 9.1) Immediate Containment
 
 - Disable and remove backdoor account `A1berto`
 - Isolate affected hosts
@@ -291,7 +291,7 @@ This section highlights immediate and high-impact actions, while the supporting 
 
 <hr width="30%">  
 
-### 9.2) Hardening
+#### 9.2) Hardening
 
 - Restrict remote execution tooling
 - Harden registry auditing for SAM hive
@@ -299,7 +299,7 @@ This section highlights immediate and high-impact actions, while the supporting 
 
 <hr width="30%">
 
-### 9.3) Detection
+#### 9.3) Detection
 
 - Alert on local account creation events
 - Detect WMIC remote process execution
@@ -329,7 +329,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 - Full investigative context and evidence references: `investigation-walkthrough.md`
 - Expanded technique analysis and detection considerations: `MITRE-ATTACK-mapping.md`
 
-### 11.1) Technique Mapping
+#### 11.1) Technique Mapping
 
 - **Persistence — Create Account: Local Account (T1136.001)**
 - **Defense Evasion — Masquerading (T1036)**
@@ -340,7 +340,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 
 <hr width="30%">
 
-### 11.2) MITRE ATT&CK Mapping (Table View)
+#### 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |--------|----------|-------------|
@@ -352,4 +352,5 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 | Command and Control | **Application Layer Protocol: Web (T1071.001)** | Outbound web communication observed |
 
 ---
+
 
