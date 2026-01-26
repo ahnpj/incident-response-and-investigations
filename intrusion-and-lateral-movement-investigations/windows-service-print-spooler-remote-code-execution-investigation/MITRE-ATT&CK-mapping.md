@@ -43,7 +43,7 @@ ATT&CK defines Ingress Tool Transfer as delivery of attacker-controlled tools or
   - File created: `C:\Windows\System32\spool\drivers\x64\3\New\printevil.dll`
   - Creating process: `spoolsv.exe`
 
-
+<hr width="30%">
 
 ### (2) Execution
 
@@ -62,6 +62,7 @@ ATT&CK defines Service Execution as abusing services to run attacker code. The P
 - File placement preceding execution:
   - `printevil.dll` written to Print Spooler driver path
 
+<hr width="30%">
 
 ### (3) Defense Evasion
 
@@ -80,8 +81,7 @@ Masquerading includes disguising malicious artifacts as legitimate system compon
   - `unidrv.dll`
   - `winhttp.dll`
 
-
-
+<hr width="30%">
 
 ### (4) Command and Control
 
@@ -102,8 +102,7 @@ ATT&CK classifies outbound command-and-control using HTTP/HTTPS-style ports unde
   - Followed TCP stream showing interactive shell
   - Observed execution of `whoami`
 
-
-
+<hr width="30%">
 
 ### (5) Discovery
 
@@ -160,3 +159,4 @@ Detection opportunities and preventive control recommendations associated with t
 - No lateral movement or credential theft was observed within scope.
 
 This mapping reflects how ATT&CK is commonly applied during host-based service abuse investigations using log-driven reconstruction workflows.
+
