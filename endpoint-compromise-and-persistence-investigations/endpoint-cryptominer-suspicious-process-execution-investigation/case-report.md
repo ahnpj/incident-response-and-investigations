@@ -300,14 +300,14 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 
 <hr width="30%">
 
-### 11.1) Technique Mapping
+#### 11.1) Technique Mapping
 
 - **Execution — User Execution (T1204):** Malicious executable launched by user.
 - **Impact — Resource Hijacking (T1496):** Host resources consumed by mining activity.
 
 <hr width="30%">
 
-### 11.2) MITRE ATT&CK Mapping (Table View)
+#### 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |--------|----------|-------------|
@@ -315,6 +315,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
