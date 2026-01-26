@@ -42,7 +42,7 @@ Active scanning includes probing of external systems to identify vulnerabilities
 | User-Agent | User-Agent indicating automated scanning activity (e.g., Acunetix scanner) | Identifies use of automated vulnerability scanner |
 | Source IP | Repeated requests from a consistent external source IP | Links scanning activity to single attacker origin |
 
-
+<hr width="30%">
 
 ### (2) Initial Access
 
@@ -61,7 +61,7 @@ T1190 covers exploitation of vulnerabilities or weaknesses in externally accessi
 | IDS Alerts | Alerts associated with application exploitation patterns | Confirms exploit-focused activity |
 | Activity Shift | Transition from unauthenticated scanning to authenticated actions | Shows progression in attacker behavior |
 
-
+<hr width="30%">
 
 ### (3) Credential Access
 
@@ -80,6 +80,7 @@ Brute force includes repeated attempts to guess valid credentials through authen
 | IDS Alerts | Alerts associated with application exploitation patterns | Confirms exploit-focused activity |
 | Activity Shift | Transition from unauthenticated scanning to authenticated actions | Shows progression in attacker behavior |
 
+<hr width="30%">
 
 ### (4) Initial Access / Persistence
 
@@ -98,7 +99,7 @@ Use of compromised legitimate credentials to maintain access aligns with the Val
 | Admin Actions | Authenticated CMS administrative actions following login | Demonstrates post-auth access usage |
 | Failure Absence | No further authentication failures during post-compromise phase | Supports possession of valid credentials |
 
-
+<hr width="30%">
 
 ### (5) Execution
 
@@ -117,7 +118,7 @@ Execution of attacker-controlled binaries or scripts using system interpreters o
 | Process Execution | Sysmon process creation event referencing `3791.exe` | Confirms execution of uploaded payload |
 | Timing Correlation | Timestamp correlation between upload and execution | Links web exploit to host compromise |
 
-
+<hr width="30%">
 
 ### (6) Command and Control
 
@@ -136,6 +137,7 @@ Use of standard web protocols for command-and-control or remote resource retriev
 | IDS Alerts | Alerts on outbound HTTP sessions | Confirms application-layer outbound traffic |
 | Payload Retrieval | Requests retrieving remote image payload used in defacement | Links outbound traffic to attack objective |
 
+<hr width="30%">
 
 ### (7) Impact
 
@@ -196,4 +198,5 @@ Detection opportunities and preventive control recommendations associated with t
 - Mapping avoids attribution to specific malware families or threat actor groups.
 
 This mapping reflects how ATT&CK is commonly applied during web server compromise and defacement investigations involving application exploitation and post-exploitation activity.
+
 
