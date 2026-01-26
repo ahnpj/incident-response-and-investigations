@@ -41,6 +41,7 @@ ATT&CK defines Active Scanning as probing of target systems to identify exposed 
 - No completed TCP handshakes or payload transfer  
 - Multiple unrelated service ports targeted in short time window
 
+<hr width="30%">
 
 ### (2) Initial Access
 
@@ -59,6 +60,7 @@ External Remote Services describes adversaries accessing systems through exposed
 | External Probing | External reconnaissance probing port 22 | Indicates attacker discovery of exposed service |
 | Authentication Telemetry | Subsequent SSH authentication telemetry | Links probing to follow-on access attempts |
 
+<hr width="30%">
 
 ### (3) Credential Access
 
@@ -77,6 +79,7 @@ Brute Force describes repeated authentication attempts against an account until 
 | OpenSSH Logs | “Accepted password for administrator from 192.168.1.33” | Confirms successful authentication |
 | Source Consistency | Same source IP and targeted account | Supports brute-force leading to compromise |
 
+<hr width="30%">
 
 ### (4) Valid Accounts (T1078)
 
@@ -93,6 +96,7 @@ Valid Accounts applies when adversaries use legitimate credentials to operate on
 | Execution Context | System changes executed under authenticated user | Links actions to attacker session |
 | Access Method | No exploit-based access observed | Supports credential-based compromise conclusion |
 
+<hr width="30%">
 
 ### (5) Persistence
 
@@ -131,6 +135,7 @@ ATT&CK documents Run key modifications as a persistence technique that triggers 
 | Time Window | Values created between 5:24 PM and 5:26 PM | Supports coordinated post-compromise activity |
 | Registry Targets | Values point to malware-staged executables | Links persistence to malicious payloads |
 
+<hr width="30%">
 
 ### (6) Collection
 
@@ -150,8 +155,9 @@ Keylogging is a defined sub-technique of Input Capture, used to collect credenti
 | Archive Naming | Archive explicitly indicates keylogging functionality | Supports malicious payload classification |
 | Timing Correlation | Occurred during post-compromise window | Links to attacker activity timeline |
 
+<hr width="30%">
 
-#### (7) Data from Local System (T1005)
+#### Data from Local System (T1005)
 
 **Observed Behavior:**  
 Multiple executables and supporting files were written to disk in the attacker-controlled directory: `C:\Users\Administrator\AppData\Roaming\WPDNSE\`, including: `svchost.exe`, `rundll33.exe`, and `atapi.sys`.
@@ -165,8 +171,9 @@ T1005 covers staging and accessing data on local systems, including preparation 
 | Sysmon Logs | Event ID 11 — file creation | Confirms dropped payloads |
 | Timestamp Alignment | Matches malware extraction timeframe | Correlates files to archive contents |
 
+<hr width="30%">
 
-### (8) Defense Evasion
+### (7) Defense Evasion
 
 #### Rootkit (T1014)
 
@@ -183,8 +190,9 @@ Masquerading kernel-style components in non-standard locations aligns with rootk
 | File Name | `atapi.sys` | Identifies suspicious driver-style artifact |
 | File Path | `C:\Users\Administrator\AppData\Roaming\WPDNSE\` | Indicates user-profile persistence location |
 
+<hr width="30%">
 
-#### (9) Indicator Removal on Host (T1070)
+#### (8) Indicator Removal on Host (T1070)
 
 **Observed Behavior**  
 Windows Security Event ID 4726 confirms deletion of a local user account (`DRB`) after attacker persistence mechanisms were established.
@@ -198,7 +206,9 @@ Removing user accounts after compromise reduces visibility and complicates inves
 | Windows Security Logs | Event ID 4726 — user account deleted | Confirms account removal |
 | Sequence | Occurred after creation and elevation of `sysadmin` | Indicates cleanup or cover-up behavior |
 
-### (10) Impact
+<hr width="30%">
+
+### (9) Impact
 
 #### Account Access Removal (T1531)
 
@@ -271,5 +281,6 @@ Associated detection logic and control recommendations are documented in:
 - Mapping focuses on host-level compromise and persistence mechanisms observed during the investigation.
 
 This mapping reflects how ATT&CK is applied during full intrusion lifecycle investigations using correlated network and endpoint telemetry.
+
 
 
