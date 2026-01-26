@@ -42,6 +42,7 @@ The attacker relied on execution of a binary within a user session rather than e
 | User Account | `Chris.Fort` | Attribution of execution context |
 | Hostname | `HR_02` | Endpoint scoping and impact assessment |
 
+<hr width="30%">
 
 ### (2) Impact
 
@@ -93,3 +94,4 @@ Detection opportunities and preventive control recommendations associated with t
 ### Notes and Assumptions
 
 - Techniques are mapped solely based on observable process execution and SIEM detection logic within scope of the alert investigation.
+
