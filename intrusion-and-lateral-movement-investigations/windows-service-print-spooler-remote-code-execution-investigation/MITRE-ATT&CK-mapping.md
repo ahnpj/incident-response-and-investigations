@@ -23,7 +23,7 @@ Each technique below references the specific investigative artifacts that suppor
 
 ## MITRE ATT&CK Mapping (Narrative View)
 
-### Initial Access
+### (1) Initial Access
 
 #### Ingress Tool Transfer (T1105)
 
@@ -45,7 +45,7 @@ ATT&CK defines Ingress Tool Transfer as delivery of attacker-controlled tools or
 
 
 
-### Execution
+### (2) Execution
 
 #### Service Execution (T1569.002)
 
@@ -63,7 +63,7 @@ ATT&CK defines Service Execution as abusing services to run attacker code. The P
   - `printevil.dll` written to Print Spooler driver path
 
 
-### Defense Evasion
+### (3) Defense Evasion
 
 #### Masquerading (T1036)
 
@@ -83,7 +83,7 @@ Masquerading includes disguising malicious artifacts as legitimate system compon
 
 
 
-### Command and Control
+### (4) Command and Control
 
 #### Application Layer Protocol: Web (T1071.001)
 
@@ -105,7 +105,7 @@ ATT&CK classifies outbound command-and-control using HTTP/HTTPS-style ports unde
 
 
 
-### Discovery
+### (5) Discovery
 
 #### System Owner/User Discovery (T1033)
 
@@ -160,4 +160,5 @@ Detection opportunities and preventive control recommendations associated with t
 - No lateral movement or credential theft was observed within scope.
 
 This mapping reflects how ATT&CK is commonly applied during host-based service abuse investigations using log-driven reconstruction workflows.
+
 
