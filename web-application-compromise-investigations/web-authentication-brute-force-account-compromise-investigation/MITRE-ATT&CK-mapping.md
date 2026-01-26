@@ -8,7 +8,7 @@ The purpose of this mapping is to support standardized incident classification, 
 
 ---
 
-## How This Mapping Was Performed
+### How This Mapping Was Performed
 
 Techniques were mapped by reviewing:
 
@@ -22,9 +22,9 @@ Each technique below references the investigative pivots and artifacts that supp
 
 ---
 
-## MITRE ATT&CK Mapping (Narrative View)
+### MITRE ATT&CK Mapping (Narrative View)
 
-### (1) Credential Access (Brute Force)
+### (1) Credential Access
 
 #### (1A) Brute Force (T1110)
 
@@ -73,9 +73,9 @@ ATT&CK classifies exposure of recoverable credentials in files or logs as unsecu
 | Decoding Result | Successful Base64 decoding reveals original password | Confirms reversible credential exposure |
 
 
-### Discovery
+#### (2) Discovery
 
-#### (2) Account Discovery (T1087)
+#### Account Discovery (T1087)
 
 **Observed Behavior:**  
 Authentication attempts included usernames that were not valid accounts, followed by repeated attempts against confirmed legitimate users. This pattern was identified by comparing attempted usernames against known valid accounts and observing a shift from invalid names to legitimate user targets.
@@ -92,9 +92,9 @@ Account discovery includes attempts to identify valid users within an environmen
 
 
 
-### Initial Access / Persistence
+#### (3) Initial Access / Persistence
 
-#### (3) Valid Accounts (T1078)
+#### Valid Accounts (T1078)
 
 **Observed Behavior:**  
 A successful authentication occurred after repeated failures, and the same credentials were later reused from a different source IP address without additional failed attempts. This indicates that valid credentials were obtained and operationalized rather than a single anomalous login event.
@@ -113,7 +113,7 @@ ATT&CK defines Valid Accounts as use of legitimate credentials to access systems
 
 ---
 
-## MITRE ATT&CK Mapping (Table View)
+### MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique ID | Technique Name | Evidence Summary | Evidence Source |
 |--------|--------------|----------------|------------------|-----------------|
@@ -127,7 +127,7 @@ This table provides a condensed reference suitable for reporting, detection vali
 
 ---
 
-## Detection and Control Relevance
+### Detection and Control Relevance
 
 Mapping behaviors to MITRE ATT&CK supports defensive operations by:
 
@@ -143,11 +143,12 @@ Detection opportunities and preventive control recommendations associated with t
 
 ---
 
-## Notes and Assumptions
+### Notes and Assumptions
 
 - Techniques are mapped solely based on behaviors confirmed in application logs reviewed during this investigation.
 - No malware delivery, exploit activity, or endpoint compromise was observed within scope.
 - Mapping avoids attribution to specific attacker tooling or campaigns and focuses strictly on observable behavior.
 
 This mapping reflects how ATT&CK is commonly applied during application-layer authentication abuse investigations using log-driven reconstruction workflows.
+
 
