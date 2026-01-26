@@ -42,6 +42,7 @@ ATT&CK defines this technique as persistence through creation of local accounts 
 | Process Creation Telemetry | Event ID 4688 capturing `net.exe` execution | Identifies tool used to create the account |
 | Command Line | `/add A1berto paw0rd1` | Confirms exact account name and password used during creation |
 
+<hr width="30%">
 
 ### (2) Defense Evasion
 
@@ -59,6 +60,7 @@ Masquerading includes the use of look-alike names to blend malicious activity wi
 | Username Field Patterns | Variations observed across Windows Security events | Indicates attacker-created account mimicking legitimate user |
 | Account Presence | Both `Alberto` and `A1berto` observed in telemetry | Supports hypothesis of look-alike account persistence technique |
 
+<hr width="30%">
 
 ### (3) Lateral Movement / Execution
 
@@ -78,6 +80,7 @@ ATT&CK defines WMI abuse as a technique for executing commands remotely using na
 | Command Line Parameter | `process call create` | Confirms remote process creation technique |
 | Target Node Parameter | Remote system specified in command | Supports lateral movement activity |
 
+<hr width="30%">
 
 ### (4) Persistence
 
@@ -96,6 +99,8 @@ Modification of registry keys associated with account metadata constitutes persi
 | Target Object | SAM hive path associated with `A1berto` | Links registry activity to attacker-created account |
 | Host Attribution | `Micheal.Beaven` | Confirms system where persistence was established |
 
+<hr width="30%">
+
 ### (5) Execution
 
 #### PowerShell (T1059.001)
@@ -112,6 +117,8 @@ ATT&CK defines PowerShell execution as a common technique for executing attacker
 | PowerShell Event | Event ID 4103 — engine activity | Confirms PowerShell execution |
 | HostApplication Field | Contains `-enc` with Base64 content | Indicates obfuscated script execution |
 | Host Attribution | `James.browne` | Identifies system where script executed |
+
+<hr width="30%">
 
 ### (6) Command and Control
 
@@ -171,4 +178,5 @@ Detection opportunities and preventive control recommendations associated with t
 - Mapping avoids attribution to specific malware families or threat actors.
 
 This mapping reflects how ATT&CK is commonly applied during host-based intrusion investigations using log-driven reconstruction workflows.
+
 
