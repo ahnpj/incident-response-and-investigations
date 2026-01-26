@@ -8,7 +8,7 @@ The purpose of this mapping is to support standardized incident classification, 
 
 ---
 
-## How This Mapping Was Performed
+### How This Mapping Was Performed
 
 Techniques were mapped by reviewing:
 
@@ -21,7 +21,7 @@ Each technique below references the specific investigative artifacts that suppor
 
 ---
 
-## MITRE ATT&CK Mapping (Narrative View)
+### MITRE ATT&CK Mapping (Narrative View)
 
 ### (1) Initial Access
 
@@ -123,7 +123,7 @@ ATT&CK defines System Owner/User Discovery as querying the current user or privi
 
 ---
 
-## MITRE ATT&CK Mapping (Table View)
+### MITRE ATT&CK Mapping (Table View)
 
 This table provides a condensed reference suitable for reporting, detection validation, and technique tracking across multiple investigations.
 
@@ -137,7 +137,7 @@ This table provides a condensed reference suitable for reporting, detection vali
 
 ---
 
-## Detection and Control Relevance
+### Detection and Control Relevance
 
 Mapping behaviors to MITRE ATT&CK supports defensive operations by:
 
@@ -153,12 +153,10 @@ Detection opportunities and preventive control recommendations associated with t
 
 ---
 
-## Notes and Assumptions
+### Notes and Assumptions
 
 - All techniques are mapped solely based on behaviors confirmed in logs and packet capture data reviewed during this investigation.
 - No exploit code analysis was performed; mapping focuses on post-exploitation observable behaviors.
 - No lateral movement or credential theft was observed within scope.
 
 This mapping reflects how ATT&CK is commonly applied during host-based service abuse investigations using log-driven reconstruction workflows.
-
-
