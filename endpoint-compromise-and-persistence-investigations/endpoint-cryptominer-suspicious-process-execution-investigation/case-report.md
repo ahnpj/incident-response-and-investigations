@@ -96,15 +96,18 @@ Detailed event fields, log source mappings, and detection-relevant artifacts ext
 
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
-#### 5.1 Alert Trigger — Suspicious Executable Identification
+<hr width="30%">
+
+#### 5.1) Alert Trigger — Suspicious Executable Identification
 
 The investigation began with review of the SIEM alert, which identified the executable `cudominer.exe` as anomalous. The name closely resembles known cryptocurrency mining tools and deviates from standard enterprise application naming conventions.
 
 This initial alert established the executable as the primary artifact for investigation.  
 (See *Suspicious Process Identification*, Figure 1)
 
+<hr width="30%">
 
-#### 5.2 Authentication & Execution Attribution
+#### 5.2) Authentication & Execution Attribution
 
 Correlated Windows process creation events revealed that `cudominer.exe` was launched:
 
@@ -116,8 +119,9 @@ This confirmed that the activity occurred under a standard user context rather t
 
 User-based execution is common in commodity malware infections delivered via downloads or phishing.
 
+<hr width="30%">
 
-#### 5.3 Execution Path Analysis
+#### 5.3) Execution Path Analysis
 
 Inspection of process metadata revealed the executable path:
 
@@ -131,8 +135,9 @@ Execution from user-writable temporary directories is atypical for legitimate en
 
 This execution location significantly increased confidence that the process was malicious rather than legitimate software.
 
+<hr width="30%">
 
-#### 5.4 Detection Logic Validation
+#### 5.4) Detection Logic Validation
 
 ##### 5.4.1 SIEM Rule Review
 
@@ -181,7 +186,9 @@ Field-level telemetry, log source mappings, and example detection logic derived 
 
 That report is intended for SOC analysts and detection engineers responsible for implementing monitoring and alerting controls.
 
-#### 7.1 Host-Based IOCs
+<hr width="30%">
+
+#### 7.1) Host-Based IOCs
 
 These indicators identify the specific endpoint where the suspicious executable was observed and are useful for scoping potential impact, validating whether activity is isolated, and correlating additional telemetry associated with the same host.
 
@@ -193,8 +200,9 @@ These indicators identify the specific endpoint where the suspicious executable 
 - Alert on executables launched from `%TEMP%` or `%APPDATA%`
 - Monitor for miner-related executable names
 
+<hr width="30%">
 
-#### 7.2 User Attribution IOCs
+#### 7.2) User Attribution IOCs
 
 These indicators relate to the user context under which the suspicious process was executed and are useful for identifying potential infection vectors such as unauthorized downloads, social engineering, or misuse of local execution privileges.
 
@@ -204,8 +212,9 @@ These indicators relate to the user context under which the suspicious process w
 - Identify repeated suspicious executions tied to the same user
 - Correlate abnormal processes with user download behavior
 
+<hr width="30%">
 
-#### 7.3 Behavioral IOCs
+#### 7.3) Behavioral IOCs
 
 These indicators capture the executable name and file location associated with the suspicious process and are useful for detecting unauthorized software execution, especially when binaries originate from user-writable directories rather than standard application paths.
 
@@ -217,8 +226,9 @@ These indicators capture the executable name and file location associated with t
 - Correlate unknown executables with high CPU usage
 - Alert on rare process names across endpoints
 
+<hr width="30%">
 
-#### 7.4 IOC Limitations
+#### 7.4) IOC Limitations
 
 While the indicators above are high-confidence within the context of this alert, many can be easily modified by attackers, including executable names and file paths. As a result, detection strategies should prioritize behavioral correlations and execution context over static signatures alone.
 
@@ -251,21 +261,26 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 This section is intended to highlight immediate and high-impact actions, while the supporting report provides implementation-level detail for security engineering and operations teams.
 
+<hr width="30%">
 
-#### 9.1 Immediate Containment
+#### 9.1) Immediate Containment
 
 - Isolate affected endpoint `HR_02`
 - Terminate malicious process
 - Remove unauthorized executable from disk
 - Reset credentials for associated user account
 
-#### 9.2 Hardening
+<hr width="30%">
+
+#### 9.2) Hardening
 
 - Restrict execution from `%TEMP%` and `%APPDATA%`
 - Implement application allowlisting
 - Enforce endpoint protection policies
 
-#### 9.3 Detection
+<hr width="30%">
+
+#### 9.3) Detection
 
 - Alert on execution from user-writable directories
 - Monitor for miner-related process names
@@ -295,10 +310,14 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 - For full investigative context and evidence-backed technique justification, see: `investigation-walkthrough.md`
 - For expanded MITRE technique analysis and detection considerations, see: `MITRE-ATTACK-mapping.md`
 
-### 11.1 Technique Mapping
+<hr width="30%">
+
+### 11.1) Technique Mapping
 
 - **Execution — User Execution (T1204):** Malicious executable launched by user.
 - **Impact — Resource Hijacking (T1496):** Host resources consumed by mining activity.
+
+<hr width="30%">
 
 ### 11.2 MITRE ATT&CK Mapping (Table View)
 
@@ -308,6 +327,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
