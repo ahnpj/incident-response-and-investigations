@@ -7,7 +7,7 @@
 
 ---
 
-## 1) Executive Summary
+### 1) Executive Summary
 
 This case investigates a SIEM-generated alert triggered by suspicious process execution on a Windows endpoint. The executable `cudominer.exe` was identified as running under a standard user context and originating from a user-writable directory, behavior consistent with unauthorized cryptocurrency mining activity.
 
@@ -22,7 +22,7 @@ Evidence supporting these conclusions includes:
 
 ---
 
-## 2) Incident Background
+### 2) Incident Background
 
 The organization received an automated SIEM alert indicating suspicious process execution associated with potential cryptocurrency mining activity. Because mining malware often masquerades as legitimate executables and may be installed through social engineering or unauthorized downloads, the alert required validation to determine whether the behavior was benign or malicious.
 
@@ -37,11 +37,11 @@ The objective was to confirm malicious activity and determine appropriate contai
 
 ---
 
-## 3) Scope
+### 3) Scope
 
 This section defines which endpoints, user accounts, and telemetry sources were included in validating the suspicious process execution alert, as well as what activity was not observed within the available dataset. Clearly defining scope helps distinguish confirmed host-level execution from broader compromise or lateral movement that was not supported by the evidence.
 
-### In-Scope
+#### In-Scope
 
 - **Affected endpoint:** `HR_02`
 - **Associated user account:** `Chris.Fort`
@@ -53,7 +53,7 @@ This section defines which endpoints, user accounts, and telemetry sources were 
   - User execution context
   - Detection rule validation
 
-### Out-of-Scope / Not Observed
+#### Out-of-Scope / Not Observed
 
 - Lateral movement
 - Persistence mechanisms
@@ -64,7 +64,7 @@ The investigation was limited to validating the triggering alert and confirming 
 
 ---
 
-## 4) Environment
+### 4) Environment
 
 This investigation validated suspicious process execution using host-based telemetry on a Windows endpoint.
 
@@ -88,7 +88,7 @@ No network telemetry or external infrastructure data was available. Conclusions 
 
 ---
 
-## 5) Evidence Summary
+### 5) Evidence Summary
 
 This section summarizes the primary evidence used to reconstruct attacker behavior and support the final case determination. It focuses on how each data source contributed to understanding the incident rather than listing all raw log fields or detection logic.
 
@@ -97,7 +97,7 @@ Detailed event fields, log source mappings, and detection-relevant artifacts ext
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
 
-### 5.1 Alert Trigger — Suspicious Executable Identification
+#### 5.1 Alert Trigger — Suspicious Executable Identification
 
 The investigation began with review of the SIEM alert, which identified the executable `cudominer.exe` as anomalous. The name closely resembles known cryptocurrency mining tools and deviates from standard enterprise application naming conventions.
 
@@ -105,7 +105,7 @@ This initial alert established the executable as the primary artifact for invest
 (See *Suspicious Process Identification*, Figure 1)
 
 
-### 5.2 Authentication & Execution Attribution
+#### 5.2 Authentication & Execution Attribution
 
 Correlated Windows process creation events revealed that `cudominer.exe` was launched:
 
@@ -118,7 +118,7 @@ This confirmed that the activity occurred under a standard user context rather t
 User-based execution is common in commodity malware infections delivered via downloads or phishing.
 
 
-### 5.3 Execution Path Analysis
+#### 5.3 Execution Path Analysis
 
 Inspection of process metadata revealed the executable path:
 
@@ -133,9 +133,9 @@ Execution from user-writable temporary directories is atypical for legitimate en
 This execution location significantly increased confidence that the process was malicious rather than legitimate software.
 
 
-### 5.4 Detection Logic Validation
+#### 5.4 Detection Logic Validation
 
-#### 5.4.1 SIEM Rule Review
+##### 5.4.1 SIEM Rule Review
 
 The SIEM correlation rule responsible for the alert monitors Windows process creation events and evaluates executable names for mining-related keywords, including variations of:
 
@@ -146,7 +146,7 @@ The executable `cudominer.exe` matched the detection logic, confirming that the 
 (See *Detection Rule Review*, Figure 3)
 
 
-#### 5.4.2 Alert Classification Decision
+##### 5.4.2 Alert Classification Decision
 
 Because:
 
@@ -158,7 +158,7 @@ The alert was classified as a **true positive** representing unauthorized crypto
 
 ---
 
-## 6) Investigation Timeline (Condensed)
+### 6) Investigation Timeline (Condensed)
 
 The timeline below reflects the **reconstructed sequence of attacker and host activity**, not the step-by-step actions taken by the analyst during investigation. Detailed analyst workflow and tool usage are documented separately in the investigation walkthrough: `investigation-walkthrough.md`
 
@@ -174,7 +174,7 @@ This distinction mirrors real-world incident response reporting, where one timel
 
 ---
 
-## 7) Indicators of Compromise (IOCs)
+### 7) Indicators of Compromise (IOCs)
 
 The indicators listed below represent high-confidence artifacts suitable for threat hunting, alerting, and scoping of similar activity. These IOCs are presented at a conceptual and operational level to support rapid understanding of what to monitor.
 
@@ -182,7 +182,7 @@ Field-level telemetry, log source mappings, and example detection logic derived 
 
 That report is intended for SOC analysts and detection engineers responsible for implementing monitoring and alerting controls.
 
-### 7.1 Host-Based IOCs
+#### 7.1 Host-Based IOCs
 
 These indicators identify the specific endpoint where the suspicious executable was observed and are useful for scoping potential impact, validating whether activity is isolated, and correlating additional telemetry associated with the same host.
 
@@ -195,7 +195,7 @@ These indicators identify the specific endpoint where the suspicious executable 
 - Monitor for miner-related executable names
 
 
-### 7.2 User Attribution IOCs
+#### 7.2 User Attribution IOCs
 
 These indicators relate to the user context under which the suspicious process was executed and are useful for identifying potential infection vectors such as unauthorized downloads, social engineering, or misuse of local execution privileges.
 
@@ -206,7 +206,7 @@ These indicators relate to the user context under which the suspicious process w
 - Correlate abnormal processes with user download behavior
 
 
-### 7.3 Behavioral IOCs
+#### 7.3 Behavioral IOCs
 
 These indicators capture the executable name and file location associated with the suspicious process and are useful for detecting unauthorized software execution, especially when binaries originate from user-writable directories rather than standard application paths.
 
@@ -219,7 +219,7 @@ These indicators capture the executable name and file location associated with t
 - Alert on rare process names across endpoints
 
 
-### 7.4 IOC Limitations
+#### 7.4 IOC Limitations
 
 While the indicators above are high-confidence within the context of this alert, many can be easily modified by attackers, including executable names and file paths. As a result, detection strategies should prioritize behavioral correlations and execution context over static signatures alone.
 
@@ -231,7 +231,7 @@ As a result, behavioral detection (execution from user-writable paths combined w
 
 ---
 
-## 8) Case Determination
+### 8) Case Determination
 
 **Final Determination:**  
 Confirmed unauthorized cryptocurrency mining software execution on corporate endpoint.
@@ -246,27 +246,27 @@ This activity represents misuse of endpoint resources for attacker-controlled co
 
 ---
 
-## 9) Recommended Follow-Ups (Case Closure Actions)
+### 9) Recommended Follow-Ups (Case Closure Actions)
 
 The recommendations below summarize key containment, hardening, and detection priorities based on behaviors observed during this incident. Detailed technical controls, configuration guidance, and expanded monitoring strategies are documented separately in the dedicated recommendations report: `detection-and-hardening-recommendations.md`
 
 This section is intended to highlight immediate and high-impact actions, while the supporting report provides implementation-level detail for security engineering and operations teams.
 
 
-### Immediate Containment
+#### 9.1 Immediate Containment
 
 - Isolate affected endpoint `HR_02`
 - Terminate malicious process
 - Remove unauthorized executable from disk
 - Reset credentials for associated user account
 
-### Hardening
+#### 9.2 Hardening
 
 - Restrict execution from `%TEMP%` and `%APPDATA%`
 - Implement application allowlisting
 - Enforce endpoint protection policies
 
-### Detection
+#### 9.3 Detection
 
 - Alert on execution from user-writable directories
 - Monitor for miner-related process names
@@ -274,7 +274,7 @@ This section is intended to highlight immediate and high-impact actions, while t
 
 ---
 
-## 10) Supporting Reports (In This Folder)
+### 10) Supporting Reports (In This Folder)
 
 Each investigation is documented using a standardized case package to separate analyst workflow, executive summaries, detection content, and response actions. The files below provide supporting detail and extended analysis beyond what is summarized in this case report.
 
@@ -289,19 +289,19 @@ Each investigation is documented using a standardized case package to separate a
 
 ---
 
-## 11) MITRE ATT&CK Mapping
+### 11) MITRE ATT&CK Mapping
 
 The mappings below provide a **high-level summary of confirmed adversary behaviors** observed during this incident and are intended as a quick reference for understanding the overall attack lifecycle.
 
 - For full investigative context and evidence-backed technique justification, see: `investigation-walkthrough.md`
 - For expanded MITRE technique analysis and detection considerations, see: `MITRE-ATTACK-mapping.md`
 
-### Technique Mapping
+### 11.1 Technique Mapping
 
 - **Execution — User Execution (T1204):** Malicious executable launched by user.
 - **Impact — Resource Hijacking (T1496):** Host resources consumed by mining activity.
 
-### MITRE ATT&CK Mapping (Table View)
+### 11.2 MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |--------|----------|-------------|
@@ -309,3 +309,4 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
