@@ -65,7 +65,7 @@ The investigation was limited to validating the triggering alert and confirming 
 
 ### 4) Environment
 
-This investigation validated suspicious process execution using host-based telemetry on a Windows endpoint.
+This investigation validated suspicious process execution using host-based telemetry on a Windows endpoint. No network telemetry or external infrastructure data was available. Conclusions are based on host execution behavior and file placement patterns.
 
 | Category | Details |
 |--------|--------|
@@ -73,9 +73,6 @@ This investigation validated suspicious process execution using host-based telem
 | **Analyst VM OS** | • Windows-based analyst workstation used for event log analysis |
 | **Platforms & Services** | • Windows local execution environment — reviewed process creation and file locations<br>• Event log analysis utilities — extracted and filtered process execution records |
 | **Data Sources Reviewed** | • Windows Security Event Logs (Event ID 4688 — process creation)<br>• Local file system artifacts (executable paths and filenames)<br>• User session and host identity context |
-
-**Analyst Note:**  
-No network telemetry or external infrastructure data was available. Conclusions are based on host execution behavior and file placement patterns.
 
 ---
 
@@ -318,6 +315,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
