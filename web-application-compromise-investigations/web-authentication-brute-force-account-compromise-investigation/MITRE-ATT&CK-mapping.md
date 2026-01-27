@@ -26,7 +26,7 @@ Each technique below references the investigative pivots and artifacts that supp
 
 ### (1) Credential Access
 
-#### (1A) Brute Force (T1110)
+#### ▶ (1.1) Brute Force (T1110)
 
 **Observed Behavior:**  
 A high volume of failed authentication attempts were observed against the `/api/login` endpoint from a single external IP address over a short time window. During investigation, this activity was identified by filtering authentication logs for repeated failures tied to the same source IP and endpoint path, indicating automated credential guessing rather than normal user behavior.
@@ -41,7 +41,7 @@ ATT&CK defines brute force as repeated attempts to guess credentials through tri
 | Source IP | Consistent source IP across multiple attempts | Links failures to same attacking host |
 | Target Endpoint | Repeated targeting of `/api/login` endpoint | Confirms focused attack against authentication API |
 
-#### (1B) Password Spraying (T1110.003)
+#### ▶ (1.2) Password Spraying (T1110.003)
 
 **Observed Behavior:**  
 Authentication attempts were distributed across multiple usernames rather than focusing on a single account, indicating a strategy to test common credentials across many users. The investigation showed attempts against both invalid and valid usernames before a successful authentication event occurred, consistent with spraying behavior rather than targeted brute force against one account.
@@ -57,7 +57,7 @@ Password spraying is characterized by testing a small number of passwords across
 | Valid Accounts | Follow-on attempts against known valid users | Shows refinement after discovery phase |
 | Client Metadata | Consistent client headers and identifiers | Links attempts to same automated tooling |
 
-#### (1C) Unsecured Credentials (T1552)
+#### ▶ (1.3) Unsecured Credentials (T1552)
 
 **Observed Behavior:**  
 Credential material was logged in a reversible format within authentication logs. The investigation identified a `hashed_password` field whose value remained consistent across authentication attempts and was confirmed to be Base64-encoded, allowing recovery of the plaintext password. This confirmed that credentials were exposed by the application logging process itself.
@@ -72,11 +72,9 @@ ATT&CK classifies exposure of recoverable credentials in files or logs as unsecu
 | Value Reuse | Repeated identical encoded values across events | Indicates same credential reused |
 | Decoding Result | Successful Base64 decoding reveals original password | Confirms reversible credential exposure |
 
-<hr width="30%">
-
 #### (2) Discovery
 
-#### Account Discovery (T1087)
+#### ▶ (2.1) Account Discovery (T1087)
 
 **Observed Behavior:**  
 Authentication attempts included usernames that were not valid accounts, followed by repeated attempts against confirmed legitimate users. This pattern was identified by comparing attempted usernames against known valid accounts and observing a shift from invalid names to legitimate user targets.
@@ -91,11 +89,10 @@ Account discovery includes attempts to identify valid users within an environmen
 | Follow-on Attempts | Subsequent attempts against valid accounts | Shows progression from enumeration to targeting |
 | Temporal Pattern | Enumeration precedes successful access | Establishes attacker workflow sequencing |
 
-<hr width="30%">
 
 #### (3) Initial Access / Persistence
 
-#### Valid Accounts (T1078)
+#### ▶ (3.1) Valid Accounts (T1078)
 
 **Observed Behavior:**  
 A successful authentication occurred after repeated failures, and the same credentials were later reused from a different source IP address without additional failed attempts. This indicates that valid credentials were obtained and operationalized rather than a single anomalous login event.
@@ -150,6 +147,7 @@ Detection opportunities and preventive control recommendations associated with t
 - Mapping avoids attribution to specific attacker tooling or campaigns and focuses strictly on observable behavior.
 
 This mapping reflects how ATT&CK is commonly applied during application-layer authentication abuse investigations using log-driven reconstruction workflows.
+
 
 
 
