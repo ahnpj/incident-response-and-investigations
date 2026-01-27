@@ -64,7 +64,7 @@ All investigation outputs are separated into focused reports aligned with common
 
 This investigation reconstructs a full intrusion lifecycle on a Windows host using correlated perimeter, authentication, and endpoint telemetry to analyze reconnaissance, initial access, post-exploitation activity, persistence, and cleanup behaviors.
 
-### Environment and Investigation Scope (At a Glance)
+#### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
 |------|---------|
@@ -75,7 +75,7 @@ This investigation reconstructs a full intrusion lifecycle on a Windows host usi
 | **Primary Platforms / Services** | FortiGate firewall (perimeter), OpenSSH service on Windows, Windows local authentication and account management services, Splunk SIEM platform |
 | **Investigation Focus** | Track intrusion from reconnaissance through lateral movement using perimeter and host telemetry with evidence-backed pivots |
 
-### Data Sources, Evidence, and Analysis Techniques
+#### Data Sources, Evidence, and Analysis Techniques
 
 | Area | Details |
 |------|---------|
@@ -110,3 +110,4 @@ This investigation demonstrates how defenders can correlate reconnaissance to ex
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates full lifecycle reconstruction, cross-source correlation, and professional incident documentation aligned with operational response workflows.
+
