@@ -41,7 +41,7 @@ The objective was to confirm malicious activity and determine appropriate contai
 
 This section defines which endpoints, user accounts, and telemetry sources were included in validating the suspicious process execution alert, as well as what activity was not observed within the available dataset. Clearly defining scope helps distinguish confirmed host-level execution from broader compromise or lateral movement that was not supported by the evidence.
 
-#### In-Scope
+#### ◆ In Scope
 
 | Category | Included Items |
 |--------|-----------------|
@@ -50,14 +50,12 @@ This section defines which endpoints, user accounts, and telemetry sources were 
 | **Primary Evidence Sources** | • SIEM alert metadata<br>• Windows Security Event Logs (Event ID 4688 — Process Creation) |
 | **Behavioral Focus Areas** | • Executable name and location<br>• User execution context<br>• Detection rule validation |
 
-#### Out-of-Scope / Not Observed
+#### ◆ Out of Scope / Not Observed
 
-| Category | Not Included / Not Observed |
-|--------|------------------------------|
-| **Lateral Movement** | No evidence of movement to other systems |
-| **Persistence Mechanisms** | No registry, scheduled task, service, or startup persistence observed |
-| **Network Communication Analysis** | No network telemetry or outbound communication reviewed |
-| **Additional Infected Hosts** | No indicators of compromise on other endpoints |
+- **Lateral movement:** No evidence of movement to other systems
+- **Persistence mechanisms:** No registry, scheduled task, service, or startup persistence observed
+- **Network communications:** No network telemetry or outbound connections reviewed
+- **Additional infected hosts:** No indicators of compromise on other endpoints
 
 The investigation was limited to validating the triggering alert and confirming host-level malicious activity.
 
@@ -67,12 +65,21 @@ The investigation was limited to validating the triggering alert and confirming 
 
 This investigation validated suspicious process execution using host-based telemetry on a Windows endpoint. No network telemetry or external infrastructure data was available. Conclusions are based on host execution behavior and file placement patterns.
 
-| Category | Details |
-|--------|--------|
-| **Affected System (Victim) OS** | • Windows workstation |
-| **Analyst VM OS** | • Windows-based analyst workstation used for event log analysis |
-| **Platforms & Services** | • Windows local execution environment — reviewed process creation and file locations<br>• Event log analysis utilities — extracted and filtered process execution records |
-| **Data Sources Reviewed** | • Windows Security Event Logs (Event ID 4688 — process creation)<br>• Local file system artifacts (executable paths and filenames)<br>• User session and host identity context |
+#### ◆ Systems
+
+- **Affected system (victim):** Windows workstation  
+- **Analyst VM:** Windows-based analyst workstation used for event log and file path analysis
+
+#### ◆ Platforms & Services
+
+- Windows local execution environment  
+- Event log analysis utilities for extracting and filtering process creation records
+
+#### ◆ Data Sources Reviewed
+
+- Windows Security Event Logs (Event ID 4688 — process creation)  
+- Local file system artifacts (executable paths and filenames)  
+- User session and host identity context
 
 ---
 
@@ -297,6 +304,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
