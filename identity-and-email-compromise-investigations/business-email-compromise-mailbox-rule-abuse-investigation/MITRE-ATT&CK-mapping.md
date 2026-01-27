@@ -23,9 +23,9 @@ Each technique below references the specific behaviors and investigative pivots 
 
 ### MITRE ATT&CK Mapping (Narrative View)
 
-#### (1) Initial Access
+### (1) Initial Access
 
-##### ▶ (1.1) Phishing (T1566)
+#### ▶ (1.1) Phishing (T1566)
 
 **Observed Behavior:**  
 Email communication impersonating a legitimate pension service provider was used to initiate a fraudulent financial workflow with the executive user. During the walkthrough, this was identified when reviewing message headers and sender domains associated with withdrawal approval emails, which originated from external infrastructure but referenced valid business processes.
@@ -40,9 +40,9 @@ The attacker relied on social engineering via email to establish trust and trigg
 | Message Headers | Header fields identifying external sending domains | Validates sender origin and external communication paths |
 | Transaction Content | Transaction-related email content | Establishes legitimacy of business workflow prior to compromise |
 
-#### (2) Credential Access
+### (2) Credential Access
 
-##### ▶ (2.1) Valid Accounts (T1078)
+#### ▶ (2.1) Valid Accounts (T1078)
 
 **Observed Behavior:**  
 The compromised executive mailbox was accessed using valid credentials, with successful authentication events preceding mailbox configuration changes. During the investigation, authentication events were reviewed in Entra ID audit logs and correlated with subsequent `New-InboxRule` operations in Exchange Online logs occurring within the same timeframe.
@@ -57,9 +57,9 @@ Use of legitimate credentials to access cloud services matches ATT&CK’s Valid 
 | Source IP Addresses | IPs not previously associated with user activity | Indicates anomalous or suspicious access |
 | Temporal Correlation | Sign-in events preceding mailbox rule creation | Links account access to follow-on abuse activity |
 
-#### (3) Persistence
+### (3) Persistence
 
-##### ▶ (3.1) Email Collection: Mailbox Manipulation Rules (T1114.003)
+#### ▶ (3.1) Email Collection: Mailbox Manipulation Rules (T1114.003)
 
 **Observed Behavior:**  
 Inbox rules were created to automatically process incoming financial correspondence without user visibility. Rule configuration review revealed conditions matching transaction-related keywords and actions configured to move or delete messages before reaching the inbox.
@@ -75,9 +75,9 @@ Mailbox rule abuse is explicitly documented in ATT&CK as a persistence technique
 | Rule Actions | `MoveToFolder`, `DeleteMessage` | Indicates suppression of victim visibility |
 | Rule Timestamps | Execution times after authentication events | Correlates rule creation with account compromise |
 
-#### (4) Defense Evasion
+### (4) Defense Evasion
 
-##### ▶ (4.1) Hide Artifacts (T1564)
+#### ▶ (4.1) Hide Artifacts (T1564)
 
 **Observed Behavior:**  
 Inbox rules were configured to suppress financial communications by redirecting or deleting messages before the victim could view them. During rule inspection, actions were observed that both removed messages from the inbox and prevented subsequent rule processing, ensuring financial alerts remained concealed.
@@ -92,9 +92,9 @@ The attacker deliberately concealed evidence of fraudulent activity from the vic
 | Folder Routing | Non-default mailbox folders | Indicates hiding of messages from inbox |
 | Mailbox Visibility | Absence of financial notifications in inbox | Confirms operational impact of rule behavior |
 
-#### (5) Impact
+### (5) Impact
 
-##### ▶ (5.1) Financial Fraud (T1657)
+#### ▶ (5.1) Financial Fraud (T1657)
 
 **Observed Behavior:**  
 Unauthorized pension withdrawal transactions were approved using the compromised executive mailbox after message suppression mechanisms were established. Timeline reconstruction showed that mailbox rule creation occurred prior to the approval of fraudulent transactions, indicating control of the email workflow enabled the financial impact.
