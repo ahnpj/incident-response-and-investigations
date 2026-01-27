@@ -152,8 +152,9 @@ After identifying multiple ports being probed during reconnaissance, the next st
 
 To do this, I opened Windows PowerShell on the compromised host and executed the following command:
 
-[powershell]
+```powershell
 netstat -an | findstr LISTENING
+```
 
 This command enumerates all active network connections and listening ports on the system. The `-a` flag displays all connections and listening ports, the `-n` flag ensures ports are shown numerically, and piping the output to `findstr LISTENING` filters the results to only services actively accepting inbound connections.
 
@@ -214,8 +215,9 @@ If full access to Windows Security logs were available in this environment, I wo
 
 Despite this limitation, multiple artifacts support initial access via valid credentials. Earlier reconnaissance activity showed the attacker probing port 22, and local enumeration confirmed that SSH was actively listening on the endpoint. Using PowerShell, I verified the presence of SSH-related components on the system:
 
-[powershell]
+```powershell
 Get-Service | Where-Object {$_.Name -like "*ssh*"}
+```
 
 <blockquote>
 This command retrieves all registered Windows services and filters the results to those with names containing “ssh”. The output confirms whether SSH components are present on the host, which helps validate the availability of SSH-based remote access. When combined with earlier evidence showing that port 22 was externally probed and actively listening, this supports the conclusion that the attacker authenticated to the system using valid credentials rather than exploiting a vulnerability or relying on user interaction.
@@ -446,9 +448,10 @@ Most processes observed during this period were legitimate system activity, incl
 
 However, one process stood out as anomalous: 
 
-[makefile]
+```makefile
 Image: C:\Program Files\7-Zip\7z.exe
 CommandLine: 7z e keylogger.rar
+```
 
 This execution occurred at 11/18/2022 5:22:40 PM, shortly after the attacker completed privilege escalation and account manipulation actions. The use of 7z.exe with the e (extract) flag confirms that a compressed archive was extracted.
 
