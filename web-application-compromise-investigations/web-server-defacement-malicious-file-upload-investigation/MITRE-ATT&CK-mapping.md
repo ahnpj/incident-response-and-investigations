@@ -26,7 +26,7 @@ Each technique below references the investigative pivots and artifacts that supp
 
 ### (1) Reconnaissance
 
-#### Active Scanning (T1595)
+#### ▶ (1.1) Active Scanning (T1595)
 
 **Observed Behavior:**  
 An external IP address generated a high volume of HTTP requests targeting CMS-related paths and triggered multiple IDS signatures associated with vulnerability discovery and malformed requests. Requests included enumeration of administrative paths and plugin endpoints commonly associated with Joomla installations.
@@ -42,11 +42,10 @@ Active scanning includes probing of external systems to identify vulnerabilities
 | User-Agent | User-Agent indicating automated scanning activity (e.g., Acunetix scanner) | Identifies use of automated vulnerability scanner |
 | Source IP | Repeated requests from a consistent external source IP | Links scanning activity to single attacker origin |
 
-<hr width="30%">
 
 ### (2) Initial Access
 
-#### Exploit Public-Facing Application (T1190)
+#### ▶ (2.1) Exploit Public-Facing Application (T1190)
 
 **Observed Behavior:**  
 After reconnaissance, the attacker targeted the web application’s administrative functionality and gained the ability to authenticate and upload files to the server. Follow-on activity included authenticated requests and file upload actions that required application-level access rather than network-layer compromise.
@@ -61,11 +60,9 @@ T1190 covers exploitation of vulnerabilities or weaknesses in externally accessi
 | IDS Alerts | Alerts associated with application exploitation patterns | Confirms exploit-focused activity |
 | Activity Shift | Transition from unauthenticated scanning to authenticated actions | Shows progression in attacker behavior |
 
-<hr width="30%">
-
 ### (3) Credential Access
 
-#### Brute Force (T1110)
+#### ▶ (3.1) Brute Force (T1110)
 
 **Observed Behavior:**  
 Multiple authentication attempts were observed against the CMS administrative login page, with repeated POST requests containing different credential combinations. Analysis of POST body parameters revealed trial-and-error attempts prior to successful authentication.
@@ -80,11 +77,10 @@ Brute force includes repeated attempts to guess valid credentials through authen
 | IDS Alerts | Alerts associated with application exploitation patterns | Confirms exploit-focused activity |
 | Activity Shift | Transition from unauthenticated scanning to authenticated actions | Shows progression in attacker behavior |
 
-<hr width="30%">
 
 ### (4) Initial Access / Persistence
 
-#### Valid Accounts (T1078)
+#### ▶ (4.1) Valid Accounts (T1078)
 
 **Observed Behavior:**  
 Once valid credentials were obtained, the attacker authenticated using legitimate account access and continued performing privileged administrative actions within the CMS. This access enabled file upload, content modification, and backend configuration changes.
@@ -99,11 +95,10 @@ Use of compromised legitimate credentials to maintain access aligns with the Val
 | Admin Actions | Authenticated CMS administrative actions following login | Demonstrates post-auth access usage |
 | Failure Absence | No further authentication failures during post-compromise phase | Supports possession of valid credentials |
 
-<hr width="30%">
 
 ### (5) Execution
 
-#### Command and Scripting Interpreter (T1059)
+#### ▶ (5.1) Command and Scripting Interpreter (T1059)
 
 **Observed Behavior:**  
 A Windows executable (`3791.exe`) was uploaded to the web server and executed, confirmed through host-based process creation telemetry. Execution occurred shortly after file upload, indicating attacker-controlled code was launched on the system.
@@ -118,11 +113,10 @@ Execution of attacker-controlled binaries or scripts using system interpreters o
 | Process Execution | Sysmon process creation event referencing `3791.exe` | Confirms execution of uploaded payload |
 | Timing Correlation | Timestamp correlation between upload and execution | Links web exploit to host compromise |
 
-<hr width="30%">
 
 ### (6) Command and Control
 
-#### Application Layer Protocol: Web (T1071.001)
+#### ▶ (6.1) Application Layer Protocol: Web (T1071.001)
 
 **Observed Behavior:**  
 After execution, the compromised host initiated outbound HTTP connections to attacker-controlled infrastructure on a non-standard port. The server repeatedly requested remote resources hosted on the attacker domain.
@@ -137,11 +131,10 @@ Use of standard web protocols for command-and-control or remote resource retriev
 | IDS Alerts | Alerts on outbound HTTP sessions | Confirms application-layer outbound traffic |
 | Payload Retrieval | Requests retrieving remote image payload used in defacement | Links outbound traffic to attack objective |
 
-<hr width="30%">
 
 ### (7) Impact
 
-#### Defacement (T1491)
+#### ▶ (7.1) Defacement (T1491)
 
 **Observed Behavior:**  
 The website homepage was modified to display attacker-controlled content by referencing a remotely hosted image. Visitors to the site observed replacement content rather than the original web page.
@@ -198,5 +191,6 @@ Detection opportunities and preventive control recommendations associated with t
 - Mapping avoids attribution to specific malware families or threat actor groups.
 
 This mapping reflects how ATT&CK is commonly applied during web server compromise and defacement investigations involving application exploitation and post-exploitation activity.
+
 
 
