@@ -58,7 +58,7 @@ All investigation outputs are separated into focused reports aligned with common
 
 This investigation analyzes post-compromise host activity involving unauthorized local account creation and registry-based persistence mechanisms using centralized endpoint telemetry and manual artifact validation.
 
-### Environment and Investigation Scope (At a Glance)
+#### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
 |--------|---------|
@@ -69,7 +69,7 @@ This investigation analyzes post-compromise host activity involving unauthorized
 | **Primary Platforms / Services** | Windows local authentication and group management services; Windows registry autorun mechanisms; Splunk SIEM platform |
 | **Investigation Focus** | Confirm backdoor account establishment, validate registry persistence, and reconstruct post-compromise execution activity |
 
-### Data Sources, Evidence, and Analysis Techniques
+#### Data Sources, Evidence, and Analysis Techniques
 
 | Area | Details |
 |--------|---------|
@@ -104,3 +104,4 @@ Systematic correlation across identity, registry, and execution telemetry suppor
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical post-compromise analysis, cross-source log correlation, and professional incident documentation aligned with real operational workflows.
+
