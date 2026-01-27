@@ -1,13 +1,5 @@
 # Business Email Compromise (BEC) Investigation (Malicious Mailbox Rule Abuse and Account Compromise)
 
-**Related Detection Output**  
-
-Detection and response considerations derived from this investigation are documented separately.  
-
-This walkthrough focuses on **incident reconstruction and analyst reasoning**, not on answering lab questions directly.
-
----
-
 ## Executive Summary
 
 This investigation reconstructs a Business Email Compromise incident involving the abuse of a compromised executive mailbox to authorize fraudulent pension withdrawals. Analysis of email artifacts, Azure Active Directory audit logs, and mailbox configuration changes confirms credential-based account compromise rather than malware-driven intrusion. The attacker leveraged inbox rules and folder manipulation to conceal financial correspondence, enabling unauthorized transactions to be approved before detection.
@@ -641,4 +633,5 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
