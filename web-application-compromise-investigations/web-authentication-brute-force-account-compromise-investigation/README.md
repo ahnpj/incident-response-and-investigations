@@ -63,7 +63,7 @@ All investigation outputs are separated into focused reports aligned with common
 
 This investigation analyzes application-layer authentication abuse rather than host-level compromise or malware execution. The focus is on identifying automated login activity, account enumeration, credential compromise, and insecure credential handling using web application authentication telemetry.
 
-### Environment and Investigation Scope (At a Glance)
+#### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
 |------|---------|
@@ -74,7 +74,7 @@ This investigation analyzes application-layer authentication abuse rather than h
 | **Primary Platforms / Services** | Web application authentication service, application logging framework (JSON logs), centralized log analysis platform |
 | **Investigation Focus** | Prove credential brute force led to valid access and establish scope and sequence of compromise from authentication telemetry |
 
-### Data Sources, Evidence, and Analysis Techniques
+#### Data Sources, Evidence, and Analysis Techniques
 
 | Area | Details |
 |------|---------|
@@ -108,3 +108,4 @@ This investigation demonstrates how defenders can detect automated authenticatio
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates structured analysis of application authentication telemetry, identification of credential abuse patterns, and professional incident documentation aligned with operational security workflows.
+
