@@ -190,8 +190,9 @@ The Azure audit log export (`azure-export-audit-dir.csv`) was opened in Visual S
 
 To isolate authentication activity tied specifically to the victim, a search was performed for login events associated with Becky’s account. This was done by searching for the following string within the file:
 
-[css]
+```css
 UserLoggedIn,becky.lorray@tempestasenergy.com
+```
 
 <p align="left">
   <img src="images/business-email-compromise-azure-investigation-02.png" 
@@ -390,8 +391,9 @@ Inbox rules are commonly abused in BEC attacks to automatically move or delete e
 
 To identify this behavior, the audit log was searched for `New-InboxRule` operations associated with the compromised account. This was performed by searching the audit log for `New-InboxRule` and reviewing the associated rule parameters. Within the first `New-InboxRule` event tied to `becky.lorray@tempestasenergy.com`, the rule action `MoveToFolder` was observed with the following value:
 
-[json]
+```json
 "Name":"MoveToFolder","Value":"History"
+```
 
 This field explicitly identifies the destination folder used by the attacker’s inbox rule. Because inbox rules reference existing folders by name, this confirms that the attacker created (or leveraged) an inbox folder named `History` to hide or divert targeted emails.
 
@@ -422,11 +424,12 @@ A PowerShell `Select-String` query was used to extract `New-InboxRul`e events fr
 PowerShell was used to further analyze inbox rule activity by searching the Azure audit log export for rule creation events. The Select-String cmdlet was run against azure-export-audit-dfir.csv with the pattern New-InboxRule to isolate inbox rule creation entries. The results were expanded to display the full raw log lines, allowing the embedded rule configuration parameters to be examined. The output was then sorted and limited to identify the earliest rule created during the compromise window, which was reviewed to determine both the destination folder and the keyword used by the attacker.
 </blockquote>
 
-[powershell]
+```powershell
 Select-String -Path ".\azure-export-audit-dfir.csv" -Pattern "New-InboxRule" |
   Select-Object -ExpandProperty Line |
   Sort-Object |
   Select-Object -First 5
+```
 
 - `Select-String -Pattern "New-InboxRule"` – searches the audit log for inbox rule creation events
 - `Select-Object -ExpandProperty Line` – outputs the full raw log entry for inspection
@@ -486,23 +489,26 @@ These parameters appear as name/value pairs inside the audit data. In this rule,
 
 (1) Condition field:
 
-[json]
+```json
 "Name":"BodyContainsWords","Value":"withdrawal"
+```
 
 This defines the trigger condition. It instructs the rule to inspect the body of incoming emails and match messages containing the word “withdrawal”.
 
 (2) Action field:
 
-[json]
+```json
 "Name":"MoveToFolder","Value":"History"
+```
 
 This defines what happens when the condition is met. Emails matching the keyword are moved into a folder named History.
 
 (3) Additional Action fields:
 
-[json]
+```json
 "Name":"DeleteMessage","Value":"True"
 "Name":"StopProcessingRules","Value":"True"
+```
 
 These settings indicate that matching emails may be deleted and that no additional inbox rules should be applied afterward. This combination is commonly used to ensure emails are fully suppressed and not recovered by subsequent rules.
 
@@ -635,3 +641,4 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
