@@ -35,7 +35,7 @@ The investigation aimed to determine:
 This section defines which systems, identities, and data sources were included in the investigation, as well as what was not observed within the available evidence. Clearly defining scope helps distinguish confirmed activity from assumptions and prevents over-attribution beyond what the telemetry supports.
 
 
-#### In-Scope
+#### ◆ In-Scope
 
 | Category | Included Items |
 |--------|-----------------|
@@ -45,13 +45,11 @@ This section defines which systems, identities, and data sources were included i
 | **Behavioral Focus Areas** | • Local account creation<br>• Registry persistence artifacts<br>• Remote execution tooling<br>• Encoded PowerShell activity |
 
 
-#### Out-of-Scope / Not Observed
+#### ◆ Out-of-Scope / Not Observed
 
-| Category | Not Included / Not Observed |
-|--------|------------------------------|
-| **Malware File Analysis** | No static or dynamic malware analysis performed |
-| **Network Packet Capture** | No PCAP or deep packet inspection available |
-| **Additional Lateral Movement** | No movement observed beyond WMIC-based remote execution |
+- **Malware File Analysis** | No static or dynamic malware analysis performed 
+- **Network Packet Capture** | No PCAP or deep packet inspection available 
+- **Additional Lateral Movement** | No movement observed beyond WMIC-based remote execution 
 
 Analysis was limited to telemetry contained within the dataset and did not involve direct interaction with the affected endpoints.
 
@@ -61,12 +59,29 @@ Analysis was limited to telemetry contained within the dataset and did not invol
 
 This investigation reconstructed unauthorized account creation and registry-based persistence using Windows host telemetry.
 
-| Category | Details |
-|--------|--------|
-| **Affected System (Victim) OS** | • Windows workstation |
-| **Analyst VM OS** | • Windows-based analyst workstation used for host log and registry analysis |
-| **Platforms & Services** | • Windows authentication subsystem — reviewed local user and group changes<br>• Windows registry autorun mechanisms — analyzed persistence configuration |
-| **Data Sources Reviewed** | **Windows Security Event Logs:**<br>• Account creation (4720)<br>• Group membership changes (4732)<br><br>**Sysmon Operational Logs:**<br>• Process creation<br>• Registry value modifications<br><br>**File System Artifacts:**<br>• Binary locations and timestamps |
+#### ◆ Systems
+
+- **Affected system (victim):** Windows workstation  
+- **Analyst VM:** Windows-based analyst workstation used for host log and registry analysis
+
+#### ◆ Platforms & Services
+
+- **Windows authentication subsystem** — reviewed local user and group changes  
+- **Windows registry autorun mechanisms** — analyzed persistence configuration
+
+#### ◆ Data Sources Reviewed
+
+- **Windows Security Event Logs**
+  - Account creation (Event ID 4720)  
+  - Group membership changes (Event ID 4732)
+
+- **Sysmon Operational Logs**
+  - Process creation events  
+  - Registry value modification events
+
+- **File System Artifacts**
+  - Binary locations  
+  - File creation and modification timestamps
 
 **Analyst Note:**  
 The investigation focuses on post-access host activity rather than initial access mechanisms.
@@ -81,9 +96,7 @@ Detailed event fields, registry parameters, authentication attributes, and detec
 
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
-<hr width="30%">
-
-#### 5.1) Backdoor Account Creation — Command-Line Evidence
+#### ▶ 5.1) Backdoor Account Creation — Command-Line Evidence
 
 Process creation telemetry revealed execution of the following command:
 
@@ -97,9 +110,7 @@ This command was observed across multiple log sources, including:
 
 The use of `/add` with a clear-text password strongly indicated unauthorized account creation using built-in Windows utilities rather than legitimate provisioning workflows.
 
-<hr width="30%">
-
-#### 5.2) Account Management Confirmation — Security Event Correlation
+#### ▶ 5.2) Account Management Confirmation — Security Event Correlation
 
 Windows account management logs confirmed the creation of a new local account:
 
@@ -107,9 +118,7 @@ Windows account management logs confirmed the creation of a new local account:
 
 Security Event ID `4720` validated that Windows successfully registered the account. Correlation between command-line execution and account management telemetry confirmed that the observed process execution resulted in persistent identity creation on the host.
 
-<hr width="30%">
-
-#### 5.3) Registry Artifact Correlation — SAM Hive Persistence
+#### ▶ 5.3) Registry Artifact Correlation — SAM Hive Persistence
 
 Registry telemetry revealed creation of keys under the SAM hive associated with the backdoor account:
 
@@ -117,9 +126,7 @@ Registry telemetry revealed creation of keys under the SAM hive associated with 
 
 These artifacts confirm that Windows wrote account metadata consistent with local account registration. The `TargetObject` field in registry events was critical for identifying the specific persistence-relevant key, allowing direct attribution to the created backdoor user.
 
-<hr width="30%">
-
-#### 5.4) Impersonation Intent — Look-Alike Username Pattern
+#### ▶ 5.4) Impersonation Intent — Look-Alike Username Pattern
 
 Review of user naming patterns revealed that the legitimate user:
 
@@ -131,9 +138,7 @@ closely resembled the attacker-created account:
 
 This single-character substitution is a common masquerading technique used to blend into normal activity and reduce detection during log review or user enumeration.
 
-<hr width="30%">
-
-#### 5.5) Remote Execution — WMIC Abuse
+#### ▶ 5.5) Remote Execution — WMIC Abuse
 
 Process creation telemetry revealed that account creation was performed remotely using WMIC:
 
@@ -147,9 +152,7 @@ This confirms that the adversary:
 
 WMIC abuse is a common lateral movement and remote administration technique in Windows intrusions.
 
-<hr width="30%">
-
-#### 5.6) Backdoor Account Usage — Authentication Review
+#### ▶ 5.6) Backdoor Account Usage — Authentication Review
 
 Searches for logon activity associated with the backdoor account revealed:
 
@@ -157,9 +160,7 @@ Searches for logon activity associated with the backdoor account revealed:
 
 This indicates that while the account was created successfully, it was not actively used for authentication during the observed timeframe, suggesting it may have been staged for future access or persistence.
 
-<hr width="30%">
-
-#### 5.7) PowerShell Activity — Encoded Execution and Host Attribution
+#### ▶ 5.7) PowerShell Activity — Encoded Execution and Host Attribution
 
 PowerShell telemetry identified encoded command execution originating from:
 
@@ -202,9 +203,7 @@ Field-level telemetry, log source mappings, and example detection logic derived 
 
 That report is intended for SOC analysts and detection engineers responsible for implementing monitoring and alerting controls.
 
-<hr width="30%">
-
-#### 7.1) Identity & Account IOCs
+#### ▶ 7.1) Identity & Account IOCs
 
 These indicators relate to unauthorized local account creation and potential impersonation of legitimate users. They are useful for identifying persistence mechanisms based on backdoor identities and for detecting masquerading techniques designed to blend into normal account activity.
 
@@ -215,9 +214,7 @@ These indicators relate to unauthorized local account creation and potential imp
 - Alert on new local account creation
 - Detect look-alike usernames
 
-<hr width="30%">
-
-#### 7.2) Host-Based IOCs
+#### ▶ 7.2) Host-Based IOCs
 
 These indicators identify specific endpoints involved in account creation, registry modification, and follow-on PowerShell activity. They support scoping of affected systems and correlation of multi-host behavior within the same intrusion sequence.
 
@@ -228,9 +225,7 @@ These indicators identify specific endpoints involved in account creation, regis
 - Correlate suspicious activity across hosts
 - Flag multi-host intrusion behavior
 
-<hr width="30%">
-
-#### 7.3) Command-Line IOCs
+#### ▶ 7.3) Command-Line IOCs
 
 These indicators capture the exact commands and execution methods used to create the backdoor account and perform remote process execution. They are useful for detecting living-off-the-land abuse involving built-in Windows administrative utilities.
 
@@ -241,9 +236,7 @@ These indicators capture the exact commands and execution methods used to create
 - Alert on account management commands executed remotely
 - Monitor WMIC for process creation
 
-<hr width="30%">
-
-#### 7.4) Registry IOCs
+#### ▶ 7.4) Registry IOCs
 
 These indicators reflect persistence-related artifacts written to the SAM registry hive as part of local account creation. They are useful for detecting long-lived identity persistence even when the backdoor account is not actively used for logon.
 
@@ -253,9 +246,7 @@ These indicators reflect persistence-related artifacts written to the SAM regist
 - Monitor SAM hive modifications
 - Correlate registry writes with account creation
 
-<hr width="30%">
-
-#### 7.5) PowerShell & Network IOCs
+#### ▶ 7.5) PowerShell & Network IOCs
 
 These indicators relate to encoded PowerShell execution and outbound web communication observed after account creation. They are useful for identifying post-compromise activity, secondary payload delivery, or command-and-control communication.
 
@@ -283,23 +274,19 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 This section highlights immediate and high-impact actions, while the supporting report provides implementation-level detail.
 
-#### 9.1) Immediate Containment
+#### ▶ 9.1) Immediate Containment
 
 - Disable and remove backdoor account `A1berto`
 - Isolate affected hosts
 - Block outbound communication to identified endpoint
 
-<hr width="30%">  
-
-#### 9.2) Hardening
+#### ▶ 9.2) Hardening
 
 - Restrict remote execution tooling
 - Harden registry auditing for SAM hive
 - Enforce identity governance controls
 
-<hr width="30%">
-
-#### 9.3) Detection
+#### ▶ 9.3) Detection
 
 - Alert on local account creation events
 - Detect WMIC remote process execution
@@ -329,7 +316,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 - Full investigative context and evidence references: `investigation-walkthrough.md`
 - Expanded technique analysis and detection considerations: `MITRE-ATTACK-mapping.md`
 
-#### 11.1) Technique Mapping
+#### ▶ 11.1) Technique Mapping
 
 - **Persistence — Create Account: Local Account (T1136.001)**
 - **Defense Evasion — Masquerading (T1036)**
@@ -338,9 +325,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 - **Execution — PowerShell (T1059.001)**
 - **Command and Control — Application Layer Protocol: Web (T1071.001)**
 
-<hr width="30%">
-
-#### 11.2) MITRE ATT&CK Mapping (Table View)
+#### ▶ 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |--------|----------|-------------|
@@ -352,5 +337,3 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 | Command and Control | **Application Layer Protocol: Web (T1071.001)** | Outbound web communication observed |
 
 ---
-
-
