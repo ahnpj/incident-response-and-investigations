@@ -27,7 +27,7 @@ Each technique below references the investigative pivots and artifacts that supp
 
 ### (1) Unauthorized Account Creation
 
-#### Create Account: Local Account (T1136.001)
+#### ▶ (1.1) Create Account: Local Account (T1136.001)
 
 **Observed Behavior:**  
 A new local user account named `A1berto` was created using built-in Windows account management utilities. This was first identified through command-line searches for `net user /add`, which revealed repeated execution of: `net user /add A1berto paw0rd1`. Account creation was then confirmed using Windows Security Event ID `4720`, which explicitly logged creation of the new local user.
@@ -42,11 +42,9 @@ ATT&CK defines this technique as persistence through creation of local accounts 
 | Process Creation Telemetry | Event ID 4688 capturing `net.exe` execution | Identifies tool used to create the account |
 | Command Line | `/add A1berto paw0rd1` | Confirms exact account name and password used during creation |
 
-<hr width="30%">
-
 ### (2) Defense Evasion
 
-#### Masquerading (T1036)
+#### ▶ (2.1) Masquerading (T1036)
 
 **Observed Behavior:**  
 The attacker-created username `A1berto` visually resembled an existing legitimate user account `Alberto`, differing only by substitution of the number “1” for the letter “l”. This was identified during review of the `User` field distribution across events and comparison with legitimate usernames present in the dataset.
@@ -60,11 +58,9 @@ Masquerading includes the use of look-alike names to blend malicious activity wi
 | Username Field Patterns | Variations observed across Windows Security events | Indicates attacker-created account mimicking legitimate user |
 | Account Presence | Both `Alberto` and `A1berto` observed in telemetry | Supports hypothesis of look-alike account persistence technique |
 
-<hr width="30%">
-
 ### (3) Lateral Movement / Execution
 
-#### Windows Management Instrumentation (T1047)
+#### ▶ (3.1) Windows Management Instrumentation (T1047)
 
 **Observed Behavior:**  
 The backdoor account was created remotely using WMIC, rather than by local interactive logon. Process creation telemetry revealed execution of: `C:\Windows\System32\Wbem\WMIC.exe /node:WORKSTATION6 process call create "net user /add A1berto paw0rd1"`. This indicates remote process creation against the target workstation using WMI.
@@ -80,11 +76,10 @@ ATT&CK defines WMI abuse as a technique for executing commands remotely using na
 | Command Line Parameter | `process call create` | Confirms remote process creation technique |
 | Target Node Parameter | Remote system specified in command | Supports lateral movement activity |
 
-<hr width="30%">
 
 ### (4) Persistence
 
-#### Modify Registry (T1112)
+#### ▶ (4.1) Modify Registry (T1112)
 
 **Observed Behavior:**  
 Registry artifacts were written under the SAM hive confirming Windows registered the newly created account. Registry telemetry surfaced the following key: `HKLM\SAM\SAM\Domains\Account\Users\Names\A1berto`. This was identified using targeted registry searches filtered by hostname and username.
@@ -99,11 +94,10 @@ Modification of registry keys associated with account metadata constitutes persi
 | Target Object | SAM hive path associated with `A1berto` | Links registry activity to attacker-created account |
 | Host Attribution | `Micheal.Beaven` | Confirms system where persistence was established |
 
-<hr width="30%">
 
 ### (5) Execution
 
-#### PowerShell (T1059.001)
+#### ▶ (5.1) PowerShell (T1059.001)
 
 **Observed Behavior:**  
 Encoded PowerShell commands were executed on host `James.browne`, identified through repeated PowerShell engine events. PowerShell logs contained `-enc` flags and Base64-encoded payloads in the `HostApplication` field, indicating obfuscated command execution. A total of `79` PowerShell engine events (`Event ID 4103`) were observed for this host.
@@ -118,11 +112,10 @@ ATT&CK defines PowerShell execution as a common technique for executing attacker
 | HostApplication Field | Contains `-enc` with Base64 content | Indicates obfuscated script execution |
 | Host Attribution | `James.browne` | Identifies system where script executed |
 
-<hr width="30%">
 
 ### (6) Command and Control
 
-#### Application Layer Protocol: Web (T1071.001)
+#### ▶ (6.1) Application Layer Protocol: Web (T1071.001)
 
 **Observed Behavior:**  
 Decoded PowerShell payload revealed outbound HTTP communication to: `http://10.10.10.5/news.php`. The payload was double Base64-encoded and required multi-stage decoding using UTF-16LE decoding to fully reconstruct the destination.
@@ -178,5 +171,6 @@ Detection opportunities and preventive control recommendations associated with t
 - Mapping avoids attribution to specific malware families or threat actors.
 
 This mapping reflects how ATT&CK is commonly applied during host-based intrusion investigations using log-driven reconstruction workflows.
+
 
 
