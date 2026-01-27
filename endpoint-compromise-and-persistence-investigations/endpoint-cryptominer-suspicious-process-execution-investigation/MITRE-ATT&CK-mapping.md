@@ -25,7 +25,7 @@ Each technique listed below references the specific investigative steps and arti
 
 ### (1) Execution
 
-#### User Execution (T1204)
+#### ▶ (1.1) User Execution (T1204)
 
 **Observed Behavior:**  
 A suspicious executable named `cudominer.exe` was launched under the context of a standard user account (`Chris.Fort`) on host `HR_02`. The process was executed from a user-writable temporary directory rather than a trusted application path. This behavior was confirmed during correlation of SIEM alert context with Windows process creation telemetry.
@@ -42,11 +42,9 @@ The attacker relied on execution of a binary within a user session rather than e
 | User Account | `Chris.Fort` | Attribution of execution context |
 | Hostname | `HR_02` | Endpoint scoping and impact assessment |
 
-<hr width="30%">
-
 ### (2) Impact
 
-#### Resource Hijacking (T1496)
+#### ▶ (2.1) Resource Hijacking (T1496)
 
 **Observed Behavior:**  
 The executed binary was identified by the SIEM detection rule as consistent with cryptocurrency mining behavior based on executable naming patterns and associated mining indicators. Although full resource utilization metrics were not captured within the scope of the alert, the executable name and rule logic specifically targeted cryptomining activity.
@@ -94,4 +92,5 @@ Detection opportunities and preventive control recommendations associated with t
 ### Notes and Assumptions
 
 - Techniques are mapped solely based on observable process execution and SIEM detection logic within scope of the alert investigation.
+
 
