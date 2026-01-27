@@ -63,7 +63,7 @@ All investigation outputs are separated into focused reports aligned with common
 
 This investigation reconstructs a full web server compromise resulting in public website defacement using correlated network, application, IDS, and host telemetry associated with a Joomla content management system.
 
-### Environment and Investigation Scope (At a Glance)
+#### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
 |------|---------|
@@ -74,7 +74,7 @@ This investigation reconstructs a full web server compromise resulting in public
 | **Primary Platforms / Services** | Joomla CMS, web server application stack, Suricata IDS, FortiGate firewall/UTM, Splunk SIEM platform |
 | **Investigation Focus** | Confirm file-upload exploitation leading to defacement, establish timeline, and validate indicators across network and host telemetry |
 
-### Data Sources, Evidence, and Analysis Techniques
+#### Data Sources, Evidence, and Analysis Techniques
 
 | Area | Details |
 |------|---------|
@@ -109,3 +109,4 @@ This investigation demonstrates how defenders can identify early scanning behavi
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates multi-source log correlation, web attack analysis, and professional incident documentation aligned with security operations workflows.
+
