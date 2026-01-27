@@ -52,10 +52,10 @@ This section defines which endpoints, user accounts, and telemetry sources were 
 
 #### ◆ Out of Scope / Not Observed
 
-- **Lateral movement:** No evidence of movement to other systems
-- **Persistence mechanisms:** No registry, scheduled task, service, or startup persistence observed
-- **Network communications:** No network telemetry or outbound connections reviewed
-- **Additional infected hosts:** No indicators of compromise on other endpoints
+- **Lateral movement** | No evidence of movement to other systems
+- **Persistence mechanisms** | No registry, scheduled task, service, or startup persistence observed
+- **Network communications** | No network telemetry or outbound connections reviewed
+- **Additional infected hosts** | No indicators of compromise on other endpoints
 
 The investigation was limited to validating the triggering alert and confirming host-level malicious activity.
 
@@ -304,6 +304,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
