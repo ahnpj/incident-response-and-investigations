@@ -84,7 +84,7 @@ Detailed event fields, log source mappings, and detection-relevant artifacts ext
 
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
----
+<hr width="30%">
 
 #### 5.1) Alert Trigger — Suspicious Executable Identification
 
@@ -315,6 +315,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
