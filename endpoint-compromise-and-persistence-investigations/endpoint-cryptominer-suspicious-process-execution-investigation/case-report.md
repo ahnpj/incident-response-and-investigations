@@ -84,7 +84,7 @@ Detailed event fields, log source mappings, and detection-relevant artifacts ext
 
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 5.1) Alert Trigger — Suspicious Executable Identification
 
@@ -93,7 +93,7 @@ The investigation began with review of the SIEM alert, which identified the exec
 This initial alert established the executable as the primary artifact for investigation.  
 (See *Suspicious Process Identification*, Figure 1)
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 5.2) Authentication & Execution Attribution
 
@@ -107,7 +107,7 @@ This confirmed that the activity occurred under a standard user context rather t
 
 User-based execution is common in commodity malware infections delivered via downloads or phishing.
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 5.3) Execution Path Analysis
 
@@ -123,7 +123,7 @@ Execution from user-writable temporary directories is atypical for legitimate en
 
 This execution location significantly increased confidence that the process was malicious rather than legitimate software.
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 5.4) Detection Logic Validation
 
@@ -174,7 +174,7 @@ Field-level telemetry, log source mappings, and example detection logic derived 
 
 That report is intended for SOC analysts and detection engineers responsible for implementing monitoring and alerting controls.
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 7.1) Host-Based IOCs
 
@@ -188,7 +188,7 @@ These indicators identify the specific endpoint where the suspicious executable 
 - Alert on executables launched from `%TEMP%` or `%APPDATA%`
 - Monitor for miner-related executable names
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 7.2) User Attribution IOCs
 
@@ -200,7 +200,7 @@ These indicators relate to the user context under which the suspicious process w
 - Identify repeated suspicious executions tied to the same user
 - Correlate abnormal processes with user download behavior
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 7.3) Behavioral IOCs
 
@@ -214,7 +214,7 @@ These indicators capture the executable name and file location associated with t
 - Correlate unknown executables with high CPU usage
 - Alert on rare process names across endpoints
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 7.4) IOC Limitations
 
@@ -249,7 +249,7 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 This section is intended to highlight immediate and high-impact actions, while the supporting report provides implementation-level detail for security engineering and operations teams.
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 9.1) Immediate Containment
 
@@ -258,7 +258,7 @@ This section is intended to highlight immediate and high-impact actions, while t
 - Remove unauthorized executable from disk
 - Reset credentials for associated user account
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 9.2) Hardening
 
@@ -266,7 +266,7 @@ This section is intended to highlight immediate and high-impact actions, while t
 - Implement application allowlisting
 - Enforce endpoint protection policies
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 9.3) Detection
 
@@ -298,14 +298,14 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 - For full investigative context and evidence-backed technique justification, see: `investigation-walkthrough.md`
 - For expanded MITRE technique analysis and detection considerations, see: `MITRE-ATTACK-mapping.md`
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 11.1) Technique Mapping
 
 - **Execution — User Execution (T1204):** Malicious executable launched by user.
 - **Impact — Resource Hijacking (T1496):** Host resources consumed by mining activity.
 
-<hr width="30%">
+• • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
 
 #### 11.2) MITRE ATT&CK Mapping (Table View)
 
@@ -315,6 +315,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
