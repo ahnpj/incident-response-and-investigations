@@ -25,7 +25,7 @@ Each technique below references the specific investigative artifacts that suppor
 
 ### (1) Initial Access
 
-#### Ingress Tool Transfer (T1105)
+#### ▶ (1.1) Ingress Tool Transfer (T1105)
 
 **Observed Behavior:**  
 Malicious files were transferred to the target host over SMB as part of Print Spooler service interaction. Security Event ID `5145` (Detailed File Share) recorded access to the `spoolss` named pipe over the `IPC$` share from attacker-controlled IP `10.0.2.5`, indicating remote interaction with the Print Spooler service interface. Shortly afterward, Sysmon Event ID `11` recorded creation of `printevil.dll` within the Print Spooler driver staging directory.
@@ -43,11 +43,9 @@ ATT&CK defines Ingress Tool Transfer as delivery of attacker-controlled tools or
   - File created: `C:\Windows\System32\spool\drivers\x64\3\New\printevil.dll`
   - Creating process: `spoolsv.exe`
 
-<hr width="30%">
-
 ### (2) Execution
 
-#### Service Execution (T1569.002)
+#### ▶ (2.1) Service Execution (T1569.002)
 
 **Observed Behavior:**  
 Attacker-controlled code was executed through the trusted Windows Print Spooler service. Process telemetry showed that the malicious DLL was loaded and executed by `spoolsv.exe`, followed by execution of `rundll32.exe` as part of the exploitation chain. The timing of execution closely followed DLL staging within the driver directory.
@@ -62,11 +60,9 @@ ATT&CK defines Service Execution as abusing services to run attacker code. The P
 - File placement preceding execution:
   - `printevil.dll` written to Print Spooler driver path
 
-<hr width="30%">
-
 ### (3) Defense Evasion
 
-#### Masquerading (T1036)
+#### ▶ (3.1) Masquerading (T1036)
 
 **Observed Behavior:**  
 The malicious payload was disguised as a printer-related DLL and placed into trusted system directories normally used for legitimate driver files. The filename `printevil.dll` appeared alongside legitimate files such as `unidrv.dll` and `winhttp.dll` during driver staging, making the payload visually blend into normal Print Spooler activity.
@@ -81,11 +77,10 @@ Masquerading includes disguising malicious artifacts as legitimate system compon
   - `unidrv.dll`
   - `winhttp.dll`
 
-<hr width="30%">
 
 ### (4) Command and Control
 
-#### Application Layer Protocol: Web (T1071.001)
+#### ▶ (4.1) Application Layer Protocol: Web (T1071.001)
 
 **Observed Behavior:**  
 After payload execution, the compromised host initiated outbound TCP communication to attacker-controlled infrastructure, consistent with reverse shell behavior over web ports. Sysmon Event ID `3` recorded outbound connections initiated by `rundll32.exe` running as `NT AUTHORITY\SYSTEM` to destination `10.0.2.5` on port `443`. Packet capture analysis confirmed an interactive command session over this connection, including execution of post-exploitation commands.
@@ -102,11 +97,10 @@ ATT&CK classifies outbound command-and-control using HTTP/HTTPS-style ports unde
   - Followed TCP stream showing interactive shell
   - Observed execution of `whoami`
 
-<hr width="30%">
 
 ### (5) Discovery
 
-#### System Owner/User Discovery (T1033)
+#### ▶ (5.1) System Owner/User Discovery (T1033)
 
 **Observed Behavior:**  
 Following establishment of the reverse shell, the attacker executed the `whoami` command to validate privilege level and execution context. Network traffic confirmed command execution and response indicating `NT AUTHORITY\SYSTEM`, verifying full system-level compromise.
@@ -159,4 +153,5 @@ Detection opportunities and preventive control recommendations associated with t
 - No lateral movement or credential theft was observed within scope.
 
 This mapping reflects how ATT&CK is commonly applied during host-based service abuse investigations using log-driven reconstruction workflows.
+
 
