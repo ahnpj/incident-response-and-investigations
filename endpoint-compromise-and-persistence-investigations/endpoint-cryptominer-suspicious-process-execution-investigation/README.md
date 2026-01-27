@@ -56,7 +56,7 @@ All investigation outputs are separated into focused reports to reflect common i
 
 This investigation focuses on validating suspicious software execution on a Windows endpoint using host-based process telemetry and artifact inspection to determine whether unauthorized cryptocurrency mining activity was present.
 
-### Environment and Investigation Scope (At a Glance)
+#### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
 |--------|---------|
@@ -67,7 +67,7 @@ This investigation focuses on validating suspicious software execution on a Wind
 | **Primary Platforms / Services** | Windows endpoint logging subsystem; Splunk SIEM platform |
 | **Investigation Focus** | Validate suspicious execution as cryptominer-like activity using host telemetry and artifact confirmation |
 
-### Data Sources, Evidence, and Analysis Techniques
+#### Data Sources, Evidence, and Analysis Techniques
 
 | Area | Details |
 |--------|---------|
@@ -105,6 +105,7 @@ Even single-event alerts benefit from systematic investigation to avoid misclass
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical alert analysis, log correlation methodology, and professional incident documentation aligned with real operational workflows.
+
 
 
 
