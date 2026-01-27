@@ -60,7 +60,7 @@ All investigation outputs are intentionally separated into focused reports, simi
 
 This investigation focuses on identity and email abuse within a cloud-hosted Microsoft 365 environment rather than endpoint-level malware or host compromise. All analysis was performed using cloud audit telemetry and preserved email artifacts associated with the compromised executive mailbox.
 
-### Environment and Investigation Scope (At a Glance)
+#### Environment and Investigation Scope (At a Glance)
 
 | Area | Details |
 |------|---------|
@@ -71,7 +71,7 @@ This investigation focuses on identity and email abuse within a cloud-hosted Mic
 | **Primary Platforms / Services** | Microsoft Entra ID (Azure AD), Microsoft Exchange Online, Microsoft 365 Unified Audit Logging |
 | **Investigation Focus** | Credential-based mailbox access and concealment via malicious inbox rules tied to a financial/social-engineering workflow |
 
-### Data Sources, Evidence, and Analysis Techniques
+#### Data Sources, Evidence, and Analysis Techniques
 
 | Area | Details |
 |------|---------|
@@ -104,3 +104,4 @@ This investigation demonstrates how identity and mailbox audit telemetry can rev
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate structured analytical thinking, evidence correlation across cloud telemetry sources, and professional incident documentation aligned with real operational workflows.
+
