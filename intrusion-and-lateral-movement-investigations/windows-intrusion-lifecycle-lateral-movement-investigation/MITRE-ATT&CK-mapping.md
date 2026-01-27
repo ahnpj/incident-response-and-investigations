@@ -28,7 +28,7 @@ Each technique below references specific investigative pivots and artifacts that
 
 ### (1) Reconnaissance
 
-#### Active Scanning (T1595)
+#### ▶ (1.1) Active Scanning (T1595)
 
 **Observed Behavior:**  
 Firewall logs show a single external source IP (`192.168.1.33`) sending TCP SYN-only probes to the same destination host (`192.168.1.43`) across multiple common service ports: 21, 22, 80, 443, 3389, and 445. No sessions were established and no data was transferred. The activity occurred prior to any authentication events or malware staging activity.
@@ -41,11 +41,10 @@ ATT&CK defines Active Scanning as probing of target systems to identify exposed 
 - No completed TCP handshakes or payload transfer  
 - Multiple unrelated service ports targeted in short time window
 
-<hr width="30%">
 
 ### (2) Initial Access
 
-#### External Remote Services (T1133)
+#### ▶ (2.1) External Remote Services (T1133)
 
 **Observed Behavior:**  
 Local enumeration using `netstat -an | findstr LISTENING` confirmed that port 22 (SSH) was actively listening on the endpoint, and reconnaissance activity specifically targeted this port. The attacker later authenticated over this service using valid credentials.
@@ -60,11 +59,10 @@ External Remote Services describes adversaries accessing systems through exposed
 | External Probing | External reconnaissance probing port 22 | Indicates attacker discovery of exposed service |
 | Authentication Telemetry | Subsequent SSH authentication telemetry | Links probing to follow-on access attempts |
 
-<hr width="30%">
 
 ### (3) Credential Access
 
-#### Brute Force (T1110)
+#### ▶ (3.1) Brute Force (T1110)
 
 **Observed Behavior:**  
 OpenSSH Operational logs show multiple failed password attempts for the `Administrator` account from `192.168.1.33`, followed by a successful authentication from the same source IP. This pattern indicates repeated credential attempts until a valid password was accepted.
@@ -79,9 +77,8 @@ Brute Force describes repeated authentication attempts against an account until 
 | OpenSSH Logs | “Accepted password for administrator from 192.168.1.33” | Confirms successful authentication |
 | Source Consistency | Same source IP and targeted account | Supports brute-force leading to compromise |
 
-<hr width="30%">
 
-### (4) Valid Accounts (T1078)
+#### ▶ (3.2) Valid Accounts (T1078)
 
 **Observed Behavior**  
 After successful brute-force authentication, all subsequent attacker actions were performed under the context of legitimate user accounts, beginning with the built-in `Administrator` account and later using the attacker-created `sysadmin` account.
@@ -96,11 +93,10 @@ Valid Accounts applies when adversaries use legitimate credentials to operate on
 | Execution Context | System changes executed under authenticated user | Links actions to attacker session |
 | Access Method | No exploit-based access observed | Supports credential-based compromise conclusion |
 
-<hr width="30%">
 
-### (5) Persistence
+### (4) Persistence
 
-#### (5A) Create Account: Local Account (T1136.001)
+#### ▶ (4.1)  Create Account: Local Account (T1136.001)
 
 **Observed Behavior:**  
 After gaining administrative access, the attacker created a new local user account named `sysadmin`, confirmed by Windows Security Event ID 4720. The account was later added to the local Administrators group.
@@ -115,7 +111,7 @@ Creating new local accounts is a common persistence mechanism that allows attack
 | Account Name | `sysadmin` | Identifies attacker-created account |
 | Temporal Correlation | Occurs after successful SSH authentication | Links account creation to intrusion |
 
-#### (5B) Boot or Logon Autostart Execution (T1547) & Registry Run Keys / Startup Folder (T1547.001)
+#### ▶ (4.2)  Boot or Logon Autostart Execution (T1547) & Registry Run Keys / Startup Folder (T1547.001)
 
 **Observed Behavior:** 
 Sysmon Event ID 13 shows two registry autorun values created shortly after malware files were written to disk. These values cause automatic execution during user logon:
@@ -135,11 +131,10 @@ ATT&CK documents Run key modifications as a persistence technique that triggers 
 | Time Window | Values created between 5:24 PM and 5:26 PM | Supports coordinated post-compromise activity |
 | Registry Targets | Values point to malware-staged executables | Links persistence to malicious payloads |
 
-<hr width="30%">
 
-### (6) Collection
+### (5) Collection
 
-#### Input Capture: Keylogging (T1056.001)
+#### ▶ (5.1) Input Capture: Keylogging (T1056.001)
 
 **Observed Behavior:**  
 Sysmon process creation logs show `7z.exe` executing the command: `7z e keylogger.rar`. Shortly after administrative access was obtained, indicating the attacker extracted a keylogging payload.
@@ -155,9 +150,7 @@ Keylogging is a defined sub-technique of Input Capture, used to collect credenti
 | Archive Naming | Archive explicitly indicates keylogging functionality | Supports malicious payload classification |
 | Timing Correlation | Occurred during post-compromise window | Links to attacker activity timeline |
 
-<hr width="30%">
-
-#### Data from Local System (T1005)
+#### ▶ (5.2) Data from Local System (T1005)
 
 **Observed Behavior:**  
 Multiple executables and supporting files were written to disk in the attacker-controlled directory: `C:\Users\Administrator\AppData\Roaming\WPDNSE\`, including: `svchost.exe`, `rundll33.exe`, and `atapi.sys`.
@@ -171,11 +164,9 @@ T1005 covers staging and accessing data on local systems, including preparation 
 | Sysmon Logs | Event ID 11 — file creation | Confirms dropped payloads |
 | Timestamp Alignment | Matches malware extraction timeframe | Correlates files to archive contents |
 
-<hr width="30%">
+### (6) Defense Evasion
 
-### (7) Defense Evasion
-
-#### Rootkit (T1014)
+#### ▶ (6.1) Rootkit (T1014)
 
 **Observed Behavior:**  
 A file named `atapi.sys` was created in a user-writable roaming profile directory instead of a legitimate system driver path. The filename matches a legitimate Windows driver but is located in an abnormal directory.
@@ -190,9 +181,7 @@ Masquerading kernel-style components in non-standard locations aligns with rootk
 | File Name | `atapi.sys` | Identifies suspicious driver-style artifact |
 | File Path | `C:\Users\Administrator\AppData\Roaming\WPDNSE\` | Indicates user-profile persistence location |
 
-<hr width="30%">
-
-#### (8) Indicator Removal on Host (T1070)
+#### ▶ (6.2) Indicator Removal on Host (T1070)
 
 **Observed Behavior**  
 Windows Security Event ID 4726 confirms deletion of a local user account (`DRB`) after attacker persistence mechanisms were established.
@@ -206,11 +195,9 @@ Removing user accounts after compromise reduces visibility and complicates inves
 | Windows Security Logs | Event ID 4726 — user account deleted | Confirms account removal |
 | Sequence | Occurred after creation and elevation of `sysadmin` | Indicates cleanup or cover-up behavior |
 
-<hr width="30%">
+### (7) Impact
 
-### (9) Impact
-
-#### Account Access Removal (T1531)
+#### ▶ (7.1) Account Access Removal (T1531)
 
 **Observed Behavior:**  
 The attacker deleted a legitimate user account after securing persistent administrative access, disrupting normal system access and potentially hindering recovery.
@@ -281,6 +268,7 @@ Associated detection logic and control recommendations are documented in:
 - Mapping focuses on host-level compromise and persistence mechanisms observed during the investigation.
 
 This mapping reflects how ATT&CK is applied during full intrusion lifecycle investigations using correlated network and endpoint telemetry.
+
 
 
 
