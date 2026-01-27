@@ -41,7 +41,7 @@ The objective was to confirm malicious activity and determine appropriate contai
 
 This section defines which endpoints, user accounts, and telemetry sources were included in validating the suspicious process execution alert, as well as what activity was not observed within the available dataset. Clearly defining scope helps distinguish confirmed host-level execution from broader compromise or lateral movement that was not supported by the evidence.
 
-#### ◆ In Scope
+#### ▶ 3.1) In Scope
 
 | Category | Included Items |
 |--------|-----------------|
@@ -50,7 +50,7 @@ This section defines which endpoints, user accounts, and telemetry sources were 
 | **Primary Evidence Sources** | • SIEM alert metadata<br>• Windows Security Event Logs (Event ID 4688 — Process Creation) |
 | **Behavioral Focus Areas** | • Executable name and location<br>• User execution context<br>• Detection rule validation |
 
-#### ◆ Out of Scope / Not Observed
+#### ▶ 3.2) Out of Scope / Not Observed
 
 - **Lateral movement** | No evidence of movement to other systems
 - **Persistence mechanisms** | No registry, scheduled task, service, or startup persistence observed
@@ -65,17 +65,17 @@ The investigation was limited to validating the triggering alert and confirming 
 
 This investigation validated suspicious process execution using host-based telemetry on a Windows endpoint. No network telemetry or external infrastructure data was available. Conclusions are based on host execution behavior and file placement patterns.
 
-#### ◆ Systems
+#### ▶ 4.1) Systems
 
 - **Affected system (victim):** Windows workstation  
 - **Analyst VM:** Windows-based analyst workstation used for event log and file path analysis
 
-#### ◆ Platforms & Services
+#### ▶ 4.2) Platforms & Services
 
 - Windows local execution environment  
 - Event log analysis utilities for extracting and filtering process creation records
 
-#### ◆ Data Sources Reviewed
+#### ▶ 4.3) Data Sources Reviewed
 
 - Windows Security Event Logs (Event ID 4688 — process creation)  
 - Local file system artifacts (executable paths and filenames)  
@@ -304,6 +304,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 | Impact | **Resource Hijacking (T1496)** | Cryptocurrency mining consumed host resources |
 
 ---
+
 
 
 
