@@ -7,7 +7,7 @@
 
 ---
 
-## 1) Executive Summary
+### 1) Executive Summary
 
 This case investigates a multi-stage web server compromise that resulted in the public defacement of the domain `imreallynotbatman.com`, hosted by Wayne Enterprises. Correlated network, application, IDS, and host telemetry demonstrates a complete attack chain beginning with automated vulnerability scanning, followed by credential brute force, authenticated access to the Joomla administrative interface, malware upload and execution, outbound communication to attacker-controlled infrastructure, and final defacement of public-facing content.
 
@@ -17,7 +17,7 @@ Outbound network telemetry then showed the compromised server initiating connect
 
 ---
 
-## 2) Incident Background
+### 2) Incident Background
 
 The investigation was initiated after confirmation that the public website `imreallynotbatman.com` had been visually defaced. Because multiple telemetry sources were available in the environment, the investigative objective was to reconstruct the full intrusion lifecycle rather than validate a single detection alert.
 
@@ -34,24 +34,20 @@ The analysis prioritized defender-focused reconstruction using correlated log so
 
 ---
 
-## 3) Scope
+### 3) Scope
 
 This section defines which systems, identities, and data sources were included in the investigation, as well as what activity was not observed within the available evidence. Clearly defining scope helps distinguish confirmed web application compromise from assumptions about broader infrastructure compromise that are not supported by telemetry.
 
-### In-Scope
+#### ▶ 3.1) In-Scope
 
-- **Affected system:** Web server hosting `imreallynotbatman.com`
-- **Server IP:** `192.168.250.70`
-- **Primary evidence sources:** Network, application, IDS, and host telemetry
-- **Behavioral focus areas:**
-  - Web vulnerability scanning
-  - Credential brute force
-  - Authenticated admin access
-  - Malware upload and execution
-  - Outbound communication
-  - Defacement delivery
+| Category | Included Items |
+|--------|----------------|
+| **Affected System** | • Web server hosting `imreallynotbatman.com` |
+| **Server IP** | • `192.168.250.70` |
+| **Primary Evidence Sources** | • Network, application, IDS, and host telemetry |
+| **Behavioral Focus Areas** | • Web vulnerability scanning<br>• Credential brute force<br>• Authenticated admin access<br>• Malware upload and execution<br>• Outbound communication<br>• Defacement delivery |
 
-### Out-of-Scope / Not Observed
+#### ▶ 3.2) Out-of-Scope / Not Observed
 
 - Lateral movement to other hosts
 - Database compromise
@@ -62,22 +58,22 @@ Analysis was limited to telemetry associated with the compromised web server and
 
 ---
 
-## 4) Environment
+### 4) Environment
 
 This investigation reconstructed a full web server compromise using network, application, and host telemetry associated with a public-facing CMS environment.
 
-**Affected System (Victim) Operating System:**
+#### ▶ 4.1) **Affected System (Victim) Operating System:**
 - Linux-based web server hosting Joomla CMS
 
-**Analyst Virtual Machine Operating System:**
+#### ▶ 4.2) **Analyst Virtual Machine Operating System:**
 - Windows-based analyst workstation running centralized log analysis tools
 
-**Platforms and Services:**
+#### ▶ 4.3) **Platforms and Services:**
 - Joomla Content Management System (CMS) — reviewed administrative authentication and file upload activity
 - Web server application stack — analyzed HTTP request handling and response behavior
 - Centralized SIEM platform — correlated HTTP, IDS, firewall, and host telemetry
 
-**Data Sources Reviewed:**
+#### ▶ 4.4) **Data Sources Reviewed:**
 - `stream:http` — HTTP flows, headers, form data, User-Agent, and URIs
 - `suricata` — IDS exploit signatures and vulnerability scanning indicators
 - `fortigate_utm` — firewall and web filtering telemetry
@@ -90,14 +86,14 @@ Telemetry allowed reconstruction of attacker behavior across reconnaissance, aut
 
 ---
 
-## 5) Evidence Summary
+### 5) Evidence Summary
 
 This section summarizes the primary evidence used to reconstruct reconnaissance, credential abuse, malware delivery, command-and-control communication, and defacement activity observed during this intrusion. It focuses on how each data source contributed to understanding attacker behavior and impact rather than listing raw log fields.
 
 Detailed field-level artifacts, extracted credentials, file hashes, and detection pivots are documented separately in: `detection-artifact-report.md`
 
 
-### 5.1 Reconnaissance — Automated Vulnerability Scanning
+#### ▶ 5.1) Reconnaissance — Automated Vulnerability Scanning
 
 Suricata IDS logs and HTTP telemetry identified large volumes of requests from:
 
@@ -113,7 +109,7 @@ Triggered IDS signatures included:
 HTTP headers included malformed or empty Host values and User-Agent strings associated with the Acunetix vulnerability scanner, confirming automated reconnaissance and vulnerability testing against the Joomla-based web server.
 
 
-### 5.2 Web Application Targeting — Joomla Admin Interface
+#### ▶ 5.2) Web Application Targeting — Joomla Admin Interface
 
 HTTP logs revealed repeated access to:
 
@@ -122,7 +118,7 @@ HTTP logs revealed repeated access to:
 Requests were primarily POST-based, consistent with authentication attempts against the Joomla administrative login interface. Targeting of CMS-specific administrative paths confirms attacker intent to gain authenticated control of the application rather than exploit unauthenticated vulnerabilities alone.
 
 
-### 5.3 Credential Brute Force — Authentication Abuse
+#### ▶ 5.3) Credential Brute Force — Authentication Abuse
 
 Form submission data (`form_data`) extracted from HTTP POST events revealed repeated credential attempts originating primarily from:
 
@@ -136,7 +132,7 @@ Submitted usernames and passwords were extracted using regex and URL decoding, c
 This pattern confirms coordinated scanning followed by credential abuse rather than vulnerability exploitation.
 
 
-### 5.4 Malware Upload — Payload Delivery via HTTP
+#### ▶ 5.4) Malware Upload — Payload Delivery via HTTP
 
 HTTP multipart form uploads revealed transfer of executable content to the server, including:
 
@@ -146,7 +142,7 @@ HTTP multipart form uploads revealed transfer of executable content to the serve
 File upload activity was attributed to attacker IP `40.80.148.42`, confirming that malware was staged on the server after administrative access was obtained.
 
 
-### 5.5 Malware Execution — Host Telemetry Confirmation
+#### ▶ 5.5) Malware Execution — Host Telemetry Confirmation
 
 Sysmon Event ID 1 (Process Creation) logs confirmed execution of:
 
@@ -155,7 +151,7 @@ Sysmon Event ID 1 (Process Creation) logs confirmed execution of:
 Process creation events included executable hash values and confirmed that the payload was executed on the host rather than merely uploaded. This validates transition from web compromise to host-level execution.
 
 
-### 5.6 Command and Control — Outbound Communication
+#### ▶ 5.6) Command and Control — Outbound Communication
 
 Firewall and HTTP telemetry confirmed outbound connections from the compromised server to:
 
@@ -166,7 +162,7 @@ Firewall and HTTP telemetry confirmed outbound connections from the compromised 
 This behavior confirms that the compromised server initiated communication with attacker infrastructure rather than receiving inbound control connections.
 
 
-### 5.7 Defacement Delivery — External Image Retrieval
+#### ▶ 5.7) Defacement Delivery — External Image Retrieval
 
 Outbound HTTP requests from the server retrieved an externally hosted image which replaced or overrode homepage content, confirming:
 
@@ -177,7 +173,7 @@ This mechanism explains why inbound attacker traffic was not observed during def
 
 ---
 
-## 6) Investigation Timeline (Condensed)
+### 6) Investigation Timeline (Condensed)
 
 The timeline below reflects reconstructed attacker and server activity, not analyst workflow. Detailed investigation steps and Splunk queries are documented separately in: `investigation-walkthrough.md`
 
@@ -195,14 +191,14 @@ The timeline below reflects reconstructed attacker and server activity, not anal
 
 ---
 
-## 7) Indicators of Compromise (IOCs)
+### 7) Indicators of Compromise (IOCs)
 
 The indicators listed below represent high-confidence artifacts associated with reconnaissance, credential abuse, malware execution, and defacement observed during this intrusion.
 
 Field-level telemetry and detection pivots are documented separately in: `detection-artifact-report.md`
 
 
-### 7.1 Network & Reconnaissance IOCs
+#### ▶ 7.1) Network & Reconnaissance IOCs
 
 These indicators reflect automated vulnerability scanning behavior.
 
@@ -215,7 +211,7 @@ These indicators reflect automated vulnerability scanning behavior.
 - Detect malformed HTTP headers indicative of scanning
 
 
-### 7.2 Credential Abuse IOCs
+#### ▶ 7.2) Credential Abuse IOCs
 
 These indicators reflect authentication targeting and compromise.
 
@@ -228,7 +224,7 @@ These indicators reflect authentication targeting and compromise.
 - Alert on successful login following failures
 
 
-### 7.3 Malware Delivery & Execution IOCs
+#### ▶ 7.3) Malware Delivery & Execution IOCs
 
 These indicators reflect payload staging and execution.
 
@@ -240,7 +236,7 @@ These indicators reflect payload staging and execution.
 - Alert on executable creation in web directories
 
 
-### 7.4 Command and Control IOCs
+#### ▶ 7.4) Command and Control IOCs
 
 These indicators reflect outbound attacker communication.
 
@@ -252,7 +248,7 @@ These indicators reflect outbound attacker communication.
 - Alert on dynamic DNS usage by servers
 
 
-### 7.5 Defacement Artifacts
+#### ▶ 7.5) Defacement Artifacts
 
 These indicators reflect attacker objectives.
 
@@ -263,13 +259,13 @@ These indicators reflect attacker objectives.
 - Detect abnormal outbound fetches of media by servers
 
 
-### 7.6 IOC Limitations
+#### ▶ 7.6) IOC Limitations
 
 While the indicators above are high-confidence within this investigation, attackers can change scanning tools, credential lists, payload names, and hosting domains. Detection strategies should prioritize behavioral correlations such as scanning followed by authentication success, file upload followed by execution, and server-initiated outbound connections rather than relying on static indicators.
 
 ---
 
-## 8) Case Determination
+### 8) Case Determination
 
 **Final Determination:**  
 Confirmed web server compromise involving credential abuse against Joomla administrative interface, followed by malware upload and execution, establishment of outbound command-and-control communication, and public website defacement.
@@ -278,25 +274,25 @@ Evidence supports a credential-driven web application intrusion rather than expl
 
 ---
 
-## 9) Recommended Follow-Ups (Case Closure Actions)
+### 9) Recommended Follow-Ups (Case Closure Actions)
 
 The recommendations below summarize key containment, hardening, and detection priorities based on behaviors observed during this incident. Detailed technical controls are documented separately in: `detection-and-hardening-recommendations.md`
 
-### Immediate Containment
+#### ▶ 9.1) Immediate Containment
 
 - Take the web server offline
 - Reset all administrative credentials
 - Remove malicious files and modified templates
 - Block attacker IPs and domains
 
-### Hardening
+#### ▶ 9.2) Hardening
 
 - Enforce strong CMS authentication policies
 - Enable MFA for administrative access
 - Restrict file upload permissions
 - Patch CMS and plugins
 
-### Detection
+#### ▶ 9.3) Detection
 
 - Alert on CMS admin brute-force attempts
 - Monitor web servers for outbound traffic
@@ -304,7 +300,7 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 ---
 
-## 10) Supporting Reports (In This Folder)
+### 10) Supporting Reports (In This Folder)
 
 The files below make up the full case package for this investigation and provide additional detail across analyst workflow, response actions, detection engineering, and executive-level reporting.
 
@@ -319,14 +315,14 @@ The files below make up the full case package for this investigation and provide
 
 ---
 
-## 11) MITRE ATT&CK Mapping
+### 11) MITRE ATT&CK Mapping
 
 The mappings below provide a high-level summary of confirmed adversary behaviors observed during this incident.
 
 - Full investigative context and evidence references: `investigation-walkthrough.md`  
 - Expanded technique analysis and detection considerations: `MITRE-ATTACK-mapping.md`
 
-### Technique Mapping
+#### ▶ 11.1) Technique Mapping
 
 - **Reconnaissance — Active Scanning (T1595)**
 - **Initial Access — Brute Force (T1110)**
@@ -335,7 +331,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 - **Command and Control — Application Layer Protocol (T1071)**
 - **Impact — Defacement (T1491)**
 
-### MITRE ATT&CK Mapping (Table View)
+#### ▶ 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -347,3 +343,4 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 | Impact | **Defacement (T1491)** | Website content modified to display attacker message. |
 
 ---
+
