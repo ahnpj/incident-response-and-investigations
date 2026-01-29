@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Web Application Authentication Compromise Investigation (Brute-Force Attempts and Account Compromise Detection)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents detailed preventive controls and detection engineering recommendations based directly on behaviors confirmed during the investigation of web application authentication abuse that resulted in account compromise and credential reuse.
 
@@ -17,7 +17,7 @@ This report expands those observations into a standalone, detailed engineering a
 
 ---
 
-## Summary of Defensive Control Failures Observed
+### 2) Summary of Defensive Control Failures Observed
 
 This section summarizes the primary control gaps that allowed the attacker to progress from automated login attempts to confirmed compromise and continued application use.
 
@@ -40,11 +40,11 @@ As reconstructed in `case-report.md`, these gaps enabled the attacker to:
 
 ---
 
-## Authentication Controls Hardening
+### 3) Authentication Controls Hardening
 
 This section focuses on reducing the likelihood that automated login abuse can succeed, even when attackers can generate high-volume traffic.
 
-### Implement Strong Rate Limiting on `/api/login`
+#### ▶ 3.1) Implement Strong Rate Limiting on `/api/login`
 
 **Evidence from Investigation:**  
 Repeated failed authentication attempts concentrated on `/api/login` (Finding 7) and were heavily sourced from `198.51.100.100` (Finding 1). This indicates the endpoint was not protected by an effective request-throttling control during the attack window.
@@ -58,7 +58,7 @@ Repeated failed authentication attempts concentrated on `/api/login` (Finding 7)
 **Why This Matters:**  
 Rate limiting increases attacker cost and reduces the probability of brute-force success, especially when the attacker is limited to a single host or a small infrastructure pool.
 
-### Implement Account Lockout / Step-Up Authentication Thresholds
+#### ▶ 3.2) Implement Account Lockout / Step-Up Authentication Thresholds
 
 **Evidence from Investigation:**  
 The attacker performed many failures against valid accounts (Finding 4) without triggering a meaningful deterrent mechanism.
@@ -72,7 +72,7 @@ The attacker performed many failures against valid accounts (Finding 4) without 
 **Why This Matters:**  
 Lockout and step-up controls prevent credential guessing from running indefinitely and help identify automated abuse early.
 
-### Enforce MFA for Privileged Accounts
+#### ▶ 3.3) Enforce MFA for Privileged Accounts
 
 **Evidence from Investigation:**  
 `webadmin` successfully authenticated without a second factor (Finding 5), indicating credential-only access was possible.
@@ -89,11 +89,11 @@ MFA breaks the attacker’s dependency on “password-only” access, making bru
 
 ---
 
-## Account Enumeration and Username Targeting Mitigations
+### 4) Account Enumeration and Username Targeting Mitigations
 
 This section focuses on reducing attacker ability to enumerate or validate usernames during the pre-compromise phase.
 
-### Normalize Authentication Failure Responses
+#### ▶ 4.1) Normalize Authentication Failure Responses
 
 **Evidence from Investigation:**  
 The attacker attempted numerous non-existent usernames (Finding 3), suggesting enumeration behavior as part of the attack strategy.
@@ -108,7 +108,7 @@ The attacker attempted numerous non-existent usernames (Finding 3), suggesting e
 **Why This Matters:**  
 Enumeration reduces attacker noise and increases targeting efficiency. Removing feedback forces attackers to guess blindly.
 
-### Monitor and Rate Limit Multi-Username Login Attempts
+#### ▶ 4.2) Monitor and Rate Limit Multi-Username Login Attempts
 
 **Evidence from Investigation:**  
 Multiple distinct usernames were tested from the same source (Finding 3), followed by concentrated targeting of valid users (Finding 4).
@@ -124,11 +124,11 @@ This blocks the “name discovery” phase before attackers shift to high-value 
 
 ---
 
-## Credential Handling and Logging Security (Critical)
+### 5) Credential Handling and Logging Security (Critical)
 
 This section addresses the highest-risk systemic weakness confirmed during investigation: reversible credentials in logs.
 
-### Remove Credential-Like Fields from Authentication Logs
+#### ▶ 5.1) Remove Credential-Like Fields from Authentication Logs
 
 **Evidence from Investigation:**  
 The `hashed_password` field contained a Base64-encoded value that decoded to plaintext password `webadmin1234` (Finding 8; Figure 8). This is not a hash and represents credential exposure.
@@ -150,7 +150,7 @@ The `hashed_password` field contained a Base64-encoded value that decoded to pla
 **Why This Matters:**  
 If an attacker gains access to logs (via misconfiguration, insider threat, or adjacent compromise), they can bypass brute force entirely by extracting plaintext credentials.
 
-### Adopt Secure Password Storage and Verification Practices
+#### ▶ 5.2) Adopt Secure Password Storage and Verification Practices
 
 **Evidence from Investigation:**  
 The existence of reversible “hashed_password” logging suggests insecure credential handling design.
@@ -166,11 +166,11 @@ Secure storage and handling reduce credential exposure risk even if logs or data
 
 ---
 
-## Detection Engineering Improvements
+### 6) Detection Engineering Improvements
 
 This section defines behavioral detections directly derived from the confirmed attack sequence.
 
-### Alert on High-Volume Failures Against `/api/login`
+#### ▶ 6.1) Alert on High-Volume Failures Against `/api/login`
 
 **Evidence from Investigation:**  
 Failed attempts from `198.51.100.100` spiked against `/api/login` (Findings 1 and 7).
@@ -187,7 +187,7 @@ Failed attempts from `198.51.100.100` spiked against `/api/login` (Findings 1 an
 **Why This Matters:**  
 Provides early warning before compromise occurs.
 
-### Correlate Failures → Success Within Short Time Window
+#### ▶ 6.2) Correlate Failures → Success Within Short Time Window
 
 **Evidence from Investigation:**  
 Successful authentication for `webadmin` followed repeated failures (Finding 5).
@@ -203,7 +203,7 @@ Trigger high-severity alert when:
 **Why This Matters:**  
 This pattern is a high-confidence indicator of credential guessing success.
 
-### Correlate Success → Rapid Source IP Change (Reuse Detection)
+#### ▶ 6.3) Correlate Success → Rapid Source IP Change (Reuse Detection)
 
 **Evidence from Investigation:**  
 A second successful login for `webadmin` occurred at `10:05:20` from `198.23.200.101` shortly after the initial success (Finding 6).
@@ -219,7 +219,7 @@ Trigger critical alert when:
 **Why This Matters:**  
 Rapid infrastructure switching is common post-compromise behavior and is rare in legitimate admin usage patterns.
 
-### Detect Enumeration Behavior (Invalid Username Bursts)
+#### ▶ 6.4) Detect Enumeration Behavior (Invalid Username Bursts)
 
 **Evidence from Investigation:**  
 Multiple failed attempts against non-existent usernames occurred (Finding 3).
@@ -235,11 +235,11 @@ Detects early-stage enumeration before the attacker narrows onto valid accounts.
 
 ---
 
-## Web Application Perimeter and WAF Controls
+### 7) Web Application Perimeter and WAF Controls
 
 This section focuses on deploying compensating controls to stop automated abuse at the edge before it hits application auth logic.
 
-### Bot Detection and Challenge Controls
+#### ▶ 7.1) Bot Detection and Challenge Controls
 
 **Evidence from Investigation:**  
 Consistent User-Agent string across attempts (Finding 2) suggests automated tooling.
@@ -255,7 +255,7 @@ Consistent User-Agent string across attempts (Finding 2) suggests automated tool
 **Why This Matters:**  
 Reduces load on application and blocks commodity brute-force tooling quickly.
 
-### IP Reputation / ASN-Based Throttling
+#### ▶ 7.2) IP Reputation / ASN-Based Throttling
 
 **Evidence from Investigation:**  
 Attack activity concentrated on one IP, then shifted to another for reuse (Finding 6).
@@ -273,11 +273,11 @@ Improves defense in depth without depending on brittle single-IP blocks.
 
 ---
 
-## Monitoring, Visibility, and Operational Improvements
+### 8) Monitoring, Visibility, and Operational Improvements
 
 This section addresses telemetry coverage required to confidently detect and investigate similar incidents.
 
-### Ensure Logs Capture Required Fields for Detection
+#### ▶ 8.1) Ensure Logs Capture Required Fields for Detection
 
 **Evidence from Investigation:**  
 The investigation relied on correlating source IP, endpoint, username, timestamps, and User-Agent across multiple findings (Findings 1–7).
@@ -297,7 +297,7 @@ Ensure auth/application logs reliably record:
 **Why This Matters:**  
 Without these fields, detection engineering cannot reliably implement correlation logic derived from the incident.
 
-### Improve Alert Routing for Privileged Account Events
+#### ▶ 8.2) Improve Alert Routing for Privileged Account Events
 
 **Evidence from Investigation:**  
 The compromise involved `webadmin`, a privileged account (Findings 4–6).
@@ -315,7 +315,7 @@ Privileged account compromise has higher blast radius and requires faster respon
 
 ---
 
-## Prioritized Recommendations
+### 9) Prioritized Recommendations
 
 This table summarizes controls that would most effectively reduce risk based on the behaviors observed in this incident.
 
@@ -331,7 +331,7 @@ This table summarizes controls that would most effectively reduce risk based on 
 
 ---
 
-## Closing Observations
+### 10) Closing Observations
 
 This investigation demonstrates how an authentication abuse campaign can progress from enumeration to confirmed compromise and credential reuse within minutes.
 
@@ -351,3 +351,4 @@ Effective defense therefore requires:
 - Immediate remediation of credential handling and logging weaknesses
 
 Without these controls, attackers can brute force or recover credentials and reuse them across infrastructure before defenders can respond.
+
