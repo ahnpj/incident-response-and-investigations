@@ -1,6 +1,6 @@
 # Detection Artifact Report — Windows Host Compromise Investigation (Backdoor Account Creation and Registry-Based Persistence)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents **host-based identity, process, and registry artifacts** observed during investigation of a Windows host compromise involving unauthorized local account creation and registry-based persistence. The purpose of this report is to provide **detection-engineering–ready indicators** that are explicitly tied to analyst investigation pivots and validation steps rather than generic indicators of compromise.
 
@@ -19,11 +19,11 @@ This report complements:
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 
 This section summarizes the telemetry sources used to identify and validate compromise artifacts.
 
-**Primary telemetry sources referenced in investigation:**
+#### ▶ 2.1) Primary telemetry sources referenced in investigation
 
 - **Windows Security Event Log**
   - Event ID 4720 — User account created
@@ -40,14 +40,14 @@ This section summarizes the telemetry sources used to identify and validate comp
   - Endpoint.Processes
   - Endpoint.Registry
 
-**Confirmed host:**
+#### ▶ 2.2) Confirmed host
 
 - **Victim system:** Windows workstation (lab host)  
 - **Security context:** Local administrative privileges abused
 
 ---
 
-## High-Confidence Investigation Anchors
+### 3) High-Confidence Investigation Anchors
 
 This section lists timeline anchors that structured investigative correlation.
 
@@ -63,11 +63,11 @@ These anchors were used to pivot between identity, execution, and persistence te
 
 ---
 
-## Identity and Account Manipulation Artifacts
+### 4) Identity and Account Manipulation Artifacts
 
 This section documents identity-related indicators confirming attacker persistence.
 
-### Artifact: Unauthorized Local User Account Creation
+#### ▶ 4.1) Artifact: Unauthorized Local User Account Creation
 
 **Observed Behavior:**
 
@@ -88,9 +88,7 @@ Analysts began by reviewing Windows Security Event ID 4720 events to identify un
 - Correlate with:
   - recent suspicious process execution or logon anomalies
 
----
-
-### Artifact: Privilege Escalation via Administrators Group Membership
+#### ▶ 4.2) Artifact: Privilege Escalation via Administrators Group Membership
 
 **Observed Behavior:**
 
@@ -113,11 +111,11 @@ After identifying unauthorized account creation, analysts pivoted to group membe
 
 ---
 
-## Process Execution Artifacts
+### 5) Process Execution Artifacts
 
 This section documents host execution behaviors that supported compromise validation.
 
-### Artifact: Suspicious Process Execution Associated with Persistence Setup
+#### ▶ 5.1) Artifact: Suspicious Process Execution Associated with Persistence Setup
 
 **Observed Behavior:**
 
@@ -140,11 +138,11 @@ Following confirmation of identity abuse, analysts pivoted into Sysmon Event ID 
 
 ---
 
-## Registry Persistence Artifacts
+### 6) Registry Persistence Artifacts
 
 This section documents registry-based mechanisms used to maintain execution across logons.
 
-### Artifact: Registry Run Key Value Creation
+#### ▶ 6.1) Artifact: Registry Run Key Value Creation
 
 **Observed Behavior:**
 
@@ -167,11 +165,11 @@ After identifying suspicious execution activity, analysts pivoted into Sysmon Ev
 
 ---
 
-## Account Cleanup and Defense Evasion Artifacts
+### 7) Account Cleanup and Defense Evasion Artifacts
 
 This section documents attacker actions intended to reduce forensic visibility.
 
-### Artifact: Deletion of Local User Account
+#### ▶ 7.1) Artifact: Deletion of Local User Account
 
 **Observed Behavior:**
 
@@ -194,11 +192,11 @@ After confirming persistence, analysts reviewed Security Event ID 4726 to determ
 
 ---
 
-## Authentication and Session Context Artifacts
+### 8) Authentication and Session Context Artifacts
 
 This section documents how execution aligned with user sessions.
 
-### Artifact: Execution Tied to User Logon Sessions
+#### ▶ 8.1) Artifact: Execution Tied to User Logon Sessions
 
 **Observed Behavior:**
 
@@ -221,11 +219,11 @@ Analysts correlated Sysmon process creation timestamps with Windows Security Eve
 
 ---
 
-## Absence of Lateral Movement Artifacts
+### 9) Absence of Lateral Movement Artifacts
 
 This section documents negative findings that influenced scoping decisions.
 
-### Artifact: No Evidence of Network-Based Propagation
+#### ▶ 9.1) Artifact: No Evidence of Network-Based Propagation
 
 **Observed Behavior:**
 
@@ -242,11 +240,11 @@ Analysts reviewed firewall and authentication telemetry to determine whether the
 
 ---
 
-## Cross-Source Correlation Opportunities
+### 10) Cross-Source Correlation Opportunities
 
 This section outlines detection strategies reflecting investigation pivots.
 
-### Correlation 1: Account Creation → Admin Group Addition
+#### ▶ 10.1) Correlation 1: Account Creation → Admin Group Addition
 
 **Signals:**
 
@@ -256,9 +254,8 @@ This section outlines detection strategies reflecting investigation pivots.
 **Use Case:**  
 Detect privileged persistence via identity manipulation.
 
----
 
-### Correlation 2: Admin Account Activity → Suspicious Process Execution
+#### ▶ 10.2) Correlation 2: Admin Account Activity → Suspicious Process Execution
 
 **Signals:**
 
@@ -268,9 +265,8 @@ Detect privileged persistence via identity manipulation.
 **Use Case:**  
 Detect attacker-controlled sessions executing tools.
 
----
 
-### Correlation 3: Process Execution → Registry Persistence
+#### ▶ 10.3) Correlation 3: Process Execution → Registry Persistence
 
 **Signals:**
 
@@ -280,9 +276,7 @@ Detect attacker-controlled sessions executing tools.
 **Use Case:**  
 Detect establishment of autorun mechanisms.
 
----
-
-### Correlation 4: Persistence Established → Account Deletion
+#### ▶ 10.4) Correlation 4: Persistence Established → Account Deletion
 
 **Signals:**
 
@@ -294,7 +288,7 @@ Detect cleanup actions following persistence setup.
 
 ---
 
-## Indicator Reliability Considerations
+### 11) Indicator Reliability Considerations
 
 This section distinguishes between easily modified indicators and reliable behaviors.
 
@@ -314,7 +308,7 @@ Behavior-based detection remains resilient even when attackers change identifier
 
 ---
 
-## Closing Summary
+### 12) Closing Summary
 
 This investigation demonstrated how attackers can maintain long-term access to a Windows host by combining:
 
@@ -326,3 +320,4 @@ This investigation demonstrated how attackers can maintain long-term access to a
 By correlating identity events, process execution telemetry, and registry modifications, analysts were able to reconstruct the full persistence strategy and confirm durable compromise.
 
 Detection strategies that focus on **behavioral sequences rather than isolated events** can reliably detect similar intrusions even when attackers modify filenames or account names.
+
