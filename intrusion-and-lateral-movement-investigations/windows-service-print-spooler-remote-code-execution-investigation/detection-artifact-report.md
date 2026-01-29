@@ -1,6 +1,6 @@
 # Detection Artifact Report — Windows Service Exploitation Investigation (Print Spooler Remote Code Execution)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents **network, service, process, and persistence-related artifacts** observed during investigation of a Windows host compromise involving exploitation of the Print Spooler service for remote code execution (RCE). The purpose of this report is to provide **detection-engineering–ready indicators** that are directly tied to analyst investigation pivots and validation steps rather than isolated indicators of compromise.
 
@@ -19,11 +19,11 @@ This report complements:
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 
 This section summarizes telemetry sources used to identify and validate service exploitation artifacts.
 
-**Primary telemetry sources referenced in investigation:**
+#### ▶ 2.1) Primary telemetry sources referenced in investigation
 
 - **Firewall and Network Logs**
   - Inbound SMB and RPC traffic to Print Spooler service ports
@@ -44,14 +44,14 @@ This section summarizes telemetry sources used to identify and validate service 
   - Endpoint.Filesystem
   - Network.Traffic
 
-**Confirmed host:**
+#### ▶ 2.2) Confirmed host
 
 - **Victim system:** Windows server/workstation running Print Spooler  
 - **Attack surface:** Network-exposed Print Spooler service
 
 ---
 
-## High-Confidence Investigation Anchors
+### 3) High-Confidence Investigation Anchors
 
 This section lists timeline anchors that structured investigative correlation.
 
@@ -67,11 +67,11 @@ These anchors were used to pivot from network indicators into host-level executi
 
 ---
 
-## Network and Service Exploitation Artifacts
+### 4) Network and Service Exploitation Artifacts
 
 This section documents network behaviors indicating exploitation of the Print Spooler service.
 
-### Artifact: External Connections to Print Spooler Service Ports
+#### ▶ 4.1) Artifact: External Connections to Print Spooler Service Ports
 
 **Observed Behavior:**
 
@@ -94,11 +94,11 @@ Analysts began investigation by reviewing firewall and network telemetry after a
 
 ---
 
-## Host Execution Artifacts — Confirmation of RCE
+### 5) Host Execution Artifacts — Confirmation of RCE
 
 This section documents artifacts confirming successful code execution.
 
-### Artifact: Unexpected Child Process Spawned by `spoolsv.exe`
+#### ▶ 5.1) Artifact: Unexpected Child Process Spawned by `spoolsv.exe`
 
 **Observed Behavior:**
 
@@ -120,7 +120,7 @@ After identifying suspicious inbound network traffic, analysts pivoted to Sysmon
   - high-severity host compromise
 
 
-### Artifact: Creation of Executable Payload on Disk
+#### ▶ 5.2) Artifact: Creation of Executable Payload on Disk
 
 **Observed Behavior:**
 
@@ -143,11 +143,11 @@ Following confirmation of abnormal child processes, analysts pivoted to Sysmon E
 
 ---
 
-## Persistence and Post-Exploitation Artifacts
+### 6) Persistence and Post-Exploitation Artifacts
 
 This section documents attacker actions to maintain access after exploitation.
 
-### Artifact: Service Installation or Scheduled Execution
+#### ▶ 6.1) Artifact: Service Installation or Scheduled Execution
 
 **Observed Behavior:**
 
@@ -170,11 +170,11 @@ After confirming payload execution, analysts reviewed Windows Security and Sysmo
 
 ---
 
-## Authentication and Privilege Context Artifacts
+### 7) Authentication and Privilege Context Artifacts
 
 This section documents how execution aligned with privilege escalation.
 
-### Artifact: Privileged Execution Context Following Exploitation
+#### ▶ 7.1) Artifact: Privileged Execution Context Following Exploitation
 
 **Observed Behavior:**
 
@@ -195,11 +195,11 @@ Analysts correlated Sysmon process events with Security Event ID 4672 to confirm
 
 ---
 
-## Absence of Lateral Movement Artifacts
+### 8) Absence of Lateral Movement Artifacts
 
 This section documents negative findings that influenced incident scoping.
 
-### Artifact: No Evidence of Credential Theft or Network Propagation
+#### ▶ 8.1) Artifact: No Evidence of Credential Theft or Network Propagation
 
 **Observed Behavior:**
 
@@ -216,11 +216,11 @@ Following confirmation of local compromise, analysts expanded review to include 
 
 ---
 
-## Cross-Source Correlation Opportunities
+### 9) Cross-Source Correlation Opportunities
 
 This section outlines detection strategies based on investigation pivots.
 
-### Correlation 1: Network Exploit Traffic → Service Child Process
+#### ▶ 9.1) Correlation 1: Network Exploit Traffic → Service Child Process
 
 **Signals:**
 
@@ -231,7 +231,7 @@ This section outlines detection strategies based on investigation pivots.
 Detect active exploitation in progress.
 
 
-### Correlation 2: Service Execution → Payload File Creation
+#### ▶ 9.2) Correlation 2: Service Execution → Payload File Creation
 
 **Signals:**
 
@@ -242,7 +242,7 @@ Detect active exploitation in progress.
 Detect successful malware staging post-exploitation.
 
 
-### Correlation 3: Payload Execution → Persistence Installation
+#### ▶ 9.3) Correlation 3: Payload Execution → Persistence Installation
 
 **Signals:**
 
@@ -254,7 +254,7 @@ Detect transition from exploitation to durable compromise.
 
 ---
 
-## Indicator Reliability Considerations
+### 10) Indicator Reliability Considerations
 
 This section distinguishes between fragile indicators and reliable behaviors.
 
@@ -273,7 +273,7 @@ Behavioral detection remains effective even when attackers modify payload names.
 
 ---
 
-## Closing Summary
+### 11) Closing Summary
 
 This investigation demonstrated how exploitation of exposed Windows services can rapidly transition from:
 
@@ -291,3 +291,4 @@ By correlating:
 analysts were able to confirm successful exploitation and scope impact accurately.
 
 Detection strategies that monitor **service parent-child process relationships and correlate them with inbound network activity** can identify service exploitation attacks early, often before attackers complete post-exploitation objectives.
+
