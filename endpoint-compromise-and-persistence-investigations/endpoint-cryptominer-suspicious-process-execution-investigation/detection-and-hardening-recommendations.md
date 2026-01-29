@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Endpoint Cryptominer Infection Investigation (Suspicious Process Execution and Resource Abuse)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents detailed preventive controls and detection engineering recommendations based directly on behaviors confirmed during the investigation of suspicious process execution consistent with cryptocurrency mining activity on a corporate workstation.
 
@@ -18,11 +18,9 @@ This report expands those observations into actionable endpoint controls, monito
 
 ---
 
-## Summary of Defensive Control Failures Observed
+### 2) Summary of Defensive Control Failures Observed
 
-This section summarizes the primary control gaps that allowed unauthorized software execution to occur on a user workstation.
-
-The following failures were confirmed during investigation:
+This section summarizes the primary control gaps that allowed unauthorized software execution to occur on a user workstation. The following failures were confirmed during investigation:
 
 - Execution of an unapproved binary from a user-writable directory (`C:\Users\Chris.Fort\temp\cudominer.exe`).
 - No application control mechanisms preventing execution from `%TEMP%` paths.
@@ -38,13 +36,13 @@ These conditions enabled:
 
 ---
 
-## Endpoint Application Control Hardening
+### 3) Endpoint Application Control Hardening
 
 This section focuses on preventing unauthorized executables from launching on endpoints, regardless of malware family or filename.
 
 Because this incident did not involve privilege escalation or persistence, execution control represents the most effective preventive layer.
 
-### Implement Application Control (WDAC or AppLocker)
+#### ▶ 3.1) Implement Application Control (WDAC or AppLocker)
 
 **Evidence from Investigation:**  
 The mining binary executed successfully from a user temp directory without restriction, indicating no application control enforcement on workstation endpoints.
@@ -61,7 +59,7 @@ The mining binary executed successfully from a user temp directory without restr
 **Security Impact:**  
 Prevents execution of most unauthorized tools even if users download them manually.
 
-### Restrict Execution from User-Writable Directories
+#### ▶ 3.2) Restrict Execution from User-Writable Directories
 
 **Evidence from Investigation:**  
 The binary was executed from `C:\Users\Chris.Fort\temp`, a directory commonly abused by malware and unauthorized tools.
@@ -78,11 +76,11 @@ Eliminates common staging locations used for malware and policy violations.
 
 ---
 
-## Endpoint Protection and EDR Enhancements
+### 4) Endpoint Protection and EDR Enhancements
 
 This section focuses on strengthening behavioral detection at the endpoint level to identify cryptomining and unauthorized execution activity beyond simple filenames.
 
-### Behavioral Detection for Cryptomining Activity
+#### ▶ 4.1) Behavioral Detection for Cryptomining Activity
 
 **Evidence from Investigation:**  
 Detection relied primarily on the executable name `cudominer.exe`, not on runtime behavior such as sustained CPU/GPU utilization.
@@ -97,13 +95,12 @@ Detection relied primarily on the executable name `cudominer.exe`, not on runtim
 **Security Impact:**  
 Allows detection of mining activity even when filenames or hashes change.
 
-### Alert on Execution of Unsigned or Unknown Binaries
+#### ▶ 4.2) Alert on Execution of Unsigned or Unknown Binaries
 
 **Evidence from Investigation:**  
 The mining binary was not validated as a trusted or signed enterprise application.
 
 **Recommendation:**
-
 - Alert when:
   - Unsigned executables run in user context
   - New executables are launched for the first time on a host
@@ -113,17 +110,16 @@ Provides early warning for unauthorized software execution beyond known malware 
 
 ---
 
-## Detection Engineering Improvements
+### 5) Detection Engineering Improvements
 
 This section addresses improvements to SIEM detection logic to reduce reliance on static indicators and improve alert fidelity.
 
-### Correlate File Creation with Process Execution
+#### ▶ 5.1) Correlate File Creation with Process Execution
 
 **Evidence from Investigation:**  
 Execution from a temp directory implies a prior download or file creation event, but no correlation detection was present.
 
 **Recommendation:**
-
 Create correlations for:
 
 - File creation in:
@@ -135,13 +131,12 @@ Create correlations for:
 **Security Impact:**  
 Identifies download-and-execute behavior commonly used by malware and unauthorized tools.
 
-### Correlate Process Execution with Resource Utilization
+#### ▶ 5.2) Correlate Process Execution with Resource Utilization
 
 **Evidence from Investigation:**  
 No sustained mining was confirmed, but resource monitoring was not part of detection logic.
 
 **Recommendation:**
-
 - Correlate:
   - New process execution
   - High CPU or GPU usage
@@ -150,7 +145,7 @@ No sustained mining was confirmed, but resource monitoring was not part of detec
 **Security Impact:**  
 Increases confidence of cryptomining detections and reduces false positives.
 
-### Expand Detection Beyond Filename Matching
+#### ▶ 5.3) Expand Detection Beyond Filename Matching
 
 **Evidence from Investigation:**  
 Alert was triggered by keyword matching on executable name rather than behavior.
@@ -168,11 +163,11 @@ Improves resilience against attacker renaming of binaries.
 
 ---
 
-## User Privilege and Software Installation Controls
+### 6) User Privilege and Software Installation Controls
 
 This section focuses on reducing the ability of users to install or execute unauthorized software.
 
-### Limit Local Administrative Privileges
+#### ▶ 6.1) Limit Local Administrative Privileges
 
 **Evidence from Investigation:**  
 While no privilege escalation occurred, user execution rights allowed arbitrary software to run.
@@ -186,7 +181,7 @@ While no privilege escalation occurred, user execution rights allowed arbitrary 
 **Security Impact:**  
 Reduces ability to install and persist unauthorized tools.
 
-### Software Allowlisting and Inventory Enforcement
+#### ▶ 6.2) Software Allowlisting and Inventory Enforcement
 
 **Evidence from Investigation:**  
 No mechanism was present to flag unapproved applications at time of execution.
@@ -201,11 +196,11 @@ Enables proactive identification of shadow IT and policy violations.
 
 ---
 
-## Network Monitoring Enhancements
+### 7) Network Monitoring Enhancements
 
 This section focuses on detecting potential cryptomining pool communication that would indicate active resource hijacking.
 
-### Monitor for Mining Pool Traffic Patterns
+#### ▶ 7.1) Monitor for Mining Pool Traffic Patterns
 
 **Evidence from Investigation:**  
 No mining pool connections were observed, but network telemetry was manually reviewed.
@@ -221,11 +216,11 @@ Detects active mining even if endpoint telemetry is incomplete.
 
 ---
 
-## Logging and Visibility Improvements
+### 8) Logging and Visibility Improvements
 
 This section addresses telemetry coverage needed to investigate and detect similar incidents more effectively.
 
-### Ensure Detailed Process Telemetry Collection
+#### ▶ 8.1) Ensure Detailed Process Telemetry Collection
 
 **Evidence from Investigation:**  
 Investigation relied primarily on Windows Security Event ID 4688.
@@ -240,7 +235,7 @@ Investigation relied primarily on Windows Security Event ID 4688.
 **Security Impact:**  
 Provides richer context for execution analysis and correlation.
 
-### Retain Endpoint Logs for Adequate Investigation Windows
+#### ▶ 8.2) Retain Endpoint Logs for Adequate Investigation Windows
 
 **Evidence from Investigation:**  
 Limited historical context restricts ability to identify repeated or staged activity.
@@ -256,7 +251,7 @@ Improves scoping and attribution during investigations.
 
 ---
 
-## Prioritized Recommendations
+### 9) Prioritized Recommendations
 
 This table summarizes controls that would most effectively reduce risk based on behaviors observed in this incident.
 
@@ -271,7 +266,7 @@ This table summarizes controls that would most effectively reduce risk based on 
 
 ---
 
-## Closing Observations
+### 10) Closing Observations
 
 This investigation demonstrates that cryptomining activity may initially appear as isolated policy violations rather than overt malware infections.
 
@@ -288,3 +283,4 @@ Effective prevention therefore requires:
 - Correlation of download, execution, and performance data
 
 Without these layers, unauthorized software execution may continue until manual review or performance degradation triggers investigation.
+
