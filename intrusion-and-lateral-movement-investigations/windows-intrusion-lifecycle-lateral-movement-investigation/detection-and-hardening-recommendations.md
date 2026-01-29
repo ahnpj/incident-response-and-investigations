@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Windows Malware Intrusion Lifecycle Investigation (Lateral Movement and Multi-Stage Host Compromise on Windows)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 This report documents **detailed detection engineering and preventive control recommendations** derived directly from confirmed attacker behaviors observed during the Windows Host Malware Intrusion Lifecycle investigation.
 
 Recommendations are grounded in evidence documented in:
@@ -17,7 +17,7 @@ This report expands those observations into **specific, operational controls map
 
 ---
 
-## Summary of Defensive Control Failures Observed
+### 2) Summary of Defensive Control Failures Observed
 
 This section summarizes the key control gaps that allowed the intrusion to progress across multiple stages.
 
@@ -45,11 +45,11 @@ These gaps allowed attacker activity to persist across multiple attack stages wi
 
 ---
 
-## Network Exposure and Perimeter Controls
+### 3) Network Exposure and Perimeter Controls
 
 This section addresses controls to reduce external attack surface and improve early-stage detection.
 
-### Restrict Remote Access Exposure
+#### ▶ 3.1) Restrict Remote Access Exposure
 
 **Observed in Investigation:**  
 Firewall telemetry showed direct inbound access to SSH and RDP services from external networks.
@@ -66,7 +66,7 @@ Firewall telemetry showed direct inbound access to SSH and RDP services from ext
 **Why This Matters:**  
 Limiting exposed services dramatically reduces brute-force and credential-stuffing attack opportunities.
 
-### Implement Network Rate Limiting and Geo-Fencing
+#### ▶ 3.2) Implement Network Rate Limiting and Geo-Fencing
 
 **Observed in Investigation:**  
 Repeated connection attempts occurred from a single external IP without rate restrictions.
@@ -81,11 +81,11 @@ Reduces effectiveness of brute-force attacks and lowers SOC alert volume.
 
 ---
 
-## Authentication and Credential Protection Controls
+### 4) Authentication and Credential Protection Controls
 
 This section focuses on preventing and detecting credential-based attacks.
 
-### Enforce Multi-Factor Authentication for Remote Access
+#### ▶ 4.1) Enforce Multi-Factor Authentication for Remote Access
 
 **Observed in Investigation:**  
 SSH authentication relied solely on password validation.
@@ -100,7 +100,7 @@ SSH authentication relied solely on password validation.
 **Why This Matters:**  
 MFA breaks brute-force and credential-stuffing attack chains even when passwords are compromised.
 
-### Enforce Account Lockout Policies
+#### ▶ 4.2) Enforce Account Lockout Policies
 
 **Observed in Investigation:**  
 Repeated SSH failures did not trigger lockout or delay.
@@ -114,7 +114,7 @@ Repeated SSH failures did not trigger lockout or delay.
 **Why This Matters:**  
 Limits brute-force feasibility and forces attackers into noisier exploitation methods.
 
-### Monitor for Brute Force to Success Transitions
+#### ▶ 4.3) Monitor for Brute Force to Success Transitions
 
 **Observed in Investigation:**  
 Successful login occurred after repeated failures from same IP.
@@ -130,11 +130,11 @@ This is one of the highest-confidence signals of real compromise.
 
 ---
 
-## Host Execution and Malware Staging Detection
+### 5) Host Execution and Malware Staging Detection
 
 This section addresses controls to detect payload delivery and execution after access.
 
-### Detect Archive Extraction After Remote Authentication
+#### ▶ 5.1) Detect Archive Extraction After Remote Authentication
 
 **Observed in Investigation:**  
 `7z.exe` executed `7z e keylogger.rar` shortly after SSH login.
@@ -149,7 +149,7 @@ This section addresses controls to detect payload delivery and execution after a
 **Why This Matters:**  
 Attackers frequently use archives to stage toolkits after gaining access.
 
-### Detect Executable Creation in User Profile Paths
+#### ▶ 5.2) Detect Executable Creation in User Profile Paths
 
 **Observed in Investigation:**  
 `rundll33.exe` and `svchost.exe` created under `AppData\Roaming\WPDNSE`.
@@ -166,11 +166,11 @@ Legitimate software rarely drops executables directly into roaming profile folde
 
 ---
 
-## Persistence Mechanism Detection and Prevention
+## 6) Persistence Mechanism Detection and Prevention
 
 This section focuses on preventing attackers from maintaining long-term access.
 
-### Registry Run Key Monitoring
+#### ▶ 6.1) Registry Run Key Monitoring
 
 **Observed in Investigation:**  
 Sysmon Event ID 13 recorded Run key values pointing to malware executables.
@@ -187,7 +187,7 @@ Sysmon Event ID 13 recorded Run key values pointing to malware executables.
 **Why This Matters:**  
 Registry autoruns are one of the most common and reliable persistence mechanisms.
 
-### Correlate Persistence with Prior Compromise Signals
+#### ▶ 6.2) Correlate Persistence with Prior Compromise Signals
 
 **Observed in Investigation:**  
 Persistence was created minutes after malware files were dropped.
@@ -204,11 +204,11 @@ Correlation reduces false positives and increases detection confidence.
 
 ---
 
-## Identity Persistence and Privilege Abuse Controls
+### 7) Identity Persistence and Privilege Abuse Controls
 
 This section addresses attacker attempts to persist via account manipulation.
 
-### Alert on Local Account Creation on Endpoints
+#### ▶ 7.1) Alert on Local Account Creation on Endpoints
 
 **Observed in Investigation:**  
 Security Event ID 4720 recorded creation of `sysadmin` account.
@@ -223,7 +223,7 @@ Security Event ID 4720 recorded creation of `sysadmin` account.
 **Why This Matters:**  
 Local account creation is rarely legitimate outside provisioning workflows.
 
-### Alert on Privileged Group Membership Changes
+#### ▶ 7.2) Alert on Privileged Group Membership Changes
 
 **Observed in Investigation:**  
 Security Event ID 4732 showed `sysadmin` added to Administrators group.
@@ -238,7 +238,7 @@ Security Event ID 4732 showed `sysadmin` added to Administrators group.
 **Why This Matters:**  
 Privilege escalation enables complete system control and security bypass.
 
-### Monitor for Account Deletion as Defense Evasion
+#### ▶ 7.3) Monitor for Account Deletion as Defense Evasion
 
 **Observed in Investigation:**  
 Security Event ID 4726 showed deletion of account `DRB` after persistence established.
@@ -255,11 +255,11 @@ Account deletion may indicate attacker cleanup or disruption of legitimate acces
 
 ---
 
-## Endpoint Visibility and Telemetry Requirements
+### 8) Endpoint Visibility and Telemetry Requirements
 
 This section addresses logging improvements necessary to detect similar attacks.
 
-### Ensure Full Host Telemetry Coverage
+#### ▶ 8.1) Ensure Full Host Telemetry Coverage
 
 **Observed in Investigation:**  
 Successful detection relied on:
@@ -288,11 +288,11 @@ Without these events, attack chains cannot be reconstructed or correlated.
 
 ---
 
-## Incident Response Readiness Improvements
+### 9) Incident Response Readiness Improvements
 
 This section addresses procedural controls and SOC readiness.
 
-### Automate Host Isolation on High-Confidence Compromise
+#### ▶ 9.1) Automate Host Isolation on High-Confidence Compromise
 
 **Observed in Investigation:**  
 Persistence was established minutes after access.
@@ -306,7 +306,7 @@ Persistence was established minutes after access.
 **Why This Matters:**  
 Minutes matter. Automation reduces dwell time dramatically.
 
-### Standardize Reimage Criteria for Host Compromise
+#### ▶ 9.2) Standardize Reimage Criteria for Host Compromise
 
 **Observed in Investigation:**  
 Multiple persistence mechanisms and identity abuse were present.
@@ -322,7 +322,7 @@ Partial cleanup may leave hidden backdoors behind.
 
 ---
 
-## Prioritized Recommendations
+### 10) Prioritized Recommendations
 
 | Priority | Area | Recommendation | Evidence Basis |
 |--------|--------|----------------|----------------|
@@ -338,7 +338,7 @@ Partial cleanup may leave hidden backdoors behind.
 
 ---
 
-## Closing Observations
+### 11) Closing Observations
 
 This investigation demonstrates how attackers can execute a full intrusion lifecycle using simple and widely available techniques:
 
@@ -359,3 +359,4 @@ Preventing similar incidents requires:
 - responding rapidly when compromise is confirmed  
 
 These controls directly mitigate the techniques observed in this investigation and significantly reduce the likelihood of successful long-term compromise.
+
