@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Windows Host Compromise Investigation (Backdoor Account Creation and Registry-Based Persistence)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents detailed preventive controls and detection engineering recommendations based directly on behaviors confirmed during the investigation of a Windows host compromise involving unauthorized account creation, registry-based persistence, and abuse of built-in administrative tools.
 
@@ -17,7 +17,7 @@ This report expands those observations into detailed engineering and policy cont
 
 ---
 
-## Summary of Defensive Control Failures Observed
+### 2) Summary of Defensive Control Failures Observed
 
 This section summarizes the primary control gaps that enabled persistent administrative access to be established on the compromised host.
 
@@ -37,11 +37,11 @@ As documented in the walkthrough timeline reconstruction, this allowed the attac
 
 ---
 
-## Identity and Account Management Hardening
+### 3) Identity and Account Management Hardening
 
 This section focuses on preventing and detecting unauthorized account creation and privilege escalation on endpoints.
 
-### Monitor and Restrict Local Account Creation
+#### ▶ 3.1) Monitor and Restrict Local Account Creation
 
 **Evidence from Investigation:**  
 In the walkthrough, analysts pivoted to Security logs and filtered for account management events after observing suspicious execution behavior. Event ID 4720 revealed creation of an unauthorized local account that did not align with IT provisioning activity recorded in baseline host behavior.
@@ -57,7 +57,7 @@ In the walkthrough, analysts pivoted to Security logs and filtered for account m
 **Security Impact:**  
 Prevents attackers from quietly establishing authenticated persistence using newly created accounts.
 
-### Detect and Control Administrative Group Membership Changes
+#### ▶ 3.2) Detect and Control Administrative Group Membership Changes
 
 **Evidence from Investigation:**  
 The walkthrough documents that shortly after account creation, analysts identified Event IDs 4728 and 4732 showing the new account being added to local administrative groups, confirming immediate privilege escalation.
@@ -74,11 +74,11 @@ Detects escalation of privileges before attackers can establish persistence or d
 
 ---
 
-## Registry Persistence Protection
+## 4) Registry Persistence Protection
 
 This section focuses on preventing and detecting registry-based persistence mechanisms.
 
-### Monitor Autorun Registry Locations
+#### ▶ 4.1) Monitor Autorun Registry Locations
 
 **Evidence from Investigation:**  
 After identifying administrative privilege escalation, analysts pivoted to registry modification telemetry and identified changes to autorun paths under Run keys, configured to execute attacker-controlled commands at startup.
@@ -97,7 +97,7 @@ After identifying administrative privilege escalation, analysts pivoted to regis
 **Security Impact:**  
 Detects persistence establishment even when no malware binaries are dropped.
 
-### Restrict Registry Modification Permissions
+#### ▶ 4.2) Restrict Registry Modification Permissions
 
 **Evidence from Investigation:**  
 Registry changes were performed after the attacker obtained administrative privileges through group membership modification.
@@ -114,11 +114,11 @@ Reduces the ability of compromised accounts to establish persistence.
 
 ---
 
-## Administrative Tool Abuse Prevention
+### 5) Administrative Tool Abuse Prevention
 
 This section addresses misuse of legitimate Windows utilities such as WMIC and PowerShell for post-compromise activity.
 
-### Monitor WMIC Execution
+#### ▶ 5.1) Monitor WMIC Execution
 
 **Evidence from Investigation:**  
 Process creation telemetry showed WMIC execution after persistence was established, suggesting follow-on activity or reconnaissance.
@@ -133,7 +133,7 @@ Process creation telemetry showed WMIC execution after persistence was establish
 **Security Impact:**  
 Detects stealthy command execution and potential lateral movement staging.
 
-### PowerShell Logging and Restriction
+#### ▶ 5.2) PowerShell Logging and Restriction
 
 **Evidence from Investigation:**  
 PowerShell was launched following WMIC usage, indicating progression to interactive or scripted post-compromise activity.
@@ -151,11 +151,11 @@ Limits attacker ability to leverage PowerShell for persistence and C2.
 
 ---
 
-## Detection Engineering Improvements
+### 6) Detection Engineering Improvements
 
 This section focuses on building multi-stage behavioral detections.
 
-### Correlate Account Creation → Privilege Escalation → Persistence
+#### ▶ 6.1) Correlate Account Creation → Privilege Escalation → Persistence
 
 **Evidence from Investigation:**  
 Timeline reconstruction in the walkthrough confirmed that account creation, group escalation, and registry persistence occurred sequentially within a short time window.
@@ -173,7 +173,7 @@ Trigger alerts when these events occur on the same host within defined threshold
 **Security Impact:**  
 Provides high-confidence detection of host compromise progression.
 
-### Correlate Identity Changes with Administrative Tool Usage
+#### ▶ 6.2) Correlate Identity Changes with Administrative Tool Usage
 
 **Evidence from Investigation:**  
 WMIC and PowerShell were executed only after privilege escalation was achieved.
@@ -189,11 +189,11 @@ Detects post-compromise exploitation rather than benign administration.
 
 ---
 
-## Endpoint Hardening and Privilege Management
+### 7) Endpoint Hardening and Privilege Management
 
 This section focuses on limiting attacker capability even after credential compromise.
 
-### Enforce Least Privilege on Workstations
+#### ▶ 7.1) Enforce Least Privilege on Workstations
 
 **Evidence from Investigation:**  
 Administrative privileges enabled registry modification and tool abuse.
@@ -206,7 +206,7 @@ Administrative privileges enabled registry modification and tool abuse.
 **Security Impact:**  
 Prevents persistence mechanisms even when credentials are compromised.
 
-### Harden Startup Configuration Controls
+#### ▶ 7.2) Harden Startup Configuration Controls
 
 **Evidence from Investigation:**  
 Persistence relied on autorun registry keys rather than services or tasks, but attackers often use multiple persistence layers.
@@ -224,11 +224,11 @@ Detects alternative persistence mechanisms beyond registry keys.
 
 ---
 
-## Logging and Telemetry Improvements
+### 8) Logging and Telemetry Improvements
 
 This section addresses visibility gaps observed during investigation.
 
-### Expand Endpoint Telemetry Collection
+#### ▶ 8.1) Expand Endpoint Telemetry Collection
 
 **Evidence from Investigation:**  
 Analysis relied primarily on Windows Security logs, limiting visibility into command-line arguments and registry value data.
@@ -243,7 +243,7 @@ Analysis relied primarily on Windows Security logs, limiting visibility into com
 **Security Impact:**  
 Improves fidelity of behavioral detections and investigation depth.
 
-### Retain Identity and Registry Logs for Adequate Forensic Windows
+#### ▶ 8.2) Retain Identity and Registry Logs for Adequate Forensic Windows
 
 **Evidence from Investigation:**  
 Limited log retention constrains long-term compromise reconstruction.
@@ -259,7 +259,7 @@ Enables detection of low-and-slow persistence campaigns.
 
 ---
 
-## Prioritized Recommendations
+### 9) Prioritized Recommendations
 
 This table summarizes controls that would most effectively reduce risk based on behaviors observed in this incident.
 
@@ -275,7 +275,7 @@ This table summarizes controls that would most effectively reduce risk based on 
 
 ---
 
-## Closing Observations
+### 10) Closing Observations
 
 This investigation demonstrates that attackers can achieve durable access using only native Windows features without deploying traditional malware.
 
@@ -292,3 +292,4 @@ Effective defense therefore requires:
 - Correlation of administrative tool usage with account lifecycle events
 
 Without cross-domain correlation between identity, registry, and process telemetry, attackers can maintain stealthy access using legitimate system functionality.
+
