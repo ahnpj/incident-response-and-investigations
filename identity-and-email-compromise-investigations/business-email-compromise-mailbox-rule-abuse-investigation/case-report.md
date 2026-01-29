@@ -318,7 +318,7 @@ Behavioral correlation remains the most reliable method for detecting similar Bu
 
 ---
 
-## 8) Case Determination
+### 8) Case Determination
 
 Final Determination:
 Confirmed Business Email Compromise involving credential-based mailbox access followed by mailbox rule abuse to conceal fraudulent financial communications.
@@ -333,7 +333,7 @@ This aligns with common real-world BEC tradecraft relying on social engineering 
 
 ---
 
-## 9) Recommended Follow-Ups (Case Closure Actions)
+### 9) Recommended Follow-Ups (Case Closure Actions)
 
 The recommendations below summarize key containment, hardening, and detection priorities identified during this Business Email Compromise incident. These actions focus on reducing immediate risk related to identity abuse, mailbox manipulation, and fraudulent financial workflows.
 
@@ -361,7 +361,7 @@ This section is intended to highlight high-impact and time-sensitive actions for
 
 ---
 
-## 10) Supporting Reports (In This Folder)
+### 10) Supporting Reports (In This Folder)
 
 The files below make up the full case package for this investigation and provide additional detail across analyst workflow, response actions, detection engineering, and executive-level reporting. Together, they support different audiences while maintaining a consistent incident record for this case.
 
@@ -376,7 +376,7 @@ The files below make up the full case package for this investigation and provide
 
 ---
 
-## 11) MITRE ATT&CK Mapping
+### 11) MITRE ATT&CK Mapping
 
 The mappings below provide a **high-level summary of confirmed adversary behaviors** observed during this incident and are intended as a quick reference for understanding the overall attack lifecycle.  
 
@@ -404,3 +404,4 @@ This structure reflects common incident response reporting practices, where case
 | Defense Evasion | **Hide Artifacts (T1564)** | Routing to hidden folder `History` |
 
 | Impact | **Financial Fraud (T1657)** | Fraudulent withdrawal approvals |
+
