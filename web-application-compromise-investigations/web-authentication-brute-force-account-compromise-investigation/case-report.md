@@ -7,7 +7,7 @@
 
 ---
 
-## 1) Executive Summary
+### 1) Executive Summary
 
 This case investigates abnormal authentication activity against a web application that resulted in successful account compromise and subsequent credential reuse. Application-layer logs revealed a high volume of failed login attempts originating from a single external IP address, followed by successful authentication and reuse of the same credentials from a secondary source.
 
@@ -17,7 +17,7 @@ Evidence supporting these conclusions includes repeated failed authentication at
 
 ---
 
-## 2) Incident Background
+### 2) Incident Background
 
 The investigation was initiated following detection of elevated authentication failures within application authentication telemetry. Because credential abuse against web applications is a common initial access vector and can result in account takeover without malware or exploit activity, the investigation focused on reconstructing attacker behavior using application-layer logs.
 
@@ -33,21 +33,19 @@ The goal was to validate account compromise, assess impact, and identify detecti
 
 ---
 
-## 3) Scope
+### 3) Scope
 
 This section defines which systems, identities, and data sources were included in the investigation, as well as what activity was not observed within the available evidence. Clearly defining scope helps distinguish confirmed credential abuse from assumptions about broader system compromise that are not supported by telemetry.
 
-### In-Scope
+#### ▶ 3.1) In-Scope
 
-- **Application under investigation:** Linux-based web application
-- **Primary evidence sources:** Application authentication telemetry
-- **Behavioral focus areas:**
-  - Failed and successful authentication attempts
-  - Username targeting patterns
-  - Source IP behavior
-  - Credential handling and logging practices
+| Category | Included Items |
+|--------|----------------|
+| **Application Under Investigation** | • Linux-based web application |
+| **Primary Evidence Sources** | • Application authentication telemetry |
+| **Behavioral Focus Areas** | • Failed and successful authentication attempts<br>• Username targeting patterns<br>• Source IP behavior<br>• Credential handling and logging practices |
 
-### Out-of-Scope / Not Observed
+#### ▶ 3.2) Out-of-Scope / Not Observed
 
 - Host-level compromise of application server
 - Malware deployment
@@ -58,21 +56,21 @@ Analysis was limited to post-incident review of application-layer authentication
 
 ---
 
-## 4) Environment
+### 4) Environment
 
 This investigation analyzed application-layer authentication telemetry to identify automated credential abuse against a web application.
 
-**Affected System (Victim) Operating System:**
+#### ▶ 4.1) **Affected System (Victim) Operating System:**
 - Linux-based web application server
 
-**Analyst Virtual Machine Operating System:**
+#### ▶ 4.2) **Analyst Virtual Machine Operating System:**
 - Windows-based analyst workstation used for log parsing and analysis
 
-**Platforms and Services:**
+#### ▶ 4.3) **Platforms and Services:**
 - Web application authentication service — reviewed login attempts, failures, and success events
 - Application logging framework — extracted JSON-based authentication records for analysis
 
-**Data Sources Reviewed:**
+#### ▶ 4.4) **Data Sources Reviewed:**
 - Application authentication logs (JSON format)
   - Username
   - Source IP address
@@ -88,14 +86,14 @@ No host-level telemetry or malware artifacts were available. Findings are limite
 
 ---
 
-## 5) Evidence Summary
+### 5) Evidence Summary
 
 This section summarizes the primary evidence used to reconstruct automated authentication abuse, account enumeration, credential compromise, and reuse activity observed during this incident. It focuses on how each data source contributed to understanding attacker behavior and impact rather than listing raw log fields.
 
 Detailed event fields, authentication parameters, and detection-relevant artifacts extracted from this investigation are documented separately in: `detection-artifact-report.md`
 
 
-### 5.1 Source IP Attribution — Automated Authentication Attempts
+#### ▶ 5.1) Source IP Attribution — Automated Authentication Attempts
 
 Authentication logs revealed a high volume of failed login attempts originating from a single external IP address within a short time window:
 
@@ -104,7 +102,7 @@ Authentication logs revealed a high volume of failed login attempts originating 
 The concentration of failures from one source, combined with rapid request frequency, is inconsistent with legitimate user behavior and strongly indicative of scripted authentication abuse.
 
 
-### 5.2 User-Agent Consistency — Scripted Tooling Indicators
+#### ▶ 5.2) User-Agent Consistency — Scripted Tooling Indicators
 
 All authentication attempts originating from the attacking IP shared an identical User-Agent string:
 
@@ -113,7 +111,7 @@ All authentication attempts originating from the attacking IP shared an identica
 The lack of variation across numerous requests suggests automated tooling configured to mimic a standard browser rather than interactive human logins.
 
 
-### 5.3 Account Enumeration — Non-Existent Username Targeting
+#### ▶ 5.3) Account Enumeration — Non-Existent Username Targeting
 
 Multiple authentication attempts targeted usernames that did not exist within the application, consistently returning failure responses indicating unrecognized accounts.
 
@@ -132,7 +130,7 @@ Non-existent usernames targeted included:
 Targeting of generic administrative and service-style usernames indicates deliberate account enumeration rather than accidental user error.
 
 
-### 5.4 Targeted Credential Attacks — Valid Account Focus
+#### ▶ 5.4) Targeted Credential Attacks — Valid Account Focus
 
 After enumeration, authentication attempts shifted toward confirmed valid accounts, including:
 
@@ -143,7 +141,7 @@ After enumeration, authentication attempts shifted toward confirmed valid accoun
 These accounts are commonly associated with elevated privileges or service functionality, indicating prioritization of high-value targets following identification of valid users.
 
 
-### 5.5 Successful Authentication — Credential Compromise Confirmed
+#### ▶ 5.5) Successful Authentication — Credential Compromise Confirmed
 
 Following repeated failures, a successful authentication occurred for:
 
@@ -153,7 +151,7 @@ Following repeated failures, a successful authentication occurred for:
 Successful authentication occurred immediately after repeated failed attempts using identical client metadata, strongly indicating that correct credentials were obtained during the attack window.
 
 
-### 5.6 Credential Reuse — Secondary Source Authentication
+#### ▶ 5.6) Credential Reuse — Secondary Source Authentication
 
 Several minutes after initial compromise, the same account authenticated successfully from a new IP address:
 
@@ -163,7 +161,7 @@ Several minutes after initial compromise, the same account authenticated success
 This behavior indicates credential reuse rather than continued brute-force activity and confirms that valid credentials were compromised and operationally reused.
 
 
-### 5.7 Credential Exposure — Insecure Application Logging
+#### ▶ 5.7) Credential Exposure — Insecure Application Logging
 
 Authentication logs contained a `hashed_password` field that remained consistent across failed and successful attempts. Decoding of this value revealed:
 
@@ -174,7 +172,7 @@ The value was determined to be Base64-encoded rather than cryptographically hash
 
 ---
 
-## 6) Investigation Timeline (Condensed)
+### 6) Investigation Timeline (Condensed)
 
 The timeline below reflects the reconstructed sequence of attacker and application activity, not the step-by-step actions taken by the analyst during investigation. Detailed analyst workflow and data exploration are documented separately in: `investigation-walkthrough.md`
 
@@ -191,14 +189,14 @@ The timeline below reflects the reconstructed sequence of attacker and applicati
 
 ---
 
-## 7) Indicators of Compromise (IOCs)
+### 7) Indicators of Compromise (IOCs)
 
 The indicators listed below represent high-confidence artifacts associated with authentication abuse, account compromise, and insecure credential handling observed during this incident.
 
 Field-level telemetry and detection pivots are documented separately in: `detection-artifact-report.md`
 
 
-### 7.1 Network Source IOCs
+#### ▶ 7.1) Network Source IOCs
 
 - Primary attacking IP: `198.51.100.100`
 - Secondary login IP: `198.23.200.101`
@@ -207,8 +205,7 @@ Field-level telemetry and detection pivots are documented separately in: `detect
 - Alert on excessive authentication failures from single sources
 - Detect new successful logins from unfamiliar IPs
 
-
-### 7.2 User-Agent & Automation IOCs
+#### ▶ 7.2) User-Agent & Automation IOCs
 
 - Consistent User-Agent: `Chrome/91.0.4472.124`
 
@@ -217,7 +214,7 @@ Field-level telemetry and detection pivots are documented separately in: `detect
 - Flag automation patterns across multiple accounts
 
 
-### 7.3 Account Targeting IOCs
+#### ▶ 7.3) Account Targeting IOCs
 
 - Non-existent accounts targeted
 - Valid accounts targeted: `websitemanager`, `webadmin`, `ftp`
@@ -227,7 +224,7 @@ Field-level telemetry and detection pivots are documented separately in: `detect
 - Monitor targeting of privileged or service-style accounts
 
 
-### 7.4 Authentication Endpoint IOCs
+#### ▶ 7.4) Authentication Endpoint IOCs
 
 - Targeted endpoint: `/api/login`
 
@@ -236,7 +233,7 @@ Field-level telemetry and detection pivots are documented separately in: `detect
 - Monitor for bursts of failed authentication activity per endpoint
 
 
-### 7.5 Credential Exposure Artifacts
+#### ▶ 7.5) Credential Exposure Artifacts
 
 - Base64-encoded credential values in logs
 - Recoverable plaintext passwords
@@ -246,13 +243,13 @@ Field-level telemetry and detection pivots are documented separately in: `detect
 - Detect deterministic credential values across login attempts
 
 
-### 7.6 IOC Limitations
+#### ▶ 7.6) IOC Limitations
 
 While the indicators above are high-confidence within this dataset, attackers can change IP infrastructure, User-Agent strings, and username lists. Detection strategies should prioritize behavioral correlations such as enumeration followed by successful authentication rather than relying solely on static indicators.
 
 ---
 
-## 8) Case Determination
+### 8) Case Determination
 
 **Final Determination:**  
 Confirmed web application account compromise resulting from automated authentication abuse combined with insecure credential handling in application logs, leading to successful login and credential reuse.
@@ -261,24 +258,24 @@ Evidence supports a credential access incident involving brute-force behavior, p
 
 ---
 
-## 9) Recommended Follow-Ups (Case Closure Actions)
+### 9) Recommended Follow-Ups (Case Closure Actions)
 
 The recommendations below summarize key containment, hardening, and detection priorities based on behaviors observed during this incident. Detailed technical controls and expanded monitoring strategies are documented separately in: `detection-and-hardening-recommendations.md`
 
-### Immediate Containment
+#### ▶ 9.1) Immediate Containment
 
 - Reset credentials for all affected and targeted accounts
 - Invalidate active authentication sessions
 - Block or rate-limit identified attacking IP addresses
 
-### Hardening
+#### ▶ 9.2) Hardening
 
 - Implement account lockout and progressive backoff controls
 - Enforce multi-factor authentication for privileged accounts
 - Remove credential material from application logs
 - Ensure passwords are securely hashed and salted
 
-### Detection
+#### ▶ 9.3) Detection
 
 - Alert on enumeration of non-existent usernames
 - Detect successful authentication following repeated failures
@@ -286,7 +283,7 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 ---
 
-## 10) Supporting Reports (In This Folder)
+### 10) Supporting Reports (In This Folder)
 
 The files below make up the full case package for this investigation and provide additional detail across analyst workflow, response actions, detection engineering, and executive-level reporting.
 
@@ -301,21 +298,21 @@ The files below make up the full case package for this investigation and provide
 
 ---
 
-## 11) MITRE ATT&CK Mapping
+### 11) MITRE ATT&CK Mapping
 
 The mappings below provide a high-level summary of confirmed adversary behaviors observed during this incident.
 
 - Full investigative context and evidence references: `investigation-walkthrough.md`  
 - Expanded technique analysis and detection considerations: `MITRE-ATTACK-mapping.md`
 
-### Technique Mapping
+#### ▶ 11.1) Technique Mapping
 
 - **Credential Access — Brute Force (T1110)**
 - **Credential Access — Password Spraying (T1110.003)**
 - **Credential Access — Valid Accounts (T1078)**
 - **Credential Access — Unsecured Credentials (T1552)**
 
-### MITRE ATT&CK Mapping (Table View)
+#### ▶ 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |--------|----------|-------------|
@@ -325,3 +322,4 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recoverable from logs |
 
 ---
+
