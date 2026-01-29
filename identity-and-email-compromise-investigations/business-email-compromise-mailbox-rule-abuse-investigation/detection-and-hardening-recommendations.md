@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Business Email Compromise (BEC) Investigation (Malicious Mailbox Rule Abuse and Account Compromise)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents detailed preventive controls and detection engineering recommendations based directly on attacker behaviors confirmed during the investigation of a Business Email Compromise (BEC) incident involving mailbox rule abuse and fraudulent pension withdrawals.
 
@@ -18,7 +18,7 @@ This report expands those observations into actionable controls, monitoring stra
 
 ---
 
-## Summary of Defensive Control Failures Observed
+### 2) Summary of Defensive Control Failures Observed
 
 This section summarizes the primary control gaps that were directly observed during the investigation and that materially enabled the attacker to execute and conceal fraudulent activity.
 
@@ -42,14 +42,14 @@ These conditions enabled the attacker to:
 
 ---
 
-## Identity Security Hardening
+### 3) Identity Security Hardening
 
 This section focuses on identity-layer protections that would have prevented or significantly limited attacker access, even after successful phishing or credential theft.
 
 Because no endpoint compromise was observed, identity controls represent the most critical defensive layer for preventing similar incidents.
 
 
-### Enforce Mandatory MFA for Executive and Finance Accounts
+#### ▶ 3.1) Enforce Mandatory MFA for Executive and Finance Accounts
 
 **Evidence from Investigation:**  
 Multiple `UserLoggedIn` events were observed for the compromised account from external IP addresses (`159.203.17.81`, `95.181.232.30`) prior to mailbox rule creation  
@@ -69,7 +69,7 @@ No MFA challenges were recorded, indicating credential-only access was sufficien
 MFA would have prevented account access even after phishing-based credential compromise.
 
 
-### Risk-Based Conditional Access Enforcement
+#### ▶ 3.2) Risk-Based Conditional Access Enforcement
 
 **Evidence from Investigation:**  
 Authentication occurred from IP addresses not previously associated with the user and was temporally correlated with mailbox manipulation events  
@@ -86,7 +86,7 @@ Authentication occurred from IP addresses not previously associated with the use
 Would interrupt attacker access before mailbox persistence mechanisms are established.
 
 
-### Session and Token Lifetime Controls
+#### ▶ 3.3) Session and Token Lifetime Controls
 
 **Evidence from Investigation:**  
 Mailbox configuration changes (folder creation, rule creation) occurred within the same authenticated session windows.
@@ -101,14 +101,14 @@ Limits attacker dwell time and reduces opportunity for multiple actions per sess
 
 ---
 
-## Mailbox and Exchange Online Controls
+### 4) Mailbox and Exchange Online Controls
 
 This section focuses on preventing and detecting mailbox-level persistence techniques, which were the primary method used to conceal fraudulent activity during the incident.
 
 Mailbox configuration abuse is a common but often under-monitored vector in BEC campaigns.
 
 
-### Monitor and Alert on Inbox Rule Creation Events
+#### ▶ 4.1) Monitor and Alert on Inbox Rule Creation Events
 
 **Evidence from Investigation:**  
 Inbox rules were created with parameters:
@@ -133,7 +133,7 @@ Inbox rules were created with parameters:
 Inbox rule abuse is the primary persistence mechanism in BEC attacks.
 
 
-### Detect Folder Creation Followed by Inbox Rule Assignment
+#### ▶ 4.2) Detect Folder Creation Followed by Inbox Rule Assignment
 
 **Evidence from Investigation:**  
 `FolderCreated` events occurred on `2025-07-01` and `2025-07-02`, followed by rules referencing that folder via `MoveToFolder = History`  
@@ -150,7 +150,7 @@ Inbox rule abuse is the primary persistence mechanism in BEC attacks.
 Legitimate users rarely create folders immediately followed by filtering rules targeting sensitive content.
 
 
-### Restrict and Monitor Auto-Forwarding Rules
+#### ▶ 4.3) Restrict and Monitor Auto-Forwarding Rules
 
 **Evidence from Investigation:**  
 Although forwarding was not observed in this case, attacker tradecraft frequently includes forwarding rules to monitor future communications.
@@ -165,14 +165,14 @@ Prevents long-term surveillance of financial workflows.
 
 ---
 
-## Detection Engineering Enhancements
+### 5) Detection Engineering Enhancements
 
 This section describes improvements to monitoring logic and alert correlation that would enable earlier detection of identity-based and mailbox-based abuse.
 
 The goal is to detect attacker behavior patterns rather than relying on static indicators alone.
 
 
-### Correlate Authentication with Mailbox Configuration Changes
+#### ▶ 5.1) Correlate Authentication with Mailbox Configuration Changes
 
 **Evidence from Investigation:**  
 Authentication telemetry and mailbox abuse were analyzed separately during investigation but were temporally related  
@@ -192,7 +192,7 @@ Within 30–60 minute windows.
 Behavioral correlation provides higher-fidelity detection than standalone alerts.
 
 
-### Monitor Financial Keyword-Based Rules
+#### ▶ 5.2) Monitor Financial Keyword-Based Rules
 
 **Evidence from Investigation:**  
 Keyword filtering targeted “withdrawal,” which appears repeatedly in pension approval emails  
@@ -212,7 +212,7 @@ Alert on inbox rules filtering terms such as:
 Strong indicator of concealment rather than routine email organization.
 
 
-### Integrate Identity Risk Signals into SIEM
+#### ▶ 5.3) Integrate Identity Risk Signals into SIEM
 
 **Evidence from Investigation:**  
 Authentication anomalies alone did not trigger detection prior to financial impact.
@@ -229,14 +229,12 @@ Allows SOC to prioritize identity-based attacks before business impact occurs.
 
 ---
 
-## Business Process and Financial Workflow Controls
+### 6) Business Process and Financial Workflow Controls
 
-This section addresses operational safeguards that prevent financial fraud even when technical security controls fail.
-
-Because BEC attacks exploit trust and workflow design, business controls are as critical as technical defenses.
+This section addresses operational safeguards that prevent financial fraud even when technical security controls fail. Because BEC attacks exploit trust and workflow design, business controls are as critical as technical defenses.
 
 
-### Out-of-Band Transaction Verification
+#### ▶ 6.1) Out-of-Band Transaction Verification
 
 **Evidence from Investigation:**  
 Financial approvals were performed exclusively via email correspondence  
@@ -259,7 +257,7 @@ Methods may include:
 Breaks attacker ability to abuse mailbox access alone.
 
 
-### Dual Authorization for High-Risk Transactions
+#### ▶ 6.2) Dual Authorization for High-Risk Transactions
 
 **Evidence from Investigation:**  
 Single executive mailbox compromise enabled transaction authorization.
@@ -274,7 +272,7 @@ Single executive mailbox compromise enabled transaction authorization.
 Reduces blast radius of single-account compromise.
 
 
-### Executive-Focused Social Engineering Training
+#### ▶ 6.3) Executive-Focused Social Engineering Training
 
 **Evidence from Investigation:**  
 Impersonation of a pension service provider was effective in initiating workflow  
@@ -291,14 +289,14 @@ Reduces success of targeted impersonation campaigns.
 
 ---
 
-## Logging and Visibility Improvements
+### 7) Logging and Visibility Improvements
 
 This section focuses on telemetry gaps that would materially hinder investigation or detection if similar incidents occurred again.
 
 Without sufficient logging, mailbox-based fraud may go undetected even when security teams are actively monitoring.
 
 
-### Preserve Detailed Mailbox Audit Logs
+#### ▶ 7.1) Preserve Detailed Mailbox Audit Logs
 
 **Evidence from Investigation:**  
 Rule configuration and folder routing details were essential for confirming concealment mechanisms  
@@ -314,7 +312,7 @@ Rule configuration and folder routing details were essential for confirming conc
 Without mailbox logs, BEC persistence may go undetected indefinitely.
 
 
-### Improve Authentication Telemetry Retention
+#### ▶ 7.2) Improve Authentication Telemetry Retention
 
 **Evidence from Investigation:**  
 Some authentication context was inferred from audit logs rather than dedicated sign-in logs.
@@ -332,7 +330,7 @@ Supports faster scoping and attribution during incidents.
 
 ---
 
-## Prioritized Recommendations
+### 8) Prioritized Recommendations
 
 This table summarizes which controls should be addressed first based on the behaviors that most directly enabled the incident and the feasibility of implementation.
 
@@ -347,7 +345,7 @@ This table summarizes which controls should be addressed first based on the beha
 
 ---
 
-## Closing Observations
+### 9) Closing Observations
 
 This section summarizes why this incident type remains difficult to detect and why layered defense is required.
 
@@ -365,3 +363,4 @@ Effective defense therefore requires:
 - Financial controls independent of email
 
 Without these layers, attackers can operate entirely within legitimate platforms while remaining invisible to traditional security controls.
+
