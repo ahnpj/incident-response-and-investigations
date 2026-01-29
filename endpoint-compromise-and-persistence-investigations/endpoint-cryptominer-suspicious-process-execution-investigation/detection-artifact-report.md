@@ -1,6 +1,6 @@
 # Detection Artifact Report — Endpoint Cryptominer Infection Investigation (Suspicious Process Execution and Resource Abuse)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents **host-based and process execution artifacts** observed during investigation of suspicious process activity on a Windows endpoint. The purpose of this report is to provide **detection-engineering–ready indicators** that are directly tied to analyst pivots and validation steps performed during the investigation.
 
@@ -19,11 +19,11 @@ This report complements:
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 
 This section summarizes the telemetry sources used to identify and validate suspicious execution activity.
 
-**Primary telemetry sources referenced in investigation:**
+#### ▶ 2.1) Primary telemetry sources referenced in investigation
 
 - **Sysmon (Microsoft Sysinternals)**
   - Event ID 1 — Process creation
@@ -39,14 +39,14 @@ This section summarizes the telemetry sources used to identify and validate susp
   - Endpoint.Registry
   - Endpoint.Filesystem
 
-**Confirmed host:**
+#### ▶ 2.2) Confirmed host:
 
 - **Victim system:** Windows workstation (lab host)  
 - **User context:** Local user account active during suspicious execution
 
 ---
 
-## High-Confidence Investigation Anchors
+### 3) High-Confidence Investigation Anchors
 
 This section lists timeline anchors that structured investigative correlation.
 
@@ -62,11 +62,11 @@ These anchors were used to pivot across host telemetry and confirm malicious exe
 
 ---
 
-## Initial Suspicious Process Detection Artifacts
+### 4) Initial Suspicious Process Detection Artifacts
 
 This section documents the artifacts that triggered investigation.
 
-### Artifact: Abnormal Process Creation Pattern
+#### ▶ 4.1) Artifact: Abnormal Process Creation Pattern
 
 **Observed Behavior:**
 
@@ -89,11 +89,11 @@ Analysts began by reviewing SIEM alerts and endpoint process summaries highlight
 
 ---
 
-## File System Artifacts — Payload Staging
+### 5) File System Artifacts — Payload Staging
 
 This section documents artifacts related to malware delivery and staging.
 
-### Artifact: Creation of Executable File Prior to Execution
+#### ▶ 5.1) Artifact: Creation of Executable File Prior to Execution
 
 **Observed Behavior:**
 
@@ -116,11 +116,11 @@ After identifying the abnormal process execution, analysts pivoted to Sysmon Eve
 
 ---
 
-## Process Execution Artifacts — Malicious Activity Validation
+### 6) Process Execution Artifacts — Malicious Activity Validation
 
 This section documents indicators that validated the execution was malicious.
 
-### Artifact: Repeated Execution of the Same Binary
+#### ▶ 6.1) Artifact: Repeated Execution of the Same Binary
 
 **Observed Behavior:**
 
@@ -143,11 +143,11 @@ Analysts expanded the time window around the initial execution and observed repe
 
 ---
 
-## Persistence Mechanism Artifacts
+### 7) Persistence Mechanism Artifacts
 
 This section documents how the attacker attempted to maintain execution across sessions.
 
-### Artifact: Registry Run Key Value Creation
+#### ▶ 7.1) Artifact: Registry Run Key Value Creation
 
 **Observed Behavior:**
 
@@ -170,11 +170,11 @@ Following confirmation of repeated execution, analysts pivoted into registry tel
 
 ---
 
-## Authentication and User Context Artifacts
+### 8) Authentication and User Context Artifacts
 
 This section documents how execution was tied to user activity.
 
-### Artifact: Execution Occurring Under User Logon Session
+#### ▶ 8.1) Artifact: Execution Occurring Under User Logon Session
 
 **Observed Behavior:**
 
@@ -197,11 +197,11 @@ Analysts correlated process creation timestamps with Windows Security Event ID 4
 
 ---
 
-## Absence of Lateral Movement Artifacts
+### 9) Absence of Lateral Movement Artifacts
 
 This section documents negative findings that influenced scoping decisions.
 
-### Artifact: No Evidence of Network-Based Propagation
+#### ▶ 9.1) Artifact: No Evidence of Network-Based Propagation
 
 **Observed Behavior:**
 
@@ -218,11 +218,11 @@ Analysts reviewed network telemetry and authentication logs to determine whether
 
 ---
 
-## Cross-Source Correlation Opportunities
+### 10) Cross-Source Correlation Opportunities
 
 This section outlines detection strategies based on investigation pivots.
 
-### Correlation 1: File Creation → Process Execution
+#### ▶ 10.1) Correlation 1: File Creation → Process Execution
 
 **Signals:**
 
@@ -233,7 +233,7 @@ This section outlines detection strategies based on investigation pivots.
 Detect payload staging immediately followed by execution.
 
 
-### Correlation 2: Process Execution → Registry Persistence
+#### ▶ 10.2) Correlation 2: Process Execution → Registry Persistence
 
 **Signals:**
 
@@ -244,7 +244,7 @@ Detect payload staging immediately followed by execution.
 Detect execution followed by autorun establishment.
 
 
-### Correlation 3: User Logon → Suspicious Process Execution
+#### ▶ 10.3) Correlation 3: User Logon → Suspicious Process Execution
 
 **Signals:**
 
@@ -256,7 +256,7 @@ Detect persistence triggers tied to interactive sessions.
 
 ---
 
-## Indicator Reliability Considerations
+### 11) Indicator Reliability Considerations
 
 This section distinguishes between easily changed indicators and reliable behavioral patterns.
 
@@ -275,7 +275,7 @@ Behavior-based detection remains effective even when attackers change filenames 
 
 ---
 
-## Closing Summary
+### 12) Closing Summary
 
 This investigation demonstrated how suspicious execution can be confirmed through systematic correlation of:
 
@@ -291,3 +291,4 @@ By following a structured pivot workflow, analysts were able to move from a sing
 - repeated execution under user context
 
 Detection strategies that correlate these behaviors can reliably identify similar threats before they escalate into broader system compromise.
+
