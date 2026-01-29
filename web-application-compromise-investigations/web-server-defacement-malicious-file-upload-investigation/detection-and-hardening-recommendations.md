@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Web Server Defacement Investigation (Malicious File Upload Exploitation and Web Shell Deployment)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report provides **in-depth detection engineering and hardening recommendations** derived directly from attacker behaviors confirmed during the Web Server Defacement investigation. The goal is to translate investigative findings into **actionable, SOC- and engineering-ready controls** that would have either prevented the compromise or significantly reduced attacker dwell time.
 
@@ -18,7 +18,7 @@ This report expands those findings into **specific control implementations mappe
 
 ---
 
-## Summary of Control Gaps Mapped to Attack Stages
+### 2) Summary of Control Gaps Mapped to Attack Stages
 
 This section summarizes how each stage of the intrusion was enabled by missing or insufficient controls.
 
@@ -35,11 +35,11 @@ This mapping guides prioritization of defensive controls in the sections below.
 
 ---
 
-## Perimeter and Web Application Exposure Controls
+### 3) Perimeter and Web Application Exposure Controls
 
 This section addresses controls to reduce exposure of administrative and sensitive web application functionality.
 
-### Restrict Public Access to Administrative Interfaces
+#### ▶ 3.1) Restrict Public Access to Administrative Interfaces
 
 **Observed in Investigation:**  
 Repeated POST requests to `/joomla/administrator/index.php` from external IPs, including those associated with scanner activity.
@@ -61,7 +61,7 @@ Repeated POST requests to `/joomla/administrator/index.php` from external IPs, i
 Preventing external access eliminates credential attacks entirely and converts admin access into an internal-only threat surface.
 
 
-### Harden HTTP Exposure Using Web Application Firewall
+#### ▶ 3.2) Harden HTTP Exposure Using Web Application Firewall
 
 **Observed in Investigation:**  
 Suricata detected Acunetix scanner signatures and malformed HTTP probes prior to brute-force attempts.
@@ -79,11 +79,11 @@ Stops automated tooling early and provides high-confidence alerts when bypass at
 
 ---
 
-## Authentication and Credential Security Controls
+### 4) Authentication and Credential Security Controls
 
 This section addresses how attackers obtained and abused administrative credentials.
 
-### Enforce Multi-Factor Authentication for CMS Admin Accounts
+#### ▶ 4.1) Enforce Multi-Factor Authentication for CMS Admin Accounts
 
 **Observed in Investigation:**  
 Successful login using `admin:batman` credential pair with no secondary verification.
@@ -99,7 +99,7 @@ Successful login using `admin:batman` credential pair with no secondary verifica
 Even if passwords are guessed or leaked, MFA prevents direct account takeover.
 
 
-### Implement Login Rate Limiting and Progressive Lockout
+#### ▶ 4.2) Implement Login Rate Limiting and Progressive Lockout
 
 **Observed in Investigation:**  
 Repeated POST login attempts were allowed without delay or lockout.
@@ -120,7 +120,7 @@ Repeated POST login attempts were allowed without delay or lockout.
   - lockout events occur on admin accounts
 
 
-### Enforce Strong Credential Policies and Admin Hygiene
+#### ▶ 4.3) Enforce Strong Credential Policies and Admin Hygiene
 
 **Observed in Investigation:**  
 Weak, guessable credentials were present on a public-facing admin account.
@@ -138,11 +138,11 @@ Weak credentials negate other perimeter controls.
 
 ---
 
-## File Upload and Web-to-Host Transition Detection
+### 5) File Upload and Web-to-Host Transition Detection
 
 This section focuses on preventing and detecting escalation from CMS access to OS-level execution.
 
-### Monitor and Restrict File Upload Functionality
+#### ▶ 5.1) Monitor and Restrict File Upload Functionality
 
 **Observed in Investigation:**  
 Attacker uploaded `3791.exe` through authenticated CMS functionality.
@@ -163,7 +163,7 @@ Attacker uploaded `3791.exe` through authenticated CMS functionality.
   - AppLocker or similar allowlisting
 
 
-### Detect Executable Creation in Web Directories
+#### ▶ 5.2) Detect Executable Creation in Web Directories
 
 **Observed in Investigation:**  
 Sysmon confirmed creation of `3791.exe` in server directories shortly after login.
@@ -180,7 +180,7 @@ Sysmon confirmed creation of `3791.exe` in server directories shortly after logi
 Executable creation in web directories is a strong compromise signal.
 
 
-### Detect Execution of Web-Uploaded Files
+#### ▶ 5.3) Detect Execution of Web-Uploaded Files
 
 **Observed in Investigation:**  
 Uploaded binary was executed shortly after creation.
@@ -197,11 +197,11 @@ Prevents attackers from running tools even if upload succeeds.
 
 ---
 
-## Host and Application Integrity Monitoring
+### 6) Host and Application Integrity Monitoring
 
 This section addresses detecting impact and persistence behaviors.
 
-### Implement File Integrity Monitoring on Web Content
+#### ▶ 6.1) Implement File Integrity Monitoring on Web Content
 
 **Observed in Investigation:**  
 Defacement was identified via log correlation rather than proactive alerting.
@@ -219,7 +219,7 @@ Defacement was identified via log correlation rather than proactive alerting.
 Immediate detection of defacement reduces public exposure time.
 
 
-### Baseline Normal CMS File Changes
+#### ▶ 6.2) Baseline Normal CMS File Changes
 
 **Observed in Investigation:**  
 No baseline existed to differentiate legitimate updates from malicious changes.
@@ -233,11 +233,11 @@ No baseline existed to differentiate legitimate updates from malicious changes.
 
 ---
 
-## Outbound Network Controls and Post-Exploitation Detection
+### 7) Outbound Network Controls and Post-Exploitation Detection
 
 This section focuses on limiting attacker communication and detecting C2-like behavior.
 
-### Enforce Strict Egress Filtering for Server Systems
+#### ▶ 7.1) Enforce Strict Egress Filtering for Server Systems
 
 **Observed in Investigation:**  
 Server retrieved external defacement images and potentially malware resources.
@@ -253,7 +253,7 @@ Server retrieved external defacement images and potentially malware resources.
 Prevents C2 communication and data exfiltration even after compromise.
 
 
-### Detect New or Rare Outbound Destinations
+#### ▶ 7.2) Detect New or Rare Outbound Destinations
 
 **Observed in Investigation:**  
 Outbound HTTP traffic occurred to domains not normally contacted by the server.
@@ -266,11 +266,11 @@ Outbound HTTP traffic occurred to domains not normally contacted by the server.
 
 ---
 
-## SOC Correlation and Detection Engineering Strategy
+### 8) SOC Correlation and Detection Engineering Strategy
 
 This section documents how multi-stage detection should be implemented based on investigation pivots.
 
-### Correlation 1: Scanner Detection → Admin Login Attempts
+#### ▶ 8.1) Correlation 1: Scanner Detection → Admin Login Attempts
 
 **Signals:**
 
@@ -283,7 +283,7 @@ This section documents how multi-stage detection should be implemented based on 
   - recon activity is followed by authentication abuse from same source
 
 
-### Correlation 2: Admin Login → File Upload → Execution
+#### ▶ 8.2) Correlation 2: Admin Login → File Upload → Execution
 
 **Signals:**
 
@@ -296,7 +296,7 @@ This section documents how multi-stage detection should be implemented based on 
 - Treat as confirmed web-to-host compromise
 
 
-### Correlation 3: Malware Execution → Outbound Traffic
+#### ▶ 8.3) Correlation 3: Malware Execution → Outbound Traffic
 
 **Signals:**
 
@@ -309,11 +309,11 @@ This section documents how multi-stage detection should be implemented based on 
 
 ---
 
-## Server Hardening and Operational Controls
+### 9) Server Hardening and Operational Controls
 
 This section addresses systemic risk reduction beyond detection.
 
-### Separate Web Application and OS Privileges
+#### ▶ 9.1) Separate Web Application and OS Privileges
 
 **Observed in Investigation:**  
 CMS admin access allowed full OS file manipulation.
@@ -324,7 +324,7 @@ CMS admin access allowed full OS file manipulation.
 - Deny write permissions outside content directories
 
 
-### Maintain Immutable Infrastructure Where Possible
+#### ▶ 9.2) Maintain Immutable Infrastructure Where Possible
 
 **Recommendations:**
 
@@ -338,11 +338,11 @@ Reduces risk of hidden backdoors after incidents.
 
 ---
 
-## Incident Response Readiness Improvements
+### 10) Incident Response Readiness Improvements
 
 This section focuses on reducing dwell time and accelerating containment.
 
-### Automate Server Isolation for High-Confidence Alerts
+#### ▶ 10.1) Automate Server Isolation for High-Confidence Alerts
 
 **Observed in Investigation:**  
 Malware execution and outbound communication were not blocked in real time.
@@ -354,7 +354,7 @@ Malware execution and outbound communication were not blocked in real time.
   - block outbound traffic automatically
 
 
-### Define Mandatory Rebuild Criteria
+#### ▶ 10.2) Define Mandatory Rebuild Criteria
 
 **Observed in Investigation:**  
 Host-level compromise occurred, not just content modification.
@@ -367,7 +367,7 @@ Host-level compromise occurred, not just content modification.
 
 ---
 
-## Prioritized Recommendations
+### 11) Prioritized Recommendations
 
 | Priority | Area | Recommendation | Evidence |
 |--------|--------|----------------|--------|
@@ -382,7 +382,7 @@ Host-level compromise occurred, not just content modification.
 
 ---
 
-## Closing Observations
+### 12) Closing Observations
 
 This incident demonstrates that **simple attack techniques can still fully compromise production servers** when foundational controls are missing.
 
@@ -407,3 +407,4 @@ Organizations can significantly reduce risk by:
 - correlating web, network, and host telemetry
 
 Defenders who implement the controls outlined in this report would likely detect or prevent similar intrusions well before public defacement or further compromise occurs.
+
