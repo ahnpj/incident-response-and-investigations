@@ -7,7 +7,7 @@
 
 ---
 
-## 1) Executive Summary
+### 1) Executive Summary
 
 This case investigates a Business Email Compromise incident in which an executive Microsoft 365 mailbox was compromised and used to authorize fraudulent pension withdrawals. Email artifacts show impersonation of a trusted pension provider to establish legitimacy, while Azure Active Directory audit telemetry confirms unauthorized authentication followed by deliberate mailbox configuration changes.
 
@@ -22,7 +22,7 @@ Evidence supporting these conclusions includes:
 
 ---
 
-## 2) Incident Background
+### 2) Incident Background
 
 The organization observed multiple unauthorized yet approved pension withdrawals processed over approximately a 48-hour period. Because the transactions were approved using an executive mailbox with legitimate authority, and no endpoint malware indicators were present, the incident was investigated as identity and email compromise rather than host-based intrusion.
 
@@ -37,23 +37,19 @@ This mirrors a post-incident SOC investigation where financial anomalies trigger
 
 ---
 
-## 3) Scope
+### 3) Scope
 
 This section defines which identities, mailboxes, and data sources were included in the investigation of this Business Email Compromise incident, as well as what activity was not observed within the available evidence. Clearly defining scope helps distinguish confirmed identity and mailbox abuse from assumptions about broader network or endpoint compromise that are not supported by telemetry.
 
-### In-Scope
+#### ▶ 3.1) In Scope
 
-- **Compromised mailbox:** `becky.lorray@tempestasenergy.com` (executive approval authority)
-- **Primary evidence sources:**
-  - Email artifacts reviewed via Thunderbird
-  - Azure Active Directory audit log export (`azure-export-audit-dir.csv`)
-- **Behavioral focus areas:**
-  - Authentication activity
-  - Inbox folder creation
-  - Inbox rule configuration and abuse
-  - Financial workflow communications
+| Category | Included Items |
+|--------|----------------|
+| **Compromised Mailbox** | • `becky.lorray@tempestasenergy.com` (executive approval authority) |
+| **Primary Evidence Sources** | • Email artifacts reviewed via Thunderbird<br>• Azure Active Directory audit log export (`azure-export-audit-dir.csv`) |
+| **Behavioral Focus Areas** | • Authentication activity<br>• Inbox folder creation<br>• Inbox rule configuration and abuse<br>• Financial workflow communications |
 
-### Out-of-Scope / Not Observed
+#### ▶ 3.2) Out of Scope / Not Observed
 
 - Endpoint malware execution
 - Exploit-based initial access
@@ -63,22 +59,22 @@ No evidence of endpoint compromise or malicious attachments was observed within 
 
 ---
 
-## 4) Environment
+### 4) Environment
 
 This investigation analyzed identity and email service abuse within a cloud-hosted environment using centralized audit and authentication telemetry.
 
-**Affected System (Victim) Operating System:**
+#### ▶ 4.1)  **Affected System (Victim) Operating System:**
 - Not applicable — cloud-hosted Microsoft 365 services (no endpoint compromise observed)
 
-**Analyst Virtual Machine Operating System:**
+#### ▶ 4.2) **Analyst Virtual Machine Operating System:**
 - Windows-based analyst workstation used for log and email artifact review
 
-**Platforms and Services:**
+#### ▶ 4.3) **Platforms and Services:**
 - Microsoft Entra ID (Azure Active Directory) — reviewed authentication activity, source IPs, and account access patterns
 - Microsoft Exchange Online — analyzed mailbox configuration changes and inbox rule abuse
 - Microsoft Purview / Audit Export — used to retrieve mailbox rule and audit event data
 
-**Data Sources Reviewed:**
+#### ▶ 4.4) **Data Sources Reviewed:**
 - Azure AD Sign-In Logs (authentication attempts, source IPs, success/failure)
 - Azure AD Audit Logs (mailbox rule creation and configuration changes)
 - Email message artifacts (headers, sender domains, and message body content)
@@ -99,7 +95,7 @@ Detailed event fields, mailbox rule parameters, authentication attributes, and d
 This separation reflects common SOC workflows for BEC investigations, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
 
-### 5.1 Email Artifacts — Initial Social Engineering
+#### ▶ 5.1 Email Artifacts — Initial Social Engineering
 
 Initial review focused on email artifacts to identify pre-authentication attacker activity. Because phishing and impersonation occur before identity logs record any activity, email analysis was used to establish how trust and financial context were created.
 
@@ -113,7 +109,7 @@ This impersonated pension provider aligns with common BEC tactics where attacker
 (See *Initial Access Analysis: Email Artifact Review*, Figure 1)
 
 
-### 5.2 Authentication Evidence — Credential-Based Access
+#### ▶ 5.2 Authentication Evidence — Credential-Based Access
 
 After establishing external impersonation, investigation pivoted to Azure AD audit logs to validate unauthorized mailbox access.
 
@@ -134,7 +130,7 @@ These IPs were associated with successful authentication events followed by mail
 Other IPs were observed but excluded due to lack of follow-on mailbox activity.
 
 
-### 5.3 Financial Workflow Evidence — Destination Bank Attribution
+#### ▶ 5.3 Financial Workflow Evidence — Destination Bank Attribution
 
 Financial attribution was derived from email content rather than audit telemetry, as Azure logs do not capture external banking details.
 
@@ -151,9 +147,9 @@ SWIFT code `FBNINGLA` corresponds to **First Bank of Nigeria Plc**, establishing
 (See *Financial Impact: Identifying the Destination Bank*, Figure 4)
 
 
-### 5.4 Mailbox Manipulation — Folder Creation & Inbox Rules
+#### ▶ 5.4 Mailbox Manipulation — Folder Creation & Inbox Rules
 
-#### 5.4.1 Folder Creation
+##### 5.4.1 Folder Creation
 
 Audit logs revealed `FolderCreated` events associated with the compromised mailbox on:
 
@@ -166,7 +162,7 @@ These occurred after confirmed attacker authentication sessions, indicating mail
 Folder names were not reliably recorded in `FolderCreated` events.
 
 
-#### 5.4.2 Inbox Rule Abuse (Primary Concealment Mechanism)
+##### 5.4.2 Inbox Rule Abuse (Primary Concealment Mechanism)
 
 To identify how emails were routed, investigation pivoted to inbox rule creation events:
 
@@ -223,7 +219,7 @@ Field-level telemetry, mailbox audit parameters, authentication attributes, and 
 That report is intended for SOC analysts and detection engineers responsible for implementing monitoring and alerting controls related to email-based fraud and identity abuse.
 
 
-### 7.1 Identity & Authentication IOCs
+#### ▶ 7.1 Identity & Authentication IOCs
 
 These indicators relate to unauthorized access to the compromised mailbox and are useful for identifying credential abuse, anomalous authentication patterns, and potential reuse of attacker infrastructure across additional identity compromise attempts.
 
@@ -242,7 +238,7 @@ These indicators relate to unauthorized access to the compromised mailbox and ar
 - Repeated logins from unfamiliar infrastructure within short time windows
 
 
-### 7.2 Mailbox Manipulation IOCs
+#### ▶ 7.2 Mailbox Manipulation IOCs
 
 These indicators reflect deliberate mailbox configuration changes used to conceal financial communications and maintain attacker control over message visibility. They are useful for detecting persistence mechanisms based on inbox rule abuse and hidden folder routing.
 
@@ -268,7 +264,7 @@ These indicators reflect deliberate mailbox configuration changes used to concea
 - Rules configured with `StopProcessingRules` to suppress downstream rules
 
 
-### 7.3 Email-Based IOCs (Social Engineering Infrastructure)
+#### ▶ 7.3 Email-Based IOCs (Social Engineering Infrastructure)
 
 These indicators relate to external impersonation and fraudulent communication patterns used to establish trust and initiate the financial workflow. They are useful for detecting similar social engineering attempts targeting executive or finance personnel.
 
@@ -287,7 +283,7 @@ These indicators relate to external impersonation and fraudulent communication p
 - Executive-targeted emails referencing payment or approval processes
 
 
-### 7.4 Financial Workflow IOCs
+#### ▶ 7.4 Financial Workflow IOCs
 
 These indicators reflect banking and transaction-related metadata observed in withdrawal communications and are useful for identifying fraudulent payment destinations, monitoring for unusual financial routing, and supporting fraud investigations.
 
@@ -308,7 +304,7 @@ These indicators reflect banking and transaction-related metadata observed in wi
 - Correlating email approvals with transaction execution windows
 
 
-### 7.5 IOC Limitations
+#### ▶ 7.5 IOC Limitations
 
 While the indicators above are high-confidence within this investigation, many can be easily changed by attackers, including sender identities, inbox rule keywords, and destination accounts. As a result, detection strategies should prioritize behavioral correlations such as anomalous logins followed by mailbox rule creation rather than relying solely on static indicators.
 
@@ -345,19 +341,19 @@ Detailed technical controls, monitoring logic, and configuration-level guidance 
 
 This section is intended to highlight high-impact and time-sensitive actions for incident closure, while the supporting report provides implementation detail for security engineering, identity, and SOC teams.
 
-### Immediate Containment
+#### ▶ 9.1) Immediate Containment
 
 - Reset credentials and invalidate all active sessions
 - Remove all inbox rules and attacker-created folders
 - Suspend financial approvals pending verification
 
-### Hardening
+#### ▶ 9.2) Hardening
 
 - Enforce MFA for all executive and finance users
 - Restrict or monitor inbox rule creation
 - Require out-of-band verification for financial approvals
 
-### Detection
+#### ▶ 9.3) Detection
 
 - Alert on inbox rule creation involving financial keywords
 - Alert on folder creation followed by rule creation
@@ -390,7 +386,7 @@ The mappings below provide a **high-level summary of confirmed adversary behavio
 This structure reflects common incident response reporting practices, where case reports include summary mappings, while detailed technique analysis is maintained in supporting technical documentation.
 
 
-### Technique Mapping
+#### ▶ 11.1) Technique Mapping
 
 - Initial Access — Phishing (T1566): External impersonation email establishes financial trust relationship.
 - Credential Access — Valid Accounts (T1078): Compromised credentials used for successful cloud authentication.
@@ -398,7 +394,7 @@ This structure reflects common incident response reporting practices, where case
 - Defense Evasion — Hide Artifacts (T1564): Concealment via hidden folder and automated suppression.
 - Impact — Financial Fraud (T1657): Unauthorized transactions enabled through email workflow abuse.
 
-### MITRE ATT&CK Mapping (Table View)
+#### ▶ 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -406,4 +402,5 @@ This structure reflects common incident response reporting practices, where case
 | Credential Access | **Valid Accounts (T1078)** | Successful `UserLoggedIn` events from attacker IPs |
 | Persistence | **Email Collection: Mailbox Manipulation Rules (T1114.003)** | `New-InboxRule` filtering “withdrawal” |
 | Defense Evasion | **Hide Artifacts (T1564)** | Routing to hidden folder `History` |
+
 | Impact | **Financial Fraud (T1657)** | Fraudulent withdrawal approvals |
