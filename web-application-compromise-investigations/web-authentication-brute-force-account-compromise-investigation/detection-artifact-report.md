@@ -1,6 +1,6 @@
 # Detection Artifact Report — Web Application Authentication Compromise Investigation (Brute-Force Attempts and Account Compromise Detection)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents **web, authentication, and session-related artifacts** observed during investigation of web application authentication abuse involving repeated login attempts, successful credential compromise, and post-authentication application access.
 
@@ -21,11 +21,11 @@ This report complements:
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 
 This section summarizes telemetry sources used to identify and validate authentication abuse artifacts.
 
-**Primary telemetry sources referenced in investigation:**
+#### ▶ 2.1) Primary telemetry sources referenced in investigation
 
 - **Web Server Access Logs**
   - HTTP request methods, status codes, URIs
@@ -42,14 +42,14 @@ This section summarizes telemetry sources used to identify and validate authenti
   - Web.Access
   - Authentication
 
-**Affected system:**
+#### ▶ 2.2) Affected system
 
 - **Target application:** Public-facing web application with login functionality  
 - **Attack surface:** HTTP authentication endpoints
 
 ---
 
-## High-Confidence Investigation Anchors
+### 3) High-Confidence Investigation Anchors
 
 This section documents timeline anchors that structured investigative correlation.
 
@@ -65,11 +65,11 @@ These anchors were used to correlate unauthenticated abuse with authenticated ap
 
 ---
 
-## Web Authentication Abuse Artifacts
+### 4) Web Authentication Abuse Artifacts
 
 This section documents artifacts indicating credential abuse.
 
-### Artifact: Repeated POST Requests to Login Endpoint
+#### ▶ 4.1) Artifact: Repeated POST Requests to Login Endpoint
 
 **Observed Behavior:**
 
@@ -91,7 +91,7 @@ Analysts began by reviewing web access logs after alerts indicated abnormal requ
   - authentication failure events
 
 
-### Artifact: Authentication Failures Followed by Success
+#### ▶ 4.2) Artifact: Authentication Failures Followed by Success
 
 **Observed Behavior:**
 
@@ -114,11 +114,11 @@ After identifying repeated login attempts in web logs, analysts pivoted into app
 
 ---
 
-## Post-Authentication Access Artifacts
+### 5) Post-Authentication Access Artifacts
 
 This section documents abuse of authenticated sessions.
 
-### Artifact: Session Creation After Successful Login
+#### ▶ 5.1) Artifact: Session Creation After Successful Login
 
 **Observed Behavior:**
 
@@ -138,7 +138,7 @@ Following confirmation of successful authentication, analysts reviewed applicati
   - new sessions originate from IPs associated with prior failures
 
 
-### Artifact: Access to Protected Application Endpoints
+#### ▶ 5.2) Artifact: Access to Protected Application Endpoints
 
 **Observed Behavior:**
 
@@ -159,11 +159,11 @@ After validating session creation, analysts returned to web logs and filtered fo
 
 ---
 
-## Persistence and Continued Abuse Artifacts
+### 6) Persistence and Continued Abuse Artifacts
 
 This section documents sustained attacker activity over time.
 
-### Artifact: Repeated Authenticated Access from Same External IP
+#### ▶ 6.1) Artifact: Repeated Authenticated Access from Same External IP
 
 **Observed Behavior:**
 
@@ -184,11 +184,11 @@ Analysts expanded the timeline review window after initial compromise detection 
 
 ---
 
-## Absence of Application Exploit Artifacts
+### 7) Absence of Application Exploit Artifacts
 
 This section documents negative findings that informed incident classification.
 
-### Artifact: No Evidence of SQL Injection or Exploit Payloads
+#### ▶ 7.1) Artifact: No Evidence of SQL Injection or Exploit Payloads
 
 **Observed Behavior:**
 
@@ -204,11 +204,11 @@ During analysis of web traffic, analysts inspected request parameters and payloa
 
 ---
 
-## Cross-Source Correlation Opportunities
+### 8) Cross-Source Correlation Opportunities
 
 This section outlines detection strategies based on investigation pivots.
 
-### Correlation 1: Web Login Flood → Authentication Failures
+#### ▶ 8.1) Correlation 1: Web Login Flood → Authentication Failures
 
 **Signals:**
 
@@ -219,7 +219,7 @@ This section outlines detection strategies based on investigation pivots.
 Detect brute-force attempts in progress.
 
 
-### Correlation 2: Failure → Success Transition
+#### ▶ 8.2) Correlation 2: Failure → Success Transition
 
 **Signals:**
 
@@ -229,7 +229,7 @@ Detect brute-force attempts in progress.
 Detect confirmed account compromise.
 
 
-### Correlation 3: Compromise → Protected Resource Access
+#### ▶ 8.3) Correlation 3: Compromise → Protected Resource Access
 
 **Signals:**
 
@@ -241,7 +241,7 @@ Detect business-impacting application abuse.
 
 ---
 
-## Indicator Reliability Considerations
+### 9) Indicator Reliability Considerations
 
 This section distinguishes between fragile indicators and reliable behaviors.
 
@@ -260,7 +260,7 @@ Behavior-based detection remains effective even when attackers rotate infrastruc
 
 ---
 
-## Closing Summary
+### 10) Closing Summary
 
 This investigation demonstrated how attackers can gain full application access without exploiting software vulnerabilities by abusing:
 
@@ -277,3 +277,4 @@ By correlating:
 analysts were able to confirm credential compromise and scope application-level impact.
 
 Detection strategies that link **unauthenticated abuse with post-authenticated activity** provide high-confidence identification of web application account compromise and enable faster containment.
+
