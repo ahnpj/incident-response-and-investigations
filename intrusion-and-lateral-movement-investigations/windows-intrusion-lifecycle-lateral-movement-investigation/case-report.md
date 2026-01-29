@@ -7,7 +7,7 @@
 
 ---
 
-## 1) Executive Summary
+### 1) Executive Summary
 
 This case reconstructs a full malware intrusion lifecycle on a Windows endpoint, beginning with external reconnaissance and progressing through credential-based access, account manipulation, malware deployment, persistence establishment, and cleanup actions.
 
@@ -19,7 +19,7 @@ Correlated evidence across network, authentication, endpoint, file system, and r
 
 ---
 
-## 2) Incident Background
+### 2) Incident Background
 
 The investigation was initiated after abnormal firewall activity and endpoint behavior suggested unauthorized external interaction with a Windows host. Because multiple telemetry sources were available, the objective was to reconstruct attacker actions chronologically rather than validate a single alert.
 
@@ -36,29 +36,19 @@ Rather than performing exploit analysis or reverse engineering, the investigatio
 
 ---
 
-## 3) Scope
+### 3) Scope
 
 This section defines which systems, identities, and data sources were included in the investigation, as well as what activity was not observed within the available evidence. Clearly defining scope helps distinguish confirmed host-level compromise from assumptions about broader network intrusion that are not supported by telemetry.
 
-### In-Scope
+#### ▶ 3.1) In-Scope
 
-- **Affected host:** Single Windows endpoint
-- **Primary evidence sources:**
-  - FortiGate firewall logs
-  - OpenSSH Operational logs
-  - Windows Security Event Logs
-  - Sysmon telemetry (process, file, registry)
-  - File system artifacts
-  - Registry modifications
-- **Behavioral focus areas:**
-  - External reconnaissance
-  - Credential-based authentication abuse
-  - Account creation and privilege escalation
-  - Malware staging and execution
-  - Registry-based persistence
-  - Cleanup and access-disruption activity
+| Category | Included Items |
+|--------|----------------|
+| **Affected Host** | • Single Windows endpoint |
+| **Primary Evidence Sources** | • FortiGate firewall logs<br>• OpenSSH Operational logs<br>• Windows Security Event Logs<br>• Sysmon telemetry (process, file, registry)<br>• File system artifacts<br>• Registry modifications |
+| **Behavioral Focus Areas** | • External reconnaissance<br>• Credential-based authentication abuse<br>• Account creation and privilege escalation<br>• Malware staging and execution<br>• Registry-based persistence<br>• Cleanup and access-disruption activity |
 
-### Out-of-Scope / Not Observed
+#### ▶ 3.2) Out-of-Scope / Not Observed
 
 - Lateral movement to additional hosts
 - Network exfiltration beyond local staging
@@ -69,22 +59,22 @@ Conclusions are based solely on artifacts observable within the compromised endp
 
 ---
 
-## 4) Environment
+### 4) Environment
 
 This investigation reconstructed a full intrusion lifecycle using perimeter, authentication, and endpoint telemetry.
 
-**Affected System (Victim) Operating System:**
+#### ▶ 4.1) **Affected System (Victim) Operating System:**
 - Windows endpoint exposed to external network
 
-**Analyst Virtual Machine Operating System:**
+#### ▶ 4.2) **Analyst Virtual Machine Operating System:**
 - Windows-based analyst workstation used for SIEM and log correlation
 
-**Platforms and Services:**
+#### ▶ 4.3) **Platforms and Services:**
 - OpenSSH service — reviewed authentication attempts and login success
 - Windows authentication services — analyzed account creation, deletion, and group changes
 - Endpoint monitoring agents — provided process, file, and registry telemetry
 
-**Data Sources Reviewed:**
+#### ▶ 4.4) **Data Sources Reviewed:**
 - FortiGate firewall logs (external scanning activity)
 - OpenSSH Operational logs (authentication attempts)
 - Windows Security Event Logs
@@ -102,7 +92,7 @@ The investigation reflects post-incident reconstruction using stored telemetry r
 
 ---
 
-## 5) Evidence Summary
+### 5) Evidence Summary
 
 This section summarizes the primary evidence used to reconstruct reconnaissance, credential abuse, malware deployment, persistence establishment, and cleanup activity observed during this intrusion. It focuses on how each data source contributed to understanding attacker behavior and impact rather than listing raw log fields.
 
@@ -111,7 +101,7 @@ Detailed event records, registry paths, and detection-relevant artifacts extract
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
 
-### 5.1 External Reconnaissance — Firewall Telemetry
+#### ▶ 5.1) External Reconnaissance — Firewall Telemetry
 
 Firewall logs showed repeated inbound TCP SYN-only probes from:
 
@@ -130,14 +120,14 @@ Targeted destination ports included:
 Connections did not complete TCP handshakes and transferred no payload data, indicating service discovery rather than exploitation attempts. Repeated probing of multiple unrelated services strongly indicates reconnaissance activity.
 
 
-### 5.2 Service Exposure Validation — Local Enumeration
+#### ▶ 5.2) Service Exposure Validation — Local Enumeration
 
 Local enumeration confirmed that port 22 (SSH) was actively listening on the host, making it a viable initial access vector consistent with earlier reconnaissance activity.
 
 The presence of SSH services on Windows is non-default and represents an increased attack surface when externally exposed.
 
 
-### 5.3 Credential Abuse — OpenSSH Authentication Logs
+#### ▶ 5.3) Credential Abuse — OpenSSH Authentication Logs
 
 OpenSSH Operational logs showed:
 
@@ -149,7 +139,7 @@ OpenSSH Operational logs showed:
 This pattern confirms brute-force authentication rather than exploit-based access and establishes the timestamp of first unauthorized access.
 
 
-### 5.4 Account Persistence — Local User Creation
+#### ▶ 5.4) Account Persistence — Local User Creation
 
 Windows Security Event ID `4720` confirmed creation of a new local user account:
 
@@ -158,7 +148,7 @@ Windows Security Event ID `4720` confirmed creation of a new local user account:
 The account was created immediately after successful attacker authentication, confirming it was attacker-controlled and not part of routine provisioning.
 
 
-### 5.5 Privilege Escalation — Administrator Group Membership
+#### ▶ 5.5) Privilege Escalation — Administrator Group Membership
 
 Windows Security Event ID `4732` confirmed that:
 
@@ -167,7 +157,7 @@ Windows Security Event ID `4732` confirmed that:
 This granted full administrative control and ensured persistent elevated access independent of the original compromised credentials.
 
 
-### 5.6 Cleanup / Impact — Account Deletion
+#### ▶ 5.6) 5.6 Cleanup / Impact — Account Deletion
 
 Windows Security Event ID `4726` confirmed deletion of a separate local user account:
 
@@ -176,7 +166,7 @@ Windows Security Event ID `4726` confirmed deletion of a separate local user acc
 Deletion occurred after persistence was established, indicating cleanup or access-disruption behavior.
 
 
-### 5.7 Malware Deployment — Archive Extraction
+#### ▶ 5.7) Malware Deployment — Archive Extraction
 
 Sysmon Event ID `1` (Process Create) showed execution of:
 
@@ -186,7 +176,7 @@ Sysmon Event ID `1` (Process Create) showed execution of:
 This confirms extraction of a compressed malware archive after administrative access was established.
 
 
-### 5.8 Malware Artifacts — File Creation
+#### ▶ 5.8) Malware Artifacts — File Creation
 
 Sysmon Event ID `11` (FileCreate) confirmed creation of:
 
@@ -201,7 +191,7 @@ All files were written to:
 Use of legitimate system filenames in a user-writable directory strongly indicates masquerading behavior.
 
 
-### 5.9 Persistence Establishment — Registry Autorun
+#### ▶ 5.9) Persistence Establishment — Registry Autorun
 
 Sysmon Event ID `13` (RegistryValueSet) confirmed creation of autorun registry values:
 
@@ -211,7 +201,7 @@ Sysmon Event ID `13` (RegistryValueSet) confirmed creation of autorun registry v
 These values ensured execution at logon, confirming registry-based persistence.
 
 
-### 5.10 Malware Attribution — OSINT Correlation
+#### ▶ 5.10) Malware Attribution — OSINT Correlation
 
 Open-source research linked observed filenames, execution behavior, and persistence methods to a public GitHub keylogger project authored by:
 
@@ -221,7 +211,7 @@ While attribution does not identify the operator, it confirms commodity tooling 
 
 ---
 
-## 6) Investigation Timeline (Condensed)
+### 6) Investigation Timeline (Condensed)
 
 The timeline below reflects reconstructed attacker and host activity, not analyst workflow. Detailed investigation steps and screenshots are documented separately in: `investigation-walkthrough.md`
 
@@ -241,14 +231,14 @@ The timeline below reflects reconstructed attacker and host activity, not analys
 
 ---
 
-## 7) Indicators of Compromise (IOCs)
+### 7) Indicators of Compromise (IOCs)
 
 The indicators listed below represent high-confidence artifacts associated with reconnaissance, credential abuse, malware staging, persistence, and cleanup activity observed during this intrusion.
 
 Field-level telemetry and detection pivots are documented separately in: `detection-artifact-report.md`
 
 
-### 7.1 Network & Reconnaissance IOCs
+#### ▶ 7.1) Network & Reconnaissance IOCs
 
 These indicators reflect pre-compromise service discovery behavior.
 
@@ -261,7 +251,7 @@ These indicators reflect pre-compromise service discovery behavior.
 - Correlate scans followed by authentication attempts
 
 
-### 7.2 Identity & Authentication IOCs
+#### ▶ 7.2) Identity & Authentication IOCs
 
 These indicators reflect credential abuse and persistence via account manipulation.
 
@@ -274,7 +264,7 @@ These indicators reflect credential abuse and persistence via account manipulati
 - Alert on local account creation and admin group changes
 
 
-### 7.3 Malware & File System IOCs
+#### ▶ 7.3) Malware & File System IOCs
 
 These indicators reflect staged malware artifacts.
 
@@ -288,7 +278,7 @@ These indicators reflect staged malware artifacts.
 - Detect masquerading system filenames outside system paths
 
 
-### 7.4 Registry Persistence IOCs
+#### ▶ 7.4) Registry Persistence IOCs
 
 These indicators reflect autorun persistence configuration.
 
@@ -301,13 +291,13 @@ These indicators reflect autorun persistence configuration.
 - Correlate registry changes with file creation events
 
 
-### 7.5 IOC Limitations
+#### ▶ 7.5) IOC Limitations
 
 While the indicators above are high-confidence within this investigation, attackers can change IP addresses, filenames, account names, and registry value labels. Detection strategies should prioritize behavioral correlations such as scanning followed by authentication, account creation after access, and registry autoruns following file staging rather than relying on static indicators alone.
 
 ---
 
-## 8) Case Determination
+### 8) Case Determination
 
 **Final Determination:**  
 Confirmed Windows host compromise involving credential-based access via exposed SSH service, followed by account manipulation for persistence, malware deployment, registry-based autorun persistence, and cleanup actions.
@@ -316,25 +306,25 @@ Evidence supports a full post-exploitation intrusion leveraging valid credential
 
 ---
 
-## 9) Recommended Follow-Ups (Case Closure Actions)
+### 9) Recommended Follow-Ups (Case Closure Actions)
 
 The recommendations below summarize key containment, hardening, and detection priorities based on behaviors observed during this incident. Detailed technical controls are documented separately in: `detection-and-hardening-recommendations.md`
 
-### Immediate Containment
+#### ▶ 9.1) Immediate Containment
 
 - Disable or restrict external SSH access
 - Reset compromised credentials
 - Remove unauthorized local accounts
 - Isolate affected host
 
-### Hardening
+#### ▶ 9.2) Hardening
 
 - Enforce strong password policies and lockout thresholds
 - Implement MFA for remote administration
 - Restrict execution from user-writable directories
 - Harden registry autorun locations
 
-### Detection
+#### ▶ 9.3) Detection
 
 - Alert on external scanning behavior
 - Monitor SSH brute-force attempts
@@ -343,7 +333,7 @@ The recommendations below summarize key containment, hardening, and detection pr
 
 ---
 
-## 10) Supporting Reports (In This Folder)
+### 10) Supporting Reports (In This Folder)
 
 The files below make up the full case package for this investigation and provide additional detail across analyst workflow, response actions, detection engineering, and executive-level reporting.
 
@@ -358,14 +348,14 @@ The files below make up the full case package for this investigation and provide
 
 ---
 
-## 11) MITRE ATT&CK Mapping
+### 11) MITRE ATT&CK Mapping
 
 The mappings below provide a high-level summary of confirmed adversary behaviors observed during this incident.
 
 - Full investigative context and evidence references: `investigation-walkthrough.md`  
 - Expanded technique analysis and detection considerations: `MITRE-ATTACK-mapping.md`
 
-### Technique Mapping
+#### ▶ 11.1) Technique Mapping
 
 - **Reconnaissance — Active Scanning (T1595)**
 - **Initial Access — External Remote Services (T1133)**
@@ -380,7 +370,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 - **Defense Evasion — Indicator Removal on Host (T1070)**
 - **Impact — Account Access Removal (T1531)**
 
-### MITRE ATT&CK Mapping (Table View)
+#### ▶ 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -398,3 +388,4 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 | Impact | **Account Access Removal (T1531)** | Legitimate user account removed to disrupt access. |
 
 ---
+
