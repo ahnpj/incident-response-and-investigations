@@ -1,6 +1,6 @@
 # Detection Artifact Report — Windows Malware Intrusion Lifecycle Investigation (Lateral Movement and Multi-Stage Host Compromise on Windows)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 This report documents the **network, authentication, and host-based artifacts** observed during the Windows Host Malware Intrusion Lifecycle investigation. The goal is to provide a **standalone, detection-engineering-focused** reference that a SOC can use to build alerts, hunting queries, and correlation logic based on the *confirmed* attacker behaviors in this lab.
 
 All artifacts below are derived from evidence and pivots documented in:
@@ -12,23 +12,23 @@ Where possible, artifacts include **timestamps, event IDs, file names, paths, an
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 This section summarizes the telemetry sources used to identify the artifacts listed in this report.
 
-**Primary sources referenced throughout the investigation:**
+#### ▶ 2.1) Primary sources referenced throughout the investigation
 - **Firewall telemetry** — inbound scan/probe patterns, service targeting, and source/destination relationships
 - **OpenSSH/Operational logs** — authentication failures and successful login confirmation (noting variable client source ports)
 - **Windows Security Event Log** — local account creation, privileged group membership changes, and account deletions
 - **Sysmon (Microsoft Sysinternals)** — process creation, file creation events, and registry value modifications
 
-**Host and Entities (confirmed):**
+#### ▶ 2.2) Host and Entities (confirmed)
 - **Attacker source:** `192.168.1.33`
 - **Victim host:** `192.168.1.43`
 - **Services targeted:** SSH (`22`), RDP (`3389`)
 
 ---
 
-## High-Confidence Attack Sequence Anchors
+### 3) High-Confidence Attack Sequence Anchors
 This section lists the **confirmed anchor events** that the rest of the detection artifacts correlate to. These anchors should be used to build timelines and multi-signal detections.
 
 | Anchor | What it Represents | Evidence Source | Key Details |
@@ -45,10 +45,10 @@ This section lists the **confirmed anchor events** that the rest of the detectio
 
 ---
 
-## Network Reconnaissance and Service Targeting Artifacts
+### 4) Network Reconnaissance and Service Targeting Artifacts
 This section documents **pre-authentication** indicators showing the attacker was actively identifying and testing exposed services.
 
-### Artifact: Repeated inbound connection attempts from a single source
+#### ▶ 4.1) Artifact: Repeated inbound connection attempts from a single source
 **Observed behavior:** Firewall telemetry shows repeated inbound activity from `192.168.1.33` targeting `192.168.1.43`, consistent with scanning/probing.
 
 **Why this matters:** Recon is an early-stage signal that often precedes brute force and exploitation attempts. In this lab, recon preceded the SSH brute-force sequence.
@@ -63,7 +63,7 @@ This section documents **pre-authentication** indicators showing the attacker wa
 - Alert when a single external IP targets **multiple ports** on the same internal host (service discovery).
 - Escalate severity when a recon pattern is followed by authentication failures on the same service.
 
-### Artifact: RDP service exposure probe (port 3389)
+#### ▶ 4.2) Artifact: RDP service exposure probe (port 3389)
 **Observed behavior:** Port `3389` was included in targeted service activity (alongside SSH).
 
 **Why this matters:** Even if compromise occurred through SSH, concurrent probing of RDP indicates the attacker was exploring additional access paths.
@@ -74,10 +74,10 @@ This section documents **pre-authentication** indicators showing the attacker wa
 
 ---
 
-## SSH Brute Force and Successful Authentication Artifacts
+### 5) SSH Brute Force and Successful Authentication Artifacts
 This section documents **credential access / initial access** indicators in OpenSSH telemetry.
 
-### Artifact: High-frequency SSH authentication failures (brute force)
+#### ▶ 5.1) Artifact: High-frequency SSH authentication failures (brute force)
 **Observed behavior:** OpenSSH logs recorded repeated authentication failures from `192.168.1.33` prior to success.
 
 **Why this matters:** This is a high-confidence brute force signature. The investigation explicitly mapped this to **MITRE Brute Force (T1110)** based on repeated failures followed by success.
@@ -88,7 +88,7 @@ This section documents **credential access / initial access** indicators in Open
 - Alert when failures exceed threshold (example): `>= 10 failures in 5 minutes` for the same `src_ip` + `dest_host`.
 - Escalate to critical when a **successful login** occurs from the same `src_ip` after a failure burst.
 
-### Artifact: First confirmed unauthorized successful SSH login (administrator)
+#### ▶ 5.2) Artifact: First confirmed unauthorized successful SSH login (administrator)
 **Observed artifact (time anchor):**
 - First successful login to the `administrator` account occurred at: **`11/18/2022 5:14:08 PM`**
 
@@ -100,10 +100,10 @@ This section documents **credential access / initial access** indicators in Open
 
 ---
 
-## Windows Security Log — Identity and Privilege Manipulation Artifacts
+### 6) Windows Security Log — Identity and Privilege Manipulation Artifacts
 This section documents account-level persistence and privilege escalation artifacts captured in Windows Security events.
 
-### Artifact: Attacker-created local user account (`sysadmin`)
+#### ▶ 6.1) Artifact: Attacker-created local user account (`sysadmin`)
 **Observed artifact:**
 - **Security Event ID:** `4720` (user account created)
 - **New account identified:** `sysadmin`
@@ -118,7 +118,7 @@ This section documents account-level persistence and privilege escalation artifa
   - known brute-force patterns
   - process creation anomalies in the surrounding window
 
-### Artifact: Privilege escalation — `sysadmin` added to Administrators
+#### ▶ 6.2) Artifact: Privilege escalation — `sysadmin` added to Administrators
 **Observed artifact:**
 - **Security Event ID:** `4732` (member added to a security-enabled local group)
 - **Group:** Administrators (local)
@@ -133,7 +133,7 @@ This section documents account-level persistence and privilege escalation artifa
   - target member (MemberName)
   - time delta from account creation
 
-### Artifact: Account deletion (cleanup or access disruption) — `DRB`
+#### ▶ 6.3) Artifact: Account deletion (cleanup or access disruption) — `DRB`
 **Observed artifact:**
 - **Security Event ID:** `4726` (user account deleted)
 - **Deleted account:** `DRB`
@@ -147,10 +147,10 @@ This section documents account-level persistence and privilege escalation artifa
 
 ---
 
-## Sysmon — Process Execution Artifacts
+### 7) Sysmon — Process Execution Artifacts
 This section documents process execution artifacts used to validate malware deployment mechanics.
 
-### Artifact: Archive extraction using 7-Zip (payload staging)
+#### ▶ 7.1) Artifact: Archive extraction using 7-Zip (payload staging)
 **Observed artifact (confirmed):**
 - **Sysmon Event ID:** `1` (ProcessCreate)
 - **Process image:** `C:\Program Files\7-Zip\7z.exe`
@@ -171,10 +171,10 @@ This section documents process execution artifacts used to validate malware depl
 
 ---
 
-## Sysmon — File Creation Artifacts (Dropped Malware)
+### 8) Sysmon — File Creation Artifacts (Dropped Malware)
 This section documents payload files created as a direct result of archive extraction.
 
-### Artifact: Executables created by `7z.exe` immediately after extraction
+#### ▶ 8.1) Artifact: Executables created by `7z.exe` immediately after extraction
 **Observed artifacts (confirmed):**
 - **Sysmon Event ID:** `11` (FileCreate)
 - **Created file 1:** `rundll33.exe` — **`11/18/2022 5:22:46 PM`**
@@ -200,10 +200,10 @@ This section documents payload files created as a direct result of archive extra
 
 ---
 
-## Sysmon — Registry Persistence Artifacts (Run Key Value Creation)
+### 9) Sysmon — Registry Persistence Artifacts (Run Key Value Creation)
 This section documents persistence established through registry value creation under the Windows **Run key**.
 
-### Artifact: Registry value created for persistence — “Windows Atapi x86_64 Driver”
+#### ▶ 9.1) Artifact: Registry value created for persistence — “Windows Atapi x86_64 Driver”
 **Observed artifact (confirmed):**
 - **Sysmon Event ID:** `13` (RegistryValueSet / value modification)
 - **Timestamp:** **`11/18/2022 5:24:21 PM`**
@@ -219,7 +219,7 @@ This section documents persistence established through registry value creation u
   - the value name resembles a Windows component (masquerading)
   - the target executable was newly created minutes earlier
 
-### Artifact: Registry value created for persistence — “Windows SCR Manager”
+#### ▶ 9.2) Artifact: Registry value created for persistence — “Windows SCR Manager”
 **Observed artifact (confirmed):**
 - **Sysmon Event ID:** `13`
 - **Timestamp:** **`11/18/2022 5:25:43 PM`**
@@ -238,10 +238,10 @@ This section documents persistence established through registry value creation u
 
 ---
 
-## Cross-Source Correlation Patterns (How to Detect This as a SOC)
+### 10) Cross-Source Correlation Patterns (How to Detect This as a SOC)
 This section provides correlation blueprints that mirror the investigation pivots and are resilient to filename changes.
 
-### Correlation 1: Recon → Brute Force → Successful Auth (same source)
+#### ▶ 10.1) Correlation 1: Recon → Brute Force → Successful Auth (same source)
 **Signals (confirmed in lab):**
 - Firewall recon/probing from `192.168.1.33`
 - OpenSSH auth failures from same IP
@@ -250,7 +250,7 @@ This section provides correlation blueprints that mirror the investigation pivot
 **High-confidence detection logic:**
 - If `scan/probe` + `auth_fail_burst` + `auth_success` occur from the same IP within 30–60 minutes → escalate to critical.
 
-### Correlation 2: Successful Auth → Archive Extraction → Dropped EXEs
+#### ▶ 10.2) Correlation 2: Successful Auth → Archive Extraction → Dropped EXEs
 **Signals (confirmed in lab):**
 - Successful SSH login (administrator)
 - `7z.exe` extraction `7z e keylogger.rar` at `5:22:40 PM`
@@ -259,7 +259,7 @@ This section provides correlation blueprints that mirror the investigation pivot
 **High-confidence detection logic:**
 - If a remote login is followed by archive extraction and `.exe` file creation in user profile paths within minutes → treat as malware staging.
 
-### Correlation 3: Dropped EXEs → Run-key persistence (Sysmon 13)
+#### ▶ 10.3) Correlation 3: Dropped EXEs → Run-key persistence (Sysmon 13)
 **Signals (confirmed in lab):**
 - New binaries in `...\AppData\Roaming\WPDNSE\`
 - Run-key values created at `5:24:21 PM` and `5:25:43 PM` pointing to those binaries
@@ -267,7 +267,7 @@ This section provides correlation blueprints that mirror the investigation pivot
 **High-confidence detection logic:**
 - Newly created executable + Run-key value pointing to that executable within 2–10 minutes → persistence established.
 
-### Correlation 4: Account creation + Admin elevation (persistence identity)
+#### ▶ 10.4) Correlation 4: Account creation + Admin elevation (persistence identity)
 **Signals (confirmed in lab):**
 - Security `4720` created account `sysadmin`
 - Security `4732` added `sysadmin` to Administrators
@@ -277,7 +277,7 @@ This section provides correlation blueprints that mirror the investigation pivot
 
 ---
 
-## Notes on Indicator Reliability
+### 11) Notes on Indicator Reliability
 This section documents which indicators are stable and which are attacker-changeable.
 
 **Highly changeable (do not rely on alone):**
@@ -293,7 +293,7 @@ This section documents which indicators are stable and which are attacker-change
 
 ---
 
-## Closing Summary
+### 12) Closing Summary
 This investigation produced a clear, multi-stage detection blueprint for a full host compromise lifecycle:
 
 - External recon and service probing against `192.168.1.43`
@@ -303,5 +303,6 @@ This investigation produced a clear, multi-stage detection blueprint for a full 
 - Registry autorun persistence established via Sysmon Event ID `13` at `5:24:21 PM` and `5:25:43 PM`
 - Identity persistence via local account creation (`sysadmin`) and privileged group modification
 - Cleanup/impact behavior via deletion of `DRB`
+
 
 To detect similar intrusions reliably, prioritize **cross-source correlation** and short-window sequencing rather than static names. This is the same approach used in the investigation walkthrough to confirm compromise and reconstruct the intrusion lifecycle.
