@@ -1,6 +1,6 @@
 # Detection Artifact Report — Web Server Defacement Investigation (Malicious File Upload Exploitation and Web Shell Deployment)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 This report documents **network, web application, IDS, and host-based artifacts** observed during the investigation of a Joomla-based web server compromise that resulted in public website defacement. The purpose of this report is to provide **detection-relevant, evidence-backed indicators** that can be used for SOC alerting, threat hunting, and correlation engineering.
 
 All artifacts in this report are derived from evidence and pivots documented in:
@@ -16,18 +16,18 @@ This report complements:
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 
 This section summarizes the telemetry sources used to identify and validate attack artifacts.
 
-**Primary log sources used in the investigation:**
+#### ▶ 2.1) Primary log sources used in the investigation
 
 - **Suricata IDS (`suricata`)** — exploit signatures, scanner detection, malformed HTTP indicators  
 - **HTTP stream logs (`stream:http`)** — request methods, URIs, POST body form data, and authentication attempts  
 - **Firewall / UTM telemetry (`fortigate_utm`)** — outbound traffic, external communications, and reputation context  
 - **Host telemetry (Sysmon)** — process creation and file execution validation on the web server  
 
-**Confirmed assets:**
+#### ▶ 2.2) Confirmed assets
 
 - **Victim host:** `192.168.250.70`  
 - **Domain:** `imreallynotbatman.com`  
@@ -36,7 +36,7 @@ This section summarizes the telemetry sources used to identify and validate atta
 
 ---
 
-## High-Confidence Attack Sequence Anchors
+### 3) High-Confidence Attack Sequence Anchors
 
 This section lists **confirmed timeline anchors** that structured the investigation and were used to correlate artifacts across log sources.
 
@@ -55,11 +55,11 @@ These anchors form the basis for multi-stage correlation detection strategies.
 
 ---
 
-## IDS Artifacts — Reconnaissance and Exploit Probing
+### 4) IDS Artifacts — Reconnaissance and Exploit Probing
 
 This section documents intrusion detection alerts that identified early-stage attacker activity.
 
-### Artifact: Acunetix Scanner Signatures
+#### ▶ 4.1) Artifact: Acunetix Scanner Signatures
 
 **Observed behavior:**  
 Suricata generated alerts indicating patterns consistent with the Acunetix vulnerability scanner.
@@ -78,7 +78,7 @@ Detected in Suricata logs during early investigation phases prior to credential 
 - Escalate severity when followed by authentication attempts or file uploads
 
 
-### Artifact: Malformed HTTP Headers and Exploit Probes
+#### ▶ 4.2) Artifact: Malformed HTTP Headers and Exploit Probes
 
 **Observed behavior:**
 
@@ -100,11 +100,11 @@ Captured in Suricata IDS logs and cross-referenced with HTTP stream data.
 
 ---
 
-## Web Application Artifacts — Credential Abuse
+### 5) Web Application Artifacts — Credential Abuse
 
 This section documents application-layer indicators confirming credential brute-force and successful authentication.
 
-### Artifact: Repeated POST Requests to Joomla Admin Login
+#### ▶ 5.1) Artifact: Repeated POST Requests to Joomla Admin Login
 
 **Observed behavior:**
 
@@ -128,7 +128,7 @@ HTTP stream logs were queried to extract POST body parameters during login attem
   - source IP
   - target account
 
-### Artifact: Successful Administrative Authentication
+#### ▶ 5.2) Artifact: Successful Administrative Authentication
 
 **Observed behavior:**
 
@@ -151,11 +151,11 @@ Confirmed via HTTP response codes and session continuation following login.
 
 ---
 
-## Host-Based Artifacts — Malware Upload and Execution
+### 6) Host-Based Artifacts — Malware Upload and Execution
 
 This section documents host telemetry confirming attacker-controlled code execution.
 
-### Artifact: Creation of Uploaded Executable
+#### ▶ 6.1) Artifact: Creation of Uploaded Executable
 
 **Observed artifact:**
 
@@ -178,7 +178,7 @@ This section documents host telemetry confirming attacker-controlled code execut
 - Correlate with:
   - authenticated CMS sessions
 
-### Artifact: Execution of Uploaded Malware
+#### ▶ 6.2) Artifact: Execution of Uploaded Malware
 
 **Observed artifact:**
 
@@ -201,11 +201,11 @@ Detected shortly after file upload confirmation.
 
 ---
 
-## Network Artifacts — Outbound Communication
+### 7) Network Artifacts — Outbound Communication
 
 This section documents evidence of post-exploitation network activity.
 
-### Artifact: Outbound Connections to Attacker Infrastructure
+#### ▶ 7.1) Artifact: Outbound Connections to Attacker Infrastructure
 
 **Observed behavior:**
 
@@ -228,11 +228,11 @@ Firewall and UTM logs showed outbound connections following malware execution.
 
 ---
 
-## Defacement Artifacts — Content Modification
+### 8) Defacement Artifacts — Content Modification
 
 This section documents indicators confirming business impact.
 
-### Artifact: External Resource Injection in Web Pages
+#### ▶ 8.1) Artifact: External Resource Injection in Web Pages
 
 **Observed behavior:**
 
@@ -255,11 +255,11 @@ HTTP logs showed outbound GET requests for defacement images during page loads.
 
 ---
 
-## Cross-Source Correlation Opportunities
+### 9) Cross-Source Correlation Opportunities
 
 This section outlines correlation strategies that reflect how compromise was confirmed during investigation.
 
-### Correlation 1: IDS Scan → CMS Login Abuse
+#### ▶ 9.1) Correlation 1: IDS Scan → CMS Login Abuse
 
 **Signals:**
 
@@ -270,7 +270,7 @@ This section outlines correlation strategies that reflect how compromise was con
 Detect transition from recon to active exploitation attempts.
 
 
-### Correlation 2: Successful CMS Login → File Upload → Malware Execution
+#### ▶ 9.2) Correlation 2: Successful CMS Login → File Upload → Malware Execution
 
 **Signals:**
 
@@ -282,7 +282,7 @@ Detect transition from recon to active exploitation attempts.
 High-confidence confirmation of web-to-host compromise.
 
 
-### Correlation 3: Malware Execution → Outbound Traffic
+#### ▶ 9.3) Correlation 3: Malware Execution → Outbound Traffic
 
 **Signals:**
 
@@ -294,7 +294,7 @@ Identify active post-exploitation behavior.
 
 ---
 
-## Indicator Reliability Considerations
+### 10) Indicator Reliability Considerations
 
 This section distinguishes stable behavioral signals from easily changed indicators.
 
@@ -313,7 +313,7 @@ Behavior-based detection reduces evasion risk.
 
 ---
 
-## Closing Summary
+### 11) Closing Summary
 
 This investigation demonstrated a full compromise chain:
 
@@ -327,3 +327,4 @@ This investigation demonstrated a full compromise chain:
 Each stage produced distinct artifacts across IDS, HTTP logs, firewall telemetry, and host sensors. Reliable detection requires **cross-domain correlation**, not isolated alerts.
 
 Implementing multi-stage detection logic aligned with this sequence would allow defenders to detect and contain similar intrusions before public defacement or further exploitation occurs.
+
