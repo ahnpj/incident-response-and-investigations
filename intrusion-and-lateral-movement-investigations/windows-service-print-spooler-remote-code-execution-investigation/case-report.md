@@ -7,7 +7,7 @@
 
 ---
 
-## 1) Executive Summary
+### 1) Executive Summary
 
 This case investigates a Windows host compromise involving abuse of the Print Spooler service to deliver and execute an attacker-supplied DLL, resulting in remote code execution and establishment of a reverse shell running with SYSTEM-level privileges.
 
@@ -17,7 +17,7 @@ Correlated evidence across Windows Security logs, Sysmon process and file teleme
 
 ---
 
-## 2) Incident Background
+### 2) Incident Background
 
 The investigation analyzed a simulated post-compromise scenario involving exploitation of Windows Print Services. Rather than reproducing exploit mechanics, the defensive objective was to reconstruct attacker behavior using available logs and network data, consistent with SOC post-incident workflows.
 
@@ -33,25 +33,20 @@ The investigation sought to determine:
 
 ---
 
-## 3) Scope
+### 3) Scope
 
 This section defines which systems, identities, and data sources were included in the investigation, as well as what activity was not observed within the available evidence. Clearly defining scope helps distinguish confirmed service abuse and host compromise from assumptions about broader network intrusion that are not supported by telemetry.
 
-### In-Scope
+#### ▶ 3.1) In-Scope
 
-- **Affected Windows host:** Compromised endpoint within `redteam.lab` domain
-- **Abused service:** Windows Print Spooler (`spoolsv.exe`)
-- **Primary evidence sources:**
-  - Windows Security Event Logs
-  - Sysmon Operational Logs
-  - Network packet capture (PCAP)
-- **Behavioral focus areas:**
-  - SMB-based service interaction
-  - File creation within printer driver directories
-  - Service-based execution of attacker-controlled DLLs
-  - Outbound network connections following execution
+| Category | Included Items |
+|--------|----------------|
+| **Affected Windows Host** | • Compromised endpoint within `redteam.lab` domain |
+| **Abused Service** | • Windows Print Spooler (`spoolsv.exe`) |
+| **Primary Evidence Sources** | • Windows Security Event Logs<br>• Sysmon Operational Logs<br>• Network packet capture (PCAP) |
+| **Behavioral Focus Areas** | • SMB-based service interaction<br>• File creation within printer driver directories<br>• Service-based execution of attacker-controlled DLLs<br>• Outbound network connections following execution |
 
-### Out-of-Scope / Not Observed
+#### ▶ 3.2) Out-of-Scope / Not Observed
 
 - Exploit delivery mechanics
 - Vulnerability exploitation details
@@ -62,22 +57,22 @@ Analysis was limited to post-exploitation artifacts available in the provided te
 
 ---
 
-## 4) Environment
+### 4) Environment
 
 This investigation reconstructed service-level abuse of Windows Print Services resulting in remote code execution using host and network telemetry.
 
-**Affected System (Victim) Operating System:**
+#### ▶ 4.1) **Affected System (Victim) Operating System:**
 - Windows Server
 
-**Analyst Virtual Machine Operating System:**
+#### ▶ 4.2) **Analyst Virtual Machine Operating System:**
 - Windows-based analyst workstation used for log review and packet analysis
 
-**Platforms and Services:**
+#### ▶ 4.3) **Platforms and Services:**
 - Windows Print Spooler service — analyzed service interaction and driver installation behavior
 - SMB file-sharing services — reviewed file transfer and named pipe access
 - Packet capture analysis tools — validated reverse shell communication
 
-**Data Sources Reviewed:**
+#### ▶ 4.4) **Data Sources Reviewed:**
 - Windows Security Event Logs (SMB access and service interaction)
 - Sysmon Operational Logs
   - Process creation
@@ -90,7 +85,7 @@ Exploit delivery mechanics were not analyzed. The investigation focuses on post-
 
 ---
 
-## 5) Evidence Summary
+### 5) Evidence Summary
 
 This section summarizes the primary evidence used to reconstruct service abuse, malicious payload staging, and post-exploitation activity observed during this incident. It focuses on how each data source contributed to understanding attacker behavior and impact rather than listing all raw log fields or detection logic.
 
@@ -99,7 +94,7 @@ Detailed event fields, SMB parameters, file paths, and detection-relevant artifa
 This separation reflects common SOC workflows, where incident narratives and detection engineering references are maintained as distinct artifacts.
 
 
-### 5.1 SMB-Based Service Interaction — Print Spooler Access
+#### ▶ 5.1) SMB-Based Service Interaction — Print Spooler Access
 
 Windows Security Event ID `5145` revealed remote SMB access to the `spoolss` named pipe over the `IPC$` share, indicating interaction with the Print Spooler service interface.
 
@@ -112,7 +107,7 @@ Relevant fields confirmed:
 This behavior aligns with known Print Spooler abuse techniques that leverage SMB-based printer service interfaces.
 
 
-### 5.2 Malicious Payload Delivery — File Creation by Trusted Service
+#### ▶ 5.2) Malicious Payload Delivery — File Creation by Trusted Service
 
 Sysmon Event ID `11` (FileCreate) events showed that `spoolsv.exe` wrote a non-standard DLL into printer driver staging directories:
 
@@ -123,7 +118,7 @@ Legitimate printer driver components such as `unidrv.dll` and `winhttp.dll` were
 This confirms that the attacker leveraged the Print Spooler service to stage a custom DLL in a trusted system directory.
 
 
-### 5.3 Payload Execution — Trusted Binary Abuse
+#### ▶ 5.3) Payload Execution — Trusted Binary Abuse
 
 Sysmon process telemetry showed execution chains involving trusted Windows binaries, including:
 
@@ -133,7 +128,7 @@ Sysmon process telemetry showed execution chains involving trusted Windows binar
 This execution model allows attacker-controlled code to run while blending into legitimate service activity and avoids obvious malicious process names.
 
 
-### 5.4 Outbound Communication — Reverse Shell Establishment
+#### ▶ 5.4) Outbound Communication — Reverse Shell Establishment
 
 Sysmon Event ID `3` (NetworkConnect) confirmed that a system-level process initiated an outbound TCP connection to:
 
@@ -145,7 +140,7 @@ The initiating process was running as `NT AUTHORITY\SYSTEM`, confirming elevated
 Packet capture analysis validated that this connection represented an interactive reverse shell session rather than transient network traffic.
 
 
-### 5.5 Post-Exploitation Validation — Privilege Confirmation
+#### ▶ 5.5) Post-Exploitation Validation — Privilege Confirmation
 
 Network telemetry revealed interactive commands issued by the attacker after connection establishment. Execution of `whoami` returned:
 
@@ -155,7 +150,7 @@ This confirms that exploitation resulted in full SYSTEM-level control of the hos
 
 ---
 
-## 6) Investigation Timeline (Condensed)
+### 6) Investigation Timeline (Condensed)
 
 The timeline below reflects the reconstructed sequence of attacker and host activity, not the step-by-step actions taken by the analyst during investigation. Detailed analyst workflow and tool usage are documented separately in: `investigation-walkthrough.md`  
 
@@ -173,7 +168,7 @@ This distinction mirrors real-world incident response reporting, where one timel
 
 ---
 
-## 7) Indicators of Compromise (IOCs)
+### 7) Indicators of Compromise (IOCs)
 
 The indicators listed below represent high-confidence artifacts associated with service abuse, malicious driver staging, and post-exploitation communication observed during this intrusion.
 
@@ -182,7 +177,7 @@ Field-level telemetry, SMB parameters, and example detection logic derived from 
 That report is intended for SOC analysts and detection engineers responsible for implementing monitoring and alerting controls.
 
 
-### 7.1 Host-Based IOCs
+#### ▶ 7.1) Host-Based IOCs
 
 These indicators identify the compromised endpoint and support scoping of affected systems.
 
@@ -194,7 +189,7 @@ These indicators identify the compromised endpoint and support scoping of affect
 - Scope additional systems with similar service activity
 
 
-### 7.2 Service Abuse & SMB IOCs
+#### ▶ 7.2) Service Abuse & SMB IOCs
 
 These indicators reflect remote interaction with Print Spooler service interfaces over SMB.
 
@@ -207,7 +202,7 @@ These indicators reflect remote interaction with Print Spooler service interface
 - Detect Print Spooler service interaction from untrusted sources
 
 
-### 7.3 File System IOCs
+#### ▶ 7.3) File System IOCs
 
 These indicators represent malicious payload staging locations.
 
@@ -219,7 +214,7 @@ These indicators represent malicious payload staging locations.
 - Monitor service processes writing to system directories
 
 
-### 7.4 Process & Execution IOCs
+#### ▶ 7.4) Process & Execution IOCs
 
 These indicators reflect trusted binary abuse during payload execution.
 
@@ -232,7 +227,7 @@ These indicators reflect trusted binary abuse during payload execution.
 - Detect trusted binaries executing from service contexts
 
 
-### 7.5 Network & C2 IOCs
+#### ▶ 7.5) Network & C2 IOCs
 
 These indicators reflect outbound communication following exploitation.
 
@@ -245,13 +240,13 @@ These indicators reflect outbound communication following exploitation.
 - Correlate service execution with network activity
 
 
-### 7.6 IOC Limitations
+#### ▶ 7.6) IOC Limitations
 
 While the indicators above are high-confidence within this investigation, attackers can modify payload names, service interaction methods, and destination infrastructure. As a result, detection strategies should prioritize behavioral correlations such as service-based file creation followed by outbound network connections rather than relying solely on static indicators.
 
 ---
 
-## 8) Case Determination
+### 8) Case Determination
 
 **Final Determination:**  
 Confirmed Windows host compromise involving abuse of the Print Spooler service to transfer and execute attacker-controlled code, resulting in SYSTEM-level remote command execution and reverse shell communication.
@@ -260,25 +255,25 @@ Evidence supports a service-abuse intrusion pattern leveraging trusted Windows c
 
 ---
 
-## 9) Recommended Follow-Ups (Case Closure Actions)
+### 9) Recommended Follow-Ups (Case Closure Actions)
 
 The recommendations below summarize key containment, hardening, and detection priorities based on behaviors observed during this incident. Detailed technical controls and expanded monitoring strategies are documented separately in: `detection-and-hardening-recommendations.md`
 
 This section highlights immediate and high-impact actions, while the supporting report provides implementation-level detail.
 
-### Immediate Containment
+#### ▶ 9.1) Immediate Containment
 
 - Isolate the affected host from the network
 - Disable Print Spooler service where not required
 - Block outbound communication to identified attacker infrastructure
 
-### Hardening
+#### ▶ 9.2) Hardening
 
 - Patch systems vulnerable to Print Spooler exploitation
 - Restrict SMB access to service interfaces
 - Limit driver installation paths used by services
 
-### Detection
+#### ▶ 9.3) Detection
 
 - Alert on SMB access targeting `spoolss`
 - Monitor for new DLLs written by `spoolsv.exe`
@@ -286,7 +281,7 @@ This section highlights immediate and high-impact actions, while the supporting 
 
 ---
 
-## 10) Supporting Reports (In This Folder)
+### 10) Supporting Reports (In This Folder)
 
 The files below make up the full case package for this investigation and provide additional detail across analyst workflow, response actions, detection engineering, and executive-level reporting.
 
@@ -301,14 +296,14 @@ The files below make up the full case package for this investigation and provide
 
 ---
 
-## 11) MITRE ATT&CK Mapping
+### 11) MITRE ATT&CK Mapping
 
 The mappings below provide a high-level summary of confirmed adversary behaviors observed during this incident.
 
 - Full investigative context and evidence references: `investigation-walkthrough.md`
 - Expanded technique analysis and detection considerations: `MITRE-ATTACK-mapping.md`
 
-### Technique Mapping
+#### ▶ 11.1) Technique Mapping
 
 - **Initial Access — Ingress Tool Transfer (T1105)**
 - **Execution — Service Execution (T1569.002)**
@@ -316,7 +311,7 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 - **Command and Control — Application Layer Protocol: Web (T1071.001)**
 - **Discovery — System Owner/User Discovery (T1033)**
 
-### MITRE ATT&CK Mapping (Table View)
+#### ▶ 11.2) MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |--------|----------|-------------|
@@ -327,3 +322,4 @@ The mappings below provide a high-level summary of confirmed adversary behaviors
 | Discovery | **System Owner/User Discovery (T1033)** | Privilege validation via command execution |
 
 ---
+
