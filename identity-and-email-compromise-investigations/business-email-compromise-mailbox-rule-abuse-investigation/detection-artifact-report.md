@@ -1,6 +1,6 @@
 # Detection Artifact Report — Business Email Compromise (BEC) Investigation (Malicious Mailbox Rule Abuse and Account Compromise)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents **detection-relevant identity, mailbox, and email workflow artifacts** observed during investigation of a Business Email Compromise (BEC) incident involving unauthorized cloud sign-ins and malicious mailbox rule creation used to hide fraudulent financial communications.
 
@@ -24,11 +24,11 @@ This report complements:
 
 ---
 
-## Environment and Log Sources
+### 2) Environment and Log Sources
 
 This section summarizes telemetry sources used to identify and validate BEC-related artifacts.
 
-**Primary data sources used during investigation:**
+#### ▶ 2.1) Primary data sources used during investigation
 
 - **Microsoft Entra ID (Azure AD) Sign-In Logs**
   - Successful and failed authentication attempts
@@ -46,7 +46,7 @@ This section summarizes telemetry sources used to identify and validate BEC-rela
   - Fraud-related pension withdrawal communications
   - Timestamp correlation with rule creation and sign-in activity
 
-**Affected identity and mailbox:**
+#### ▶ 2.2) Affected identity and mailbox
 
 - **Victim user:** Employee participating in pension withdrawal workflow  
 - **Mailbox platform:** Exchange Online (cloud-hosted)  
@@ -54,7 +54,7 @@ This section summarizes telemetry sources used to identify and validate BEC-rela
 
 ---
 
-## High-Confidence Attack Sequence Anchors
+### 3) High-Confidence Attack Sequence Anchors
 
 This section documents timeline anchors used to align identity, mailbox, and business-process artifacts.
 
@@ -70,11 +70,11 @@ These anchors were used to correlate identity abuse with mailbox manipulation an
 
 ---
 
-## Identity and Authentication Artifacts
+### 4) Identity and Authentication Artifacts
 
 This section documents authentication behaviors indicating unauthorized access to the cloud account.
 
-### Artifact: Successful Sign-In from Unfamiliar IP and Location
+#### ▶ 4.1) Artifact: Successful Sign-In from Unfamiliar IP and Location
 
 **Observed Behavior:**
 
@@ -96,7 +96,7 @@ During initial triage of the reported pension-related issue, analysts first revi
   - followed by mailbox configuration changes or rule creation events.
 
 
-### Artifact: Failed Authentication Attempts Preceding Successful Login
+#### ▶ 4.2) Artifact: Failed Authentication Attempts Preceding Successful Login
 
 **Observed Behavior:**
 
@@ -119,11 +119,11 @@ After identifying the successful foreign login, analysts pivoted backward in tim
 
 ---
 
-## Mailbox Configuration and Persistence Artifacts
+### 5) Mailbox Configuration and Persistence Artifacts
 
 This section documents how attackers established stealthy persistence and hid their activity.
 
-### Artifact: Creation of Malicious Inbox Rule
+#### ▶ 5.1) Artifact: Creation of Malicious Inbox Rule
 
 **Observed Artifact:**
 
@@ -149,7 +149,7 @@ Once identity compromise was confirmed, analysts pivoted from Sign-In Logs to En
   - rule conditions reference financial or HR keywords.
 
 
-### Artifact: Continued Mailbox Access After Rule Creation
+#### ▶ 5.2) Artifact: Continued Mailbox Access After Rule Creation
 
 **Observed Behavior:**
 
@@ -171,11 +171,11 @@ After confirming inbox rule creation, analysts returned to Sign-In Logs to asses
 
 ---
 
-## Email and Business Process Manipulation Artifacts
+### 6) Email and Business Process Manipulation Artifacts
 
 This section documents evidence of direct impact on business workflows.
 
-### Artifact: Legitimate Pension Emails Hidden from User Inbox
+#### ▶ 6.1) Artifact: Legitimate Pension Emails Hidden from User Inbox
 
 **Observed Behavior:**
 
@@ -197,7 +197,7 @@ After inbox rule behavior was identified, analysts conducted mailbox searches an
 - Monitor sudden drops in visible financial communications.
 
 
-### Artifact: Attacker-Sent Messages Using Victim Account
+#### ▶ 6.2) Artifact: Attacker-Sent Messages Using Victim Account
 
 **Observed Behavior:**
 
@@ -220,11 +220,11 @@ Investigators reviewed message tracking and email headers to validate whether ou
 
 ---
 
-## Absence of Endpoint Compromise Artifacts
+### 7) Absence of Endpoint Compromise Artifacts
 
 This section documents negative findings that narrowed incident scope.
 
-### Artifact: No Evidence of Endpoint-Based Access
+#### ▶ 7.1) Artifact: No Evidence of Endpoint-Based Access
 
 **Observed Behavior:**
 
@@ -241,11 +241,11 @@ Analysts reviewed device identifiers and authentication methods in Entra ID logs
 
 ---
 
-## Cross-Source Correlation Opportunities
+### 8) Cross-Source Correlation Opportunities
 
 This section outlines detection strategies that mirror investigation pivots.
 
-### Correlation 1: Anomalous Login → Inbox Rule Creation
+#### ▶ 8.1) Correlation 1: Anomalous Login → Inbox Rule Creation
 
 **Signals:**
 
@@ -256,7 +256,7 @@ This section outlines detection strategies that mirror investigation pivots.
 High-confidence indicator of mailbox takeover used for stealth persistence.
 
 
-### Correlation 2: Inbox Rule Creation → Financial Workflow Emails
+#### ▶ 8.2) Correlation 2: Inbox Rule Creation → Financial Workflow Emails
 
 **Signals:**
 
@@ -266,8 +266,7 @@ High-confidence indicator of mailbox takeover used for stealth persistence.
 **Use Case:**  
 Detects fraud-in-progress rather than generic mailbox abuse.
 
-
-### Correlation 3: Persistent Sign-Ins from Same Foreign IP
+#### ▶ 8.3) Correlation 3: Persistent Sign-Ins from Same Foreign IP
 
 **Signals:**
 
@@ -278,7 +277,7 @@ Indicates active attacker monitoring and interaction.
 
 ---
 
-## Indicator Reliability Considerations
+### 9) Indicator Reliability Considerations
 
 This section distinguishes behavioral indicators from easily changed values.
 
@@ -297,7 +296,7 @@ Behavior-based detection reduces evasion risk.
 
 ---
 
-## Closing Summary
+### 10) Closing Summary
 
 This investigation demonstrates how attackers can conduct effective BEC operations entirely through:
 
@@ -314,3 +313,4 @@ Reliable detection depends on correlating:
 - and business process communications.
 
 Organizations that monitor mailbox configuration changes in the context of identity risk signals can detect BEC campaigns before financial loss occurs.
+
