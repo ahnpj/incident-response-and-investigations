@@ -1,6 +1,6 @@
 # Detection and Hardening Recommendations — Windows Service Exploitation Investigation (Print Spooler Remote Code Execution)
 
-## Purpose and Scope
+### 1) Purpose and Scope
 
 This report documents detailed preventive controls and detection engineering recommendations based directly on behaviors confirmed during the investigation of Windows Print Spooler service abuse leading to remote code execution (RCE) and SYSTEM-level compromise.
 
@@ -17,7 +17,7 @@ This report expands those observations into actionable service hardening control
 
 ---
 
-## Summary of Defensive Control Failures Observed
+### 2) Summary of Defensive Control Failures Observed
 
 This section summarizes the primary control gaps that enabled service exploitation to progress from initial service interaction to SYSTEM-level execution and reverse shell establishment.
 
@@ -38,11 +38,11 @@ As reconstructed in `case-report.md`, these gaps allowed the attacker to:
 
 ---
 
-## Print Spooler Service Exposure Hardening
+### 3) Print Spooler Service Exposure Hardening
 
 This section focuses on reducing the attack surface of the Print Spooler service and preventing remote exploitation paths validated during the investigation.
 
-### Disable Print Spooler Where Not Required
+#### ▶ 3.1) Disable Print Spooler Where Not Required
 
 **Evidence from Investigation:**  
 The exploitation path required a reachable Print Spooler service interface. The walkthrough confirms service interaction over SMB via the `spoolss` named pipe during the exploitation phase.
@@ -57,7 +57,7 @@ The exploitation path required a reachable Print Spooler service interface. The 
 **Security Impact:**  
 Eliminates the vulnerable service interface and prevents the exploitation sequence observed in this incident.
 
-### Restrict Remote Spooler Access
+#### ▶ 3.2) Restrict Remote Spooler Access
 
 **Evidence from Investigation:**  
 The attack leveraged remote access to spooler functionality rather than local printing workflows.
@@ -75,11 +75,11 @@ Reduces the set of systems that can initiate `spoolss` interactions, making expl
 
 ---
 
-## Patch and Vulnerability Management Controls
+### 4) Patch and Vulnerability Management Controls
 
 This section addresses prevention through patching and vulnerability governance for known Print Spooler exploitation paths.
 
-### Prioritize Print Spooler Vulnerability Remediation
+#### ▶ 4.1) Prioritize Print Spooler Vulnerability Remediation
 
 **Evidence from Investigation:**  
 The incident demonstrates that service exploitation can directly yield SYSTEM-level execution. Even without confirming a specific CVE in the report set, the tradecraft aligns with widely abused spooler exploitation patterns.
@@ -95,11 +95,11 @@ Reduces likelihood of successful exploitation even when service exposure remains
 
 ---
 
-## Filesystem and DLL Loading Protections
+### 5) Filesystem and DLL Loading Protections
 
 This section focuses on preventing DLL staging and service-hosted loading validated during investigation.
 
-### Monitor and Alert on New DLL Writes in Spooler/Driver Paths
+#### ▶ 5.1) Monitor and Alert on New DLL Writes in Spooler/Driver Paths
 
 **Evidence from Investigation:**  
 The investigation walkthrough documents correlation between `spoolss` activity and subsequent DLL staging, with file creation timestamps aligning to the exploitation window.
@@ -116,7 +116,7 @@ The investigation walkthrough documents correlation between `spoolss` activity a
 **Security Impact:**  
 Detects the payload staging step before execution occurs, increasing containment window.
 
-### Detect Service-Hosted DLL Loads by Print Spooler Processes
+#### ▶ 5.2) Detect Service-Hosted DLL Loads by Print Spooler Processes
 
 **Evidence from Investigation:**  
 The walkthrough confirms service-hosted DLL loading (i.e., payload execution occurred through trusted service context rather than user processes).
@@ -134,11 +134,11 @@ Detects the execution pivot of the exploit chain and confirms high-severity comp
 
 ---
 
-## Endpoint Detection Engineering
+### 6) Endpoint Detection Engineering
 
 This section focuses on detecting the service-to-execution transition and SYSTEM-level process spawning behavior observed during exploitation.
 
-### Alert on Service Processes Spawning Non-Standard Child Processes
+#### ▶ 6.1) Alert on Service Processes Spawning Non-Standard Child Processes
 
 **Evidence from Investigation:**  
 Service-hosted execution was confirmed by process telemetry showing service-associated binaries executing attacker-controlled actions and leading into reverse shell activity.
@@ -155,7 +155,7 @@ Service-hosted execution was confirmed by process telemetry showing service-asso
 **Security Impact:**  
 Provides high-fidelity detection because service processes rarely spawn interactive shells or network tooling during legitimate printing.
 
-### Detect SYSTEM-Context Execution Following Spooler Activity
+#### ▶ 6.2) Detect SYSTEM-Context Execution Following Spooler Activity
 
 **Evidence from Investigation:**  
 The incident resulted in SYSTEM-level execution, confirmed through service-hosted process context.
@@ -172,11 +172,11 @@ Highlights privilege escalation outcomes consistent with service exploitation.
 
 ---
 
-## Network Detection Engineering
+### 7) Network Detection Engineering
 
 This section focuses on detecting exploitation precursors and reverse shell outcomes at the network layer.
 
-### Monitor SMB Named Pipe Access to `spoolss`
+#### ▶ 7.1) Monitor SMB Named Pipe Access to `spoolss`
 
 **Evidence from Investigation:**  
 Named pipe access to `\\PIPE\\spoolss` over SMB was directly observed during packet analysis and used as a key confirmation point for service exploitation.
@@ -193,7 +193,7 @@ Named pipe access to `\\PIPE\\spoolss` over SMB was directly observed during pac
 **Security Impact:**  
 Detects early-stage exploitation attempts before payload execution.
 
-### Alert on Reverse Shell Patterns After Service Activity
+#### ▶ 7.2) Alert on Reverse Shell Patterns After Service Activity
 
 **Evidence from Investigation:**  
 Outbound connectivity consistent with a reverse shell was observed shortly after service exploitation and SYSTEM-level process execution.
@@ -211,11 +211,11 @@ Detects successful exploitation outcomes and reduces attacker dwell time.
 
 ---
 
-## SIEM Correlation Improvements
+### 8) SIEM Correlation Improvements
 
 This section defines multi-signal correlations that mirror the confirmed exploitation chain from this investigation.
 
-### Correlate Service Interaction → DLL Staging → DLL Load → Outbound Connection
+#### ▶ 8.1) Correlate Service Interaction → DLL Staging → DLL Load → Outbound Connection
 
 **Evidence from Investigation:**  
 The walkthrough and detection artifact report document a consistent sequence: `spoolss` access → DLL write → service-hosted execution → reverse shell connectivity.
@@ -232,7 +232,7 @@ Trigger a high-severity alert when the following occur on the same host within a
 **Security Impact:**  
 High-fidelity alerting that is resilient to attacker renaming of DLLs and infrastructure rotation.
 
-### Detect Spooler Activity Without Legitimate Print Job Follow-Through
+#### ▶ 8.2) Detect Spooler Activity Without Legitimate Print Job Follow-Through
 
 **Evidence from Investigation:**  
 Packet inspection showed spooler interactions not followed by normal print job behavior, supporting exploitation rather than operational printing.
@@ -249,11 +249,11 @@ Helps identify suspicious spooler interactions even when the payload staging ste
 
 ---
 
-## Hardening Through Configuration and Policy
+### 9) Hardening Through Configuration and Policy
 
 This section focuses on configuration and governance controls that reduce the likelihood of successful service exploitation.
 
-### Restrict Driver Installation and Spooler Privileges
+#### ▶ 9.1) Restrict Driver Installation and Spooler Privileges
 
 **Evidence from Investigation:**  
 The exploitation chain relied on abusing spooler operations commonly associated with driver/job handling to stage malicious code.
@@ -267,7 +267,7 @@ The exploitation chain relied on abusing spooler operations commonly associated 
 **Security Impact:**  
 Reduces the pathways through which spooler interactions can lead to code execution.
 
-### Principle of Least Functionality for Services
+#### ▶ 9.2) Principle of Least Functionality for Services
 
 **Evidence from Investigation:**  
 The incident demonstrates that unnecessary service exposure can become an exploit vector.
@@ -282,11 +282,11 @@ Shrinks attack surface and simplifies detection baselines.
 
 ---
 
-## Logging and Visibility Improvements
+### 10) Logging and Visibility Improvements
 
 This section addresses telemetry coverage needed to detect and investigate similar incidents with high confidence.
 
-### Ensure Host Telemetry Captures Process + DLL Load Context
+#### ▶ 10.1) Ensure Host Telemetry Captures Process + DLL Load Context
 
 **Evidence from Investigation:**  
 Investigation required correlating service activity with process execution and reverse shell outcomes. Without process and module load visibility, confirmation would be delayed or incomplete.
@@ -302,7 +302,7 @@ Investigation required correlating service activity with process execution and r
 **Security Impact:**  
 Enables validation of service-hosted execution and improves detection fidelity.
 
-### Improve Network Telemetry for SMB/Named Pipe Visibility
+#### ▶ 10.2) Improve Network Telemetry for SMB/Named Pipe Visibility
 
 **Evidence from Investigation:**  
 Packet analysis was required to confirm `spoolss` named pipe interaction.
@@ -319,7 +319,7 @@ Improves early detection of service abuse attempts.
 
 ---
 
-## Prioritized Recommendations
+### 11) Prioritized Recommendations
 
 This table summarizes controls that would most effectively reduce risk based on behaviors observed in this incident.
 
@@ -335,7 +335,7 @@ This table summarizes controls that would most effectively reduce risk based on 
 
 ---
 
-## Closing Observations
+### 12) Closing Observations
 
 This investigation demonstrates that service abuse can yield full SYSTEM-level compromise and interactive attacker control with minimal user interaction.
 
@@ -353,3 +353,4 @@ Effective defense therefore requires:
 - Correlating service activity with filesystem and network outcomes
 
 Without cross-domain correlation between network service interactions and host execution telemetry, Print Spooler exploitation can blend into legitimate service activity and remain undetected until impact occurs.
+
