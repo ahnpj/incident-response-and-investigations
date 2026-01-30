@@ -1,6 +1,6 @@
 # Incident Summary — Web Application Authentication Compromise Investigation (Brute-Force Attempts and Account Compromise Detection)
 
-## Overview
+### Overview
 
 This incident involved automated authentication abuse against a web application, resulting in successful account compromise through brute-force and/or credential reuse techniques.
 
@@ -8,7 +8,7 @@ The attacker leveraged repeated login attempts from multiple IP addresses to ide
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes the confirmed attacker activity and how unauthorized access to the web application was achieved.
 
@@ -17,6 +17,8 @@ Investigation confirmed that the attacker initiated repeated authentication atte
 Following successful login, the attacker continued interacting with the application using the compromised account, confirming that access was not limited to authentication testing but extended into post-login application activity.
 
 This behavior indicates deliberate credential abuse rather than accidental login failure or user error.
+
+---
 
 ### Timeline References
 
@@ -29,7 +31,7 @@ This separation reflects standard SOC practice of distinguishing attacker behavi
 
 ---
 
-## Impact
+### Impact
 
 This section describes the confirmed and potential impact of the account compromise on application security and business risk.
 
@@ -43,6 +45,8 @@ Potential impacts include:
 
 Although no evidence of privilege escalation or lateral access to other accounts was confirmed during this investigation, the compromised account provided sufficient access to warrant full incident response procedures.
 
+---
+
 ### Impact Documentation References
 
 - Successful authentication and post-login activity are documented in `case-report.md` and validated in the investigation walkthrough.
@@ -50,7 +54,7 @@ Although no evidence of privilege escalation or lateral access to other accounts
 
 ---
 
-## How It Was Detected
+### How It Was Detected
 
 This section explains what security signals led to discovery of authentication abuse and initiation of investigation.
 
@@ -64,7 +68,7 @@ These indicators suggested automated authentication abuse rather than isolated u
 
 ---
 
-## Response Summary
+### Response Summary
 
 This section summarizes the high-level actions taken to contain and remediate the compromise.
 
@@ -81,7 +85,7 @@ Detailed response procedures are documented in `incident-response-report.md`.
 
 ---
 
-## Next Steps and Prevention
+### Next Steps and Prevention
 
 This section summarizes recommended actions to reduce risk of similar authentication abuse in the future.
 
@@ -98,7 +102,7 @@ High-level defensive gaps are summarized in the investigation walkthrough, while
 
 ---
 
-## Related Documentation
+### Related Documentation
 
 This section lists supporting reports that provide technical investigation detail, response actions, and long-term remediation guidance.
 
@@ -108,3 +112,4 @@ This section lists supporting reports that provide technical investigation detai
 - `detection-artifact-report.md` — detection-relevant authentication and application artifacts  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
 - `incident-response-report.md` — containment, eradication, recovery, and monitoring actions
+
