@@ -100,7 +100,7 @@ index=main ("net user" OR "net user /add")
   <em>Figure 3</em>
 </p>
 
-##### ◆ 2.1) Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
+##### ◆ 2.1) Raw Event Review — Unauthorized Local Account Creation
 
 Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
 
@@ -115,7 +115,7 @@ The same action was recorded by multiple telemetry sources. The activity appeare
 Process IDs (PIDs) associated with returned events were reviewed. As expected, PIDs differed across logs capturing the same action, but the events consistently pointed back to execution of `net.exe` with the `/add` parameters. Taken together, the `/add` flag, the presence of a cleartext password, and corroboration across multiple telemetry channels—this activity was assessed as adversary-driven creation of a backdoor local account using standard Windows utilities.
 
 
-##### ◆ 2.2)
+##### ◆ 2.2) Account Management Validation — Local User Creation Confirmed
 
 To validate account creation from an account management perspective, Windows Security events tied to account creation (for example, Event ID 4720) were also queried:
 
@@ -487,6 +487,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
