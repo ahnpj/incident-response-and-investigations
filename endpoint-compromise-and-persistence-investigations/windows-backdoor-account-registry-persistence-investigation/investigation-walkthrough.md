@@ -57,6 +57,24 @@ The following timeline summarizes the sequence of notable events and investigati
 
 ### Investigation Walkthrough
 
+<details>
+<summary><strong>🧭 Walkthrough Navigation (click to expand)</strong></summary>
+
+- [1) Dataset Familiarization (Event Count in `main`)](#-1-dataset-familiarization-event-count-in-main)
+- [2) Backdoor Account Creation Evidence](#-2-backdoor-account-creation-evidence-command-line-and-account-management-telemetry)
+  - [2.1 Raw Event Review — Unauthorized Local Account Creation](#-21-raw-event-review--unauthorized-local-account-creation)
+  - [2.2 Account Management Validation — Local User Creation Confirmed](#-22-account-management-validation--local-user-creation-confirmed)
+- [3) Registry Artifact Correlation (Persistence-Related Account Metadata)](#-3-registry-artifact-correlation-persistence-related-account-metadata)
+- [4) Impersonation Intent (Look-Alike Username Identification)](#-4-impersonation-intent-look-alike-username-identification)
+- [5) Remote Execution Confirmation (WMIC-Based Account Creation)](#-5-remote-execution-confirmation-wmic-based-account-creation)
+- [6) Backdoor Account Usage Review (Logon Attempt Validation)](#-6-backdoor-account-usage-review-logon-attempt-validation)
+- [7) Suspicious PowerShell Origin Identification (Host Attribution)](#-7-suspicious-powershell-origin-identification-host-attribution)
+- [8) Malicious PowerShell Volume Measurement (Event ID 4103)](#-8-malicious-powershell-volume-measurement-event-id-4103)
+- [9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)](#-9-encoded-powershell-decoding-and-url-extraction-cyberchef--defang)
+
+</details>
+
+
 #### ▶ 1) Dataset Familiarization (Event Count in `main`)
 The investigation began by establishing the overall dataset size in the `main` index to set expectations for scope and query performance.
 
@@ -490,6 +508,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
