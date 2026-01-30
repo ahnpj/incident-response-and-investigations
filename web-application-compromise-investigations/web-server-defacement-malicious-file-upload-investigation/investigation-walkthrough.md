@@ -9,7 +9,7 @@ This investigation analyzes a multi-stage web server compromise that culminated 
 The domain `imreallynotbatman.com` was defaced in a simulated breach of Wayne Enterprises. I examined the environment and collected relevant logs to track attacker actions across the Lockheed Martin Cyber Kill Chain.
 
 <p align="center">
-  <img src="images/splunk-cyber-kill-chain-investigation-01.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-01.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="300"><br>
@@ -68,10 +68,10 @@ I accessed Splunk Enterprise on the target VM (`10.201.17.82`, `http://10.201.33
 In Splunk’s Search & Reporting app I confirmed the index=botsv1 dataset with `index=botsv1 | stats count by sourcetype` to understand what types of data were available
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
-       width="700"><br>
+       width="800"><br>
 </p>
 
 ### Checking Basic Connectivity (AttackBox Linux Bash terminal)
@@ -79,7 +79,7 @@ In Splunk’s Search & Reporting app I confirmed the index=botsv1 dataset with `
 My goal here is to quickly confirm  whether the target is reachable from the AttackBox (verifies network connectivity and that the VM is up).
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-02.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-02.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="500"><br>
@@ -99,7 +99,7 @@ ping -c 3 10.201.17.82
 I also wanted to  enumerate which ports are open and which services are listening so I know where to focus further testing (web, SSH, custom services, etc.).
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-03.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-03.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="500"><br>
@@ -121,7 +121,7 @@ nmap -sS -sV -p- 10.201.17.82
 My goal here is to try verifying that the web server is present, inspect response headers (server, cookies, redirects, status codes), and quickly retrieve pages for manual review or to inform later automated testing.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-04.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-04.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="500"><br>
@@ -143,7 +143,7 @@ curl http://10.201.17.82/index.php
 I wanted quick verification of whether a specific port is accepting TCP connections (faster than a full nmap when you want to check individual services).
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-05.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-05.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="500"><br>
@@ -221,7 +221,7 @@ imreallynotbatman.com
 - **imreallynotbatman.com**  –  Specifies the specific domain I'm investigating, like a keyword search for the targeted domain to capture any events involving the compromised (defaced) web server.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-06.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-06.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -231,7 +231,7 @@ imreallynotbatman.com
 This returned several sourcetypes, including `suricata`, `stream:http`, `fortigate_utm`, and `iis`. 
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-07.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-07.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -244,7 +244,7 @@ This returned several sourcetypes, including `suricata`, `stream:http`, `fortiga
 I first limited my query to `HTTP` traffic using `sourcetype=stream:http` to focus only on web communication logs and reduce unrelated results. This made the search faster and more precise, allowing me to see which source IPs had connected to that domain. The results showed two main IPs — `40.80.148.42` and `23.22.63.114`, with the first generating the majority of HTTP requests, suggesting it was the primary host involved in the connection.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-08.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-08.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -261,7 +261,7 @@ sourcetype=stream:http
 From this search, I identified two IPs (`40.80.148.42` and `23.22.63.114`) repeatedly connecting to the server (identified via `src_ip` field in Splunk). `40.80.148.42` was by far generating the majority of the HTTP requests. So I investigated `40.80.148.42` first.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-09.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-09.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -280,7 +280,7 @@ sourcetype:suricata
 ```
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-10.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-10.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -292,7 +292,7 @@ After using the Suricata IDS logs, and then filtering events generated by the so
 The large number of repeated detections and variety of triggered signatures confirm that this IP was performing reconnaissance and vulnerability scanning against the target host 192.168.250.70.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-11.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-11.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -304,7 +304,7 @@ While reviewing Suricata events for source IP `40.80.148.42`, one of the first a
 HTTP requests with empty headers are common with automated vulnerability scanners or reconnaissance tools, which sends deliberately malformed requests to see how a web server responds. The goal of this attacker was most likely to fingerprint the web application, determine how it handles unexpected inputs, and identify potential misconfigurations.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-12.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-12.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -355,7 +355,7 @@ _<b>First query (Objective 2 - Step 1)</b>_
 This query was used to identify which client IPs accessed the domain name, and the count events per source IP, regardless of how it resolved (`sourcetype=stream:*`). This search focused on hostname-based activity across multiple Stream sourcetypes (`sourcetype=stream:*`), capturing a broad view of traffic involving the domain (including DNS and HTTP Host header references).
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-13.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-13.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -386,8 +386,8 @@ dest_ip="192.168.250.70"
 - **sourcetype=stream:http** - Specifically records HTTP protocol events, including details like source/destination IPs, methods (GET/POST), URLs, headers, and response codes.
 
 <p align="center">
-  <img src="images/splunk-cyber-kill-chain-investigation-14.png?raw=true&v=2" width="45%">
-  <img src="images/splunk-cyber-kill-chain-investigation-15.png?raw=true&v=2" width="45%">
+  <img src="images/splunk-web-defacement-investigation-14.png?raw=true&v=2" width="45%">
+  <img src="images/splunk-web-defacement-investigation-15.png?raw=true&v=2" width="45%">
   <br>
   <sub>Figure 14 (left) & Figure 15 (right)</sub>
 </p>
@@ -408,7 +408,7 @@ http_method=POST
 - **http_method=POST** - Narrowed the scope to HTTP POST requests directed specifically to the web server’s IP address.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-16.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-16.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -447,7 +447,7 @@ uri="/joomla/administrator/index.php"
 - **uri="/joomla/administrator/index.php"** - Specifies the URI path being requested. In this case, it filters for requests targeting Joomla’s admin login page, which is a common location attackers probe when trying to gain access.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-17.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-17.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -474,7 +474,7 @@ uri="/joomla/administrator/index.php"
 - **table _time uri src_ip dest_ip form_data** - Took all results from my search and displayed only the specific fields I cared about in a easy-to-read table.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-18.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-18.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -516,7 +516,7 @@ form_data=*username*passwd*
 </blockquote>
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-19.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-19.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -563,7 +563,7 @@ form_data=*username*passwd*
 </blockquote>
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-20.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-20.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -603,7 +603,7 @@ form_data=*username*passwd*
     - **creds** = the extracted password value
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-21.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-21.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -669,7 +669,7 @@ dest_ip="192.168.250.70" *.exe
 - **.exe** – Keyword search for executable files. This detects potential binary uploads used to install persistence agents.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-22.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-22.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -699,7 +699,7 @@ dest_ip="192.168.250.70"
 - **"part_filename{}"="3791.exe"** - Finds HTTP events that reference or transfer the executable named `3791.exe` found from the previous query (potentially a malicious executable).
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-23.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-23.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -743,7 +743,7 @@ index=botsv1
 - **"3791.exe"** – Search term for the suspected malware. This validates that the payload was run after upload.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-24.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-24.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -773,7 +773,7 @@ This query will look for the process creation logs containing the term `3791.exe
 </blockquote>
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-25.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-25.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -785,7 +785,7 @@ I examined the `CommandLine` field to verify how `3791.exe` was executed on the 
 When examining the `CommandLine` field for `3791.exe`, I clicked the entry itself, which automatically updated my query to `index=botsv1 "3791.exe" sourcetype="XmlWinEventLog" EventCode=1 CommandLine="3791.exe"`. I then focused on this specific process within the `Hashes` field to isolate its hash details and successfully retrieved the MD5 hash of the executable (`c99131e0169171935c5ac32615ed6261`), confirming its integrity and providing evidence of its execution on the host.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-26.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-26.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -802,7 +802,7 @@ I also examined the `user` and `user_id` fields within the event to identify whi
 To gather additional intelligence, I submitted the retrieved hash value of the executable to VirusTotal, a malware analysis platform that aggregates results from multiple antivirus engines. This provided further details on the file’s reputation, detection rate, and potential malicious behavior across other security databases.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-27.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-27.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -835,7 +835,7 @@ This query looks at inbound network traffic going to the web server 192.168.250.
 </blockquote>
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-28.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-28.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -863,7 +863,7 @@ This query revealed outbound requests to `prankglassinebracket.jumpingcrab
 </blockquote>
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-29.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-29.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -884,7 +884,7 @@ dest_ip=23.22.63.114
 ```
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-30.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-30.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -910,7 +910,7 @@ dest_ip="192.168.250.70"
 ```
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-31.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-31.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -933,7 +933,7 @@ sourcetype=fortigate_utm
 ```
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-32.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-32.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -990,7 +990,7 @@ sourcetype=fortigate_utm
 Immediately I noticed I could see the source IP (`src_ip`), the destination IP (`dest_ip`), and the URL (`url`) where the external server the internal host contacted. I clicked the `url` field and saw the Fully Qualified Domain Name of the where the image was being called from on the attacker's host. All of this indicates the infected host made outbound requests to the external domain, which is a common indicator of beaconing to a C2 server.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-33.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-33.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -1013,7 +1013,7 @@ src_ip=192.168.250.70
 I identified the suspicious domain as the C2 server, which seems to where the attacker contacted after gaining control of the server. Through this, it was clear that the same file name, internal source IP, and the suspicious external domain have indeed established communication between the web server and the attacker's system.
 
 <p align="left">
-  <img src="images/splunk-cyber-kill-chain-investigation-34.png?raw=true&v=2" 
+  <img src="images/splunk-web-defacement-investigation-34.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
@@ -1211,5 +1211,6 @@ This section maps observed behaviors to MITRE ATT&CK tactics and techniques usin
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
