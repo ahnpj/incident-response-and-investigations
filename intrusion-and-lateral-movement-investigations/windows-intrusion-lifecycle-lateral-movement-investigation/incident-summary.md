@@ -1,6 +1,6 @@
 # Incident Summary — Windows Malware Intrusion Lifecycle Investigation (Lateral Movement and Multi-Stage Host Compromise on Windows)
 
-## Overview
+### Overview
 
 This incident involved external reconnaissance and brute-force activity against exposed services, followed by successful authentication, malware deployment on a Windows host, and establishment of persistence. The investigation confirmed that the attacker progressed through multiple stages of the intrusion lifecycle, including initial access, execution, persistence, and attempted cleanup, representing a full host compromise scenario rather than a single isolated alert.
 
@@ -8,7 +8,7 @@ The incident was reconstructed using correlated network, authentication, and hos
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes confirmed attacker activity and system impact, rather than the analyst’s investigative workflow.
 
@@ -22,6 +22,8 @@ Confirmed attacker actions include:
 - Modification of registry keys to establish persistence
 - Attempted cleanup of attacker tooling and artifacts
 
+- ---
+
 ### Timeline References
 
 For readers seeking more detail:
@@ -31,7 +33,7 @@ For readers seeking more detail:
 
 ---
 
-## How It Was Detected
+### How It Was Detected
 
 This section summarizes how suspicious activity was identified and escalated into a full investigation.
 
@@ -52,7 +54,7 @@ Detection Sources:
 
 ---
 
-## Scope of Compromise
+### Scope of Compromise
 
 This section summarizes the extent of attacker access and systems affected.
 
@@ -71,7 +73,7 @@ Scope validation steps and negative findings are documented in:
 
 ---
 
-## Impact
+### Impact
 
 This section summarizes technical and security impact.
 
@@ -93,7 +95,7 @@ Additional impact detail is documented in:
 
 ---
 
-## Response Status
+### Response Status
 
 This section summarizes response posture at the conclusion of the investigation.
 
@@ -111,7 +113,7 @@ Detailed response procedures and rationale are documented in:
 
 ---
 
-## Root Cause
+### Root Cause
 
 This section summarizes the contributing factors that enabled the intrusion.
 
@@ -126,33 +128,34 @@ These conditions allowed brute-force attempts to proceed until valid credentials
 
 ---
 
-## Next Steps and Preventive Measures
+### Next Steps and Preventive Measures
 
 This section summarizes recommended improvements following the incident.
 
-### Immediate Actions
+#### ▶ Immediate Actions
 
 - Restrict external exposure of remote access services
 - Enforce account lockout and rate limiting controls
 - Implement multi-factor authentication for remote access
 - Improve alerting on brute-force patterns
 
-### Long-Term Hardening
+#### ▶ Long-Term Hardening
 
 - Network segmentation to limit blast radius of compromised hosts
 - Centralized log correlation across network and host telemetry
 - Endpoint detection and response deployment
 - Continuous monitoring for persistence mechanisms
 
-### Reference Documentation
+#### ▶ Reference Documentation
 
 - High-level defensive gaps: documented in `windows-host-malware-instrusion-lifecycle-investigation.md` under **Detection and Hardening Opportunities**
 - Detailed engineering controls: documented in `detection-and-hardening-recommendations.md`
 
 ---
 
-## Closing Statement
+### Closing Statement
 
 This incident illustrates how exposed services combined with weak authentication controls can rapidly escalate into full host compromise. Once valid credentials are obtained, attackers can transition quickly into malware deployment and persistence unless detection and response mechanisms interrupt the intrusion lifecycle early.
 
 Effective defense therefore requires both strong perimeter controls and deep host-level visibility to identify and disrupt attacks before persistence is established.
+
