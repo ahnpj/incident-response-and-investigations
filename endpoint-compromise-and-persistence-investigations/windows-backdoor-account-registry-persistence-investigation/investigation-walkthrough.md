@@ -160,7 +160,7 @@ Within returned registry event details, the relevant path stood out. Windows mai
 This registry key confirmed that Windows registered the newly created account, and the timing aligned with the earlier command-line evidence. In these registry events, the `TargetObject` field is the key field because it contains the full registry key or value path that was created, modified, or deleted. Without `TargetObject`, the event would indicate a registry change occurred but would not identify which key was impacted, which is why `TargetObject` was required to extract the persistence-relevant artifact.
 
 
-### 4) Impersonation Intent (Look-Alike Username Identification)
+### ▶ 4) Impersonation Intent (Look-Alike Username Identification)
 
 Once account creation and registry artifacts were established, analysis focused on identifying which legitimate identity the adversary attempted to mimic. Adversaries often select usernames that blend into normal naming patterns to reduce detection.
 
@@ -179,7 +179,7 @@ During review of the `User` field patterns in the field sidebar, the legitimate 
   <em>Figure 6</em>
 </p>
 
-### 5) Remote Execution Confirmation (WMIC-Based Account Creation)
+### ▶ 5) Remote Execution Confirmation (WMIC-Based Account Creation)
 
 The next pivot focused on how the backdoor account was created. Process creation telemetry (`Event ID 4688`) was used to identify tooling and command construction indicating remote execution.
 
@@ -207,7 +207,7 @@ Because it is native to Windows environments, it can blend into legitimate admin
 </p>
 
 
-### 6) Backdoor Account Usage Review (Logon Attempt Validation)
+### ▶ 6) Backdoor Account Usage Review (Logon Attempt Validation)
 
 After confirming remote account creation, the investigation evaluated whether the backdoor account was used for authentication attempts during the timeframe captured in the dataset.
 
@@ -243,7 +243,7 @@ To validate this conclusion using explicit Windows logon event IDs, the `EventID
 </p>
 
 
-### 7) Suspicious PowerShell Origin Identification (Host Attribution)
+### ▶ 7) Suspicious PowerShell Origin Identification (Host Attribution)
 
 The investigation then pivoted to PowerShell activity to determine follow-on behavior. Encoded PowerShell is frequently used to download payloads, execute scripts in memory, or conceal command intent, making PowerShell telemetry a high-value source.
 
@@ -270,7 +270,7 @@ The `Hostname` field was reviewed to identify which system generated the PowerSh
 </p>
 
 
-### 8) Malicious PowerShell Volume Measurement (Event ID 4103)
+### ▶ 8) Malicious PowerShell Volume Measurement (Event ID 4103)
 
 With the affected host identified, analysis measured the extent of suspicious PowerShell execution. The focus was placed on `Event ID 4103`, which logs PowerShell engine activity.
 
@@ -288,7 +288,7 @@ index=main EventID=4103
 Splunk returned 79 events, all associated with the encoded payload activity. This volume suggested repeated execution or a script that generated multiple engine events while unpacking or processing instructions. Quantifying these events provided context for how visible the activity would be in environments with robust PowerShell logging enabled.
 
 
-### 9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)
+### ▶ 9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)
 
 After establishing **James.browne** as the host generating suspicious PowerShell telemetry, analysis focused on determining the outbound destination contacted by the encoded command. PowerShell events were reviewed with attention to pipeline execution details (for example, events in the PowerShell channel such as `EventID 800` that can surface execution parameters and context).
 
@@ -487,6 +487,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
