@@ -41,7 +41,7 @@ The following investigative questions guided analysis and defined the pivots use
 
 ---
 
-## Investigation Timeline
+### Investigation Timeline
 The following timeline summarizes the sequence of notable events and investigative milestones reconstructed from the available log evidence.
 
 - **T0 — Baseline review and dataset sizing:** Event volume in the `main` index was assessed to establish investigation scope and confirm data availability.
@@ -55,9 +55,9 @@ The following timeline summarizes the sequence of notable events and investigati
 
 ---
 
-## Investigation Walkthrough
+### Investigation Walkthrough
 
-### 1) Dataset Familiarization (Event Count in `main`)
+#### ▶ 1) Dataset Familiarization (Event Count in `main`)
 The investigation began by establishing the overall dataset size in the `main` index to set expectations for scope and query performance.
 
 ```spl
@@ -83,7 +83,7 @@ As an alternative approach, the index could be queried directly using `index=mai
   <em>Figure 2</em>
 </p>
 
-### 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
+#### ▶ 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
 
 With dataset scale established, analysis shifted toward identifying whether a new local user account was created. Because adversaries frequently use built-in commands such as `net user` for account creation, searches focused on command-line indicators and process execution telemetry.
 
@@ -100,7 +100,7 @@ index=main ("net user" OR "net user /add")
   <em>Figure 3</em>
 </p>
 
-#### ▶ 2.1)
+##### 2.1)
 
 Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
 
@@ -115,7 +115,7 @@ The same action was recorded by multiple telemetry sources. The activity appeare
 Process IDs (PIDs) associated with returned events were reviewed. As expected, PIDs differed across logs capturing the same action, but the events consistently pointed back to execution of `net.exe` with the `/add` parameters. Taken together, the `/add` flag, the presence of a cleartext password, and corroboration across multiple telemetry channels—this activity was assessed as adversary-driven creation of a backdoor local account using standard Windows utilities.
 
 
-#### ▶ 2.2)
+##### 2.2)
 
 To validate account creation from an account management perspective, Windows Security events tied to account creation (for example, Event ID 4720) were also queried:
 
@@ -132,7 +132,7 @@ index=main EventID=4720
 
 Reviewing these events confirmed the creation of a new user account and clarified the username introduced as the backdoor. On one of the infected hosts, the adversary successfully created a backdoor user named `A1berto`.
 
-### 3) Registry Artifact Correlation (Persistence-Related Account Metadata)
+### ▶ 3) Registry Artifact Correlation (Persistence-Related Account Metadata)
 
 After confirming suspicious account creation, analysis pivoted to registry activity to determine whether persistence-related artifacts were present on the system. When new local accounts are introduced during intrusions, registry activity is often a high-signal area because Windows writes account and profile metadata and attackers may tamper with related keys.
 
@@ -487,6 +487,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
