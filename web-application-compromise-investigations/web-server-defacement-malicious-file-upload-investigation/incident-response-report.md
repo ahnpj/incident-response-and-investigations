@@ -1,6 +1,6 @@
 # Incident Response Report — Web Server Defacement Investigation (Malicious File Upload Exploitation and Web Shell Deployment)
 
-## Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmed unauthorized administrative access, malware execution, and public website defacement.
 
@@ -23,7 +23,7 @@ Evidence supporting this classification is documented in:
 
 ---
 
-## Detection and Escalation Context
+### 2) Detection and Escalation Context
 
 This section explains why the activity warranted full incident response rather than routine web attack handling.
 
@@ -39,11 +39,11 @@ The transition from scanning to authenticated access and host-level execution el
 
 ---
 
-## Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section documents the analytical steps required to confirm compromise and determine attack progression.
 
-### 1) Confirm Unauthorized CMS Access
+#### ▶ 3.1) Confirm Unauthorized CMS Access
 
 Analysts reviewed HTTP logs to identify:
 
@@ -54,7 +54,7 @@ Form data extraction revealed valid credentials (`admin:batman`) used during suc
 
 This pivot is documented in the walkthrough during `stream:http` log analysis.
 
-### 2) Identify File Upload and Execution Activity
+#### ▶ 3.2) Identify File Upload and Execution Activity
 
 After confirming CMS compromise, analysts searched for:
 
@@ -68,7 +68,7 @@ Sysmon telemetry confirmed:
 
 This validated that the attacker transitioned from application access to host-level exploitation.
 
-### 3) Validate Outbound Communications
+#### ▶ 3.3) Validate Outbound Communications
 
 Firewall and UTM logs were reviewed to identify:
 
@@ -77,7 +77,7 @@ Firewall and UTM logs were reviewed to identify:
 
 This step confirmed that the compromised server was actively communicating with attacker infrastructure, not merely hosting static defacement content.
 
-### 4) Scope for Lateral Movement and Data Access
+#### ▶ 3.4) Scope for Lateral Movement and Data Access
 
 Analysts reviewed:
 
@@ -88,11 +88,11 @@ No evidence of lateral movement or internal targeting was identified within the 
 
 ---
 
-## Containment Actions
+### 4) Containment Actions
 
 This section documents immediate steps required to stop active attacker control and prevent further damage.
 
-### 1) Isolate the Compromised Web Server
+#### ▶ 4.1) Isolate the Compromised Web Server
 
 - Remove the server from external network access.
 - Block inbound and outbound traffic except from incident response tooling.
@@ -100,7 +100,7 @@ This section documents immediate steps required to stop active attacker control 
 **Why:**  
 Isolation prevents further defacement, blocks command-and-control communication, and stops potential lateral movement attempts.
 
-### 2) Disable Compromised Credentials
+#### ▶ 4.2) Disable Compromised Credentials
 
 - Reset or disable Joomla administrative credentials used in the attack.
 - Reset credentials for any server-level accounts used by the CMS.
@@ -108,14 +108,14 @@ Isolation prevents further defacement, blocks command-and-control communication,
 **Why:**  
 Credential abuse was the primary access vector. Without revocation, attackers can immediately regain control after cleanup.
 
-### 3) Suspend CMS Administrative Interfaces
+#### ▶ 4.3) Suspend CMS Administrative Interfaces
 
 - Temporarily disable `/administrator` endpoints or restrict access via IP allowlists.
 
 **Why:**  
 Prevents continued abuse while forensic review and remediation are underway.
 
-### 4) Preserve Evidence
+#### ▶ 4.4)  Preserve Evidence
 
 - Capture disk images and relevant log data before eradication.
 
@@ -124,11 +124,11 @@ Preserves forensic evidence for root cause validation and legal or compliance re
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
 This section documents how malicious artifacts and persistence mechanisms should be removed.
 
-### 1) Remove Uploaded Malware
+#### ▶ 5.1) Remove Uploaded Malware
 
 - Identify and delete all attacker-uploaded files, including:
   - `3791.exe`
@@ -137,7 +137,7 @@ This section documents how malicious artifacts and persistence mechanisms should
 **Why:**  
 Active binaries present ongoing risk of reinfection or data exfiltration.
 
-### 2) Verify No Additional Backdoors Exist
+#### ▶ 5.2) Verify No Additional Backdoors Exist
 
 - Review:
   - web root directories
@@ -147,14 +147,14 @@ Active binaries present ongoing risk of reinfection or data exfiltration.
 **Why:**  
 Attackers often deploy multiple access methods to survive partial cleanup.
 
-### 3) Restore CMS Files from Trusted Backups
+#### ▶ 5.3) Restore CMS Files from Trusted Backups
 
 - Replace modified templates and content with known-good versions.
 
 **Why:**  
 Ensures no malicious scripts or injected code remains in production pages.
 
-### 4) Apply Security Updates
+#### ▶ 5.4) Apply Security Updates
 
 - Patch Joomla core and plugins.
 - Update server operating system and web server software.
@@ -162,7 +162,7 @@ Ensures no malicious scripts or injected code remains in production pages.
 **Why:**  
 Reduces risk of secondary exploitation and removes known vulnerabilities.
 
-### 5) Consider Full System Rebuild
+#### ▶ 5.5) Consider Full System Rebuild
 
 - Perform full OS reinstallation if:
   - malware scope cannot be confidently determined
@@ -173,25 +173,25 @@ Reimaging provides highest confidence in restoring system integrity.
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
 This section documents how services should be safely returned to production.
 
-### 1) Validate System Integrity
+#### ▶ 6.1) Validate System Integrity
 
 - Verify:
   - file hashes of CMS components
   - absence of unauthorized executables
   - no suspicious scheduled tasks or registry entries
 
-### 2) Reintroduce Network Connectivity Gradually
+#### ▶ 6.2) Reintroduce Network Connectivity Gradually
 
 - Restore access after:
   - eradication is complete
   - credentials are reset
   - monitoring is active
 
-### 3) Implement Compensating Controls Before Go-Live
+#### ▶ 6.3) Implement Compensating Controls Before Go-Live
 
 - WAF rules protecting admin endpoints
 - MFA enforcement
@@ -202,18 +202,18 @@ Prevents immediate reinfection during recovery phase.
 
 ---
 
-## Post-Incident Monitoring and Detection
+### 7) Post-Incident Monitoring and Detection
 
 This section documents monitoring requirements following restoration.
 
-### Short-Term Monitoring
+#### ▶ 7.1) Short-Term Monitoring
 
 - Increased alerting on:
   - admin login attempts
   - file uploads
   - executable creation in web directories
 
-### Long-Term Monitoring
+#### ▶ 7.2) Long-Term Monitoring
 
 - Continuous monitoring of:
   - CMS authentication logs
@@ -225,7 +225,7 @@ Attackers may attempt to re-access systems using known credentials or vulnerabil
 
 ---
 
-## Communication and Stakeholder Coordination
+### 8)Communication and Stakeholder Coordination
 
 This section documents coordination requirements during response.
 
@@ -240,7 +240,7 @@ Public-facing defacement incidents often require communications review due to re
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
 This section summarizes response and prevention improvements derived from the incident.
 
@@ -255,7 +255,7 @@ These lessons directly inform the engineering controls documented in `detection-
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 - `investigation-walkthrough.md` — Splunk queries and investigation workflow  
 - `case-report.md` — confirmed timeline and business impact  
@@ -263,3 +263,4 @@ These lessons directly inform the engineering controls documented in `detection-
 - `incident-summary.md` — executive incident overview  
 - `detection-artifact-report.md` — detection-relevant indicators  
 - `detection-and-hardening-recommendations.md` — long-term security improvements  
+
