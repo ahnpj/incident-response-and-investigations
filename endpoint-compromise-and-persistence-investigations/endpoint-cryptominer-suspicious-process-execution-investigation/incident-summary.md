@@ -42,11 +42,11 @@ No evidence of:
 - Lateral movement
 - Persistence mechanisms
 
-was identified within the scope of available endpoint and SIEM telemetry.
-
----
+was identified within the scope of available endpoint and SIEM telemetry. 
 
 While financial loss was not directly measurable in this case, cryptomining activity can degrade system performance, increase operational costs, and indicate broader security hygiene issues that may expose the environment to additional threats.
+
+---
 
 ### Impact Documentation References
 
@@ -117,4 +117,5 @@ This section lists supporting reports that provide detailed technical analysis, 
 - `detection-artifact-report.md` — detection-relevant log fields and behavioral indicators  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
 - `incident-response-report.md` — containment, eradication, recovery, and monitoring actions
+
 
