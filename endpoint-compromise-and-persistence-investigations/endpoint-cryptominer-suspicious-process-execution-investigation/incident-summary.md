@@ -1,6 +1,6 @@
 # Incident Summary — Endpoint Cryptominer Infection Investigation (Suspicious Process Execution and Resource Abuse)
 
-## Overview
+### Overview
 
 This incident involved the execution of a suspected cryptocurrency mining binary on a corporate workstation, detected through SIEM alerting based on process creation telemetry and executable naming indicators.
 
@@ -8,7 +8,7 @@ The activity was confirmed to have occurred under a standard user context on an 
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes the confirmed attacker or malicious activity that occurred, based on reconstructed incident timelines and validated evidence.
 
@@ -17,6 +17,8 @@ A SIEM alert was generated after a suspicious executable named `cudominer.exe` w
 Windows Security Event ID 4688 process creation logs confirmed the execution event and provided host, user, and executable path attribution. The SIEM detection rule classified the activity as potential cryptomining based on executable naming patterns and rule logic targeting mining-related binaries.
 
 No additional malicious processes, network connections, or follow-on payload execution were identified within the available telemetry for this host during the investigation window.
+
+---
 
 ### Timeline References
 
@@ -27,7 +29,7 @@ Two distinct timelines are documented across supporting reports:
 
 ---
 
-## Impact
+### Impact
 
 This section describes the confirmed and potential impact to systems and business operations resulting from the suspicious process execution.
 
@@ -42,6 +44,8 @@ No evidence of:
 
 was identified within the scope of available endpoint and SIEM telemetry.
 
+---
+
 While financial loss was not directly measurable in this case, cryptomining activity can degrade system performance, increase operational costs, and indicate broader security hygiene issues that may expose the environment to additional threats.
 
 ### Impact Documentation References
@@ -51,7 +55,7 @@ While financial loss was not directly measurable in this case, cryptomining acti
 
 ---
 
-## How It Was Detected
+### How It Was Detected
 
 This section explains what triggered the investigation and why the activity was flagged as suspicious by existing security controls.
 
@@ -70,7 +74,7 @@ These combined attributes elevated the alert severity and justified escalation f
 
 ---
 
-## Response Summary
+### Response Summary
 
 This section summarizes the high-level actions taken to contain, eradicate, and recover from the suspicious activity.
 
@@ -87,7 +91,7 @@ Detailed containment, eradication, and recovery procedures are documented in `in
 
 ---
 
-## Next Steps and Prevention
+### Next Steps and Prevention
 
 This section summarizes the forward-looking actions recommended to reduce the likelihood of similar incidents in the future.
 
@@ -103,7 +107,7 @@ High-level recommendations are summarized in the investigation walkthrough, whil
 
 ---
 
-## Related Documentation
+### Related Documentation
 
 This section lists supporting reports that provide detailed technical analysis, response actions, and long-term remediation guidance.
 
@@ -113,3 +117,4 @@ This section lists supporting reports that provide detailed technical analysis, 
 - `detection-artifact-report.md` — detection-relevant log fields and behavioral indicators  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
 - `incident-response-report.md` — containment, eradication, recovery, and monitoring actions
+
