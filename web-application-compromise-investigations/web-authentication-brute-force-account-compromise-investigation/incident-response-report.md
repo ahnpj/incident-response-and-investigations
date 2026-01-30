@@ -1,6 +1,6 @@
 # Incident Response Report — Web Application Authentication Compromise Investigation (Brute-Force Attempts and Account Compromise Detection)
 
-## Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmed automated authentication abuse, successful credential compromise, and subsequent reuse from a secondary source.
 
@@ -18,7 +18,7 @@ Classification is based on evidence reconstructed in `case-report.md` and valida
 
 ---
 
-## Detection Trigger
+### 2) Detection Trigger
 
 This section describes how the incident was initially identified and why escalation to incident response was required.
 
@@ -30,7 +30,7 @@ For the reconstructed attacker timeline (failed attempts → success → reuse),
 
 ---
 
-## Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section outlines the first steps taken to validate malicious activity, identify compromised accounts, and determine scope.
 
@@ -49,13 +49,13 @@ Triage also confirmed that all failed and successful authentication activity tar
 
 ---
 
-## Containment Actions
+### 4) Containment Actions
 
 This section summarizes actions taken to immediately stop attacker access, prevent additional credential guessing, and limit further exposure.
 
 Containment actions prioritized **cutting off attacker access first**, then suppressing continued brute-force attempts and preventing reuse of exposed credentials.
 
-### 1) Account-Level Containment
+#### ▶ 4.1) Account-Level Containment
 
 - **Force password reset for `webadmin` and any other accounts with verified suspicious attempts** (Finding 4).  
   *Why:* Once a successful login is confirmed (Finding 5), the credential must be treated as compromised, regardless of whether the original compromise was brute force, reuse, or recovery from logs (Finding 8).
@@ -66,7 +66,7 @@ Containment actions prioritized **cutting off attacker access first**, then supp
 - **Temporarily disable the account if operationally feasible until verification is complete.**  
   *Why:* Disabling reduces risk of continued abuse during investigation (especially given secondary login reuse from a different IP).
 
-### 2) Traffic-Level Containment
+#### ▶ 4.2) Traffic-Level Containment
 
 - **Block or rate-limit the primary attacking IP `198.51.100.100` at WAF / reverse proxy / firewall layers.**  
   *Why:* The investigation attributes the bulk of brute-force activity to this IP (Finding 1) and shows sustained automated attempts against multiple usernames.
@@ -81,13 +81,13 @@ Containment actions should be documented alongside the incident timeline in `cas
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
 This section documents steps taken to remove attacker footholds and eliminate systemic weaknesses that enabled the compromise.
 
 Eradication for authentication abuse incidents is primarily about (1) ensuring compromised credentials can no longer be used and (2) closing design flaws that reduce attacker effort.
 
-### 1) Credential Hygiene and Rotation
+#### ▶ 5.1) Credential Hygiene and Rotation
 
 - **Rotate credentials for all targeted high-value accounts** (`webadmin`, `websitemanager`, `ftp`) even if not confirmed compromised.  
   *Why:* Attackers often test multiple accounts and may compromise more than one. The presence of targeted valid accounts (Finding 4) warrants preventative rotation to reduce residual risk.
@@ -95,7 +95,7 @@ Eradication for authentication abuse incidents is primarily about (1) ensuring c
 - **Invalidate password resets across dependent systems** (any services that reuse these credentials).  
   *Why:* Credential reuse expands blast radius beyond the web app.
 
-### 2) Remove Credential Exposure in Logs (Critical)
+#### ▶ 5.2) Remove Credential Exposure in Logs (Critical)
 
 - **Eliminate logging of credential-derived values in authentication logs (Finding 8).**  
   *Why:* The investigation confirmed `hashed_password` was not a true hash; it was Base64-encoded and reversible to plaintext `webadmin1234`. This is a direct “unsecured credentials” risk (T1552) and materially reduces attacker effort.
@@ -103,7 +103,7 @@ Eradication for authentication abuse incidents is primarily about (1) ensuring c
 - **Implement secure password handling and storage practices** (one-way hashing + salt; avoid logging secrets).  
   *Why:* Even if rate limiting is strong, logging reversible secrets creates an alternate compromise path for anyone with log access.
 
-### 3) Reduce Account Enumeration Signal
+#### ▶ 5.3) Reduce Account Enumeration Signal
 
 - **Normalize authentication failure responses** so non-existent user vs incorrect password cannot be distinguished.  
   *Why:* The investigation shows explicit enumeration behavior (Finding 3: 9 non-existent usernames). Reducing response differences increases attacker cost and decreases targeting accuracy.
@@ -112,7 +112,7 @@ Eradication actions and rationale should be reflected in the lab’s dedicated `
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
 This section describes how access and business operations were safely restored while reducing probability of repeat abuse.
 
@@ -129,7 +129,7 @@ Recovery actions focused on restoring legitimate access while ensuring newly app
 
 ---
 
-## Validation and Post-Incident Monitoring
+### 7) Validation and Post-Incident Monitoring
 
 This section documents how remediation effectiveness was verified and what monitoring was applied to detect reattempts.
 
@@ -150,7 +150,7 @@ Detection logic and fields are documented in `detection-artifact-report.md`, and
 
 ---
 
-## Communication and Coordination
+### 8) Communication and Coordination
 
 This section summarizes how response actions were coordinated across security, engineering, and business stakeholders.
 
@@ -165,7 +165,7 @@ This coordination model ensured emergency containment (blocks, resets) was follo
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
 This section captures response insights and defensive gaps identified during incident handling, with direct ties to investigation findings.
 
@@ -180,7 +180,7 @@ These lessons informed the long-term control plan documented in `detection-and-h
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 - `web-application-authentication-abuse-investigation.md` — analyst workflow, log pivots, and validation steps (Findings 1–8)  
 - `case-report.md` — reconstructed attacker timeline and business impact framing  
@@ -188,3 +188,4 @@ These lessons informed the long-term control plan documented in `detection-and-h
 - `incident-summary.md` — executive-level overview of incident and response  
 - `detection-artifact-report.md` — detection-relevant authentication artifacts and correlation opportunities  
 - `detection-and-hardening-recommendations.md` — standalone engineering and hardening plan (detailed)  
+
