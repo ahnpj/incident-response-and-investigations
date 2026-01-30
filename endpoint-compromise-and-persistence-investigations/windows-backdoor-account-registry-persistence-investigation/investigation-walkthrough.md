@@ -100,7 +100,7 @@ index=main ("net user" OR "net user /add")
   <em>Figure 3</em>
 </p>
 
-##### ◆ 2.1)
+##### ◆ 2.1) Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
 
 Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
 
@@ -487,6 +487,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
