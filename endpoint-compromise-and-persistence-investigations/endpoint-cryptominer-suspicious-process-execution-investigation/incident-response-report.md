@@ -118,7 +118,7 @@ Eradication focused on eliminating dropped files and execution vectors validated
 
 File paths and hashes were identified during investigation walkthrough and verified against baseline system files.
 
-### 2) Remove Potential Execution Triggers
+#### ▶ 5.2) Remove Potential Execution Triggers
 
 - Review and remove:
   - Startup folders
@@ -127,7 +127,7 @@ File paths and hashes were identified during investigation walkthrough and verif
 
 *Why:* Even if persistence was not initially observed, attackers frequently attempt multiple persistence methods. Removing latent triggers reduces reinfection risk.
 
-### 3) Patch and Application Control Review
+#### ▶ 5.3) Patch and Application Control Review
 
 - Review patch status of exploited or abused components.  
 - Evaluate application control policies (AppLocker / WDAC).
@@ -136,7 +136,7 @@ File paths and hashes were identified during investigation walkthrough and verif
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
 This section describes restoration of the endpoint to operational state after eradication.
 
@@ -152,7 +152,7 @@ Recovery steps ensure business continuity while maintaining security posture.
 
 ---
 
-## Validation and Post-Incident Monitoring
+### 7) Validation and Post-Incident Monitoring
 
 This section explains how remediation effectiveness was verified and what monitoring was applied.
 
@@ -172,7 +172,7 @@ These controls help identify reinfection or additional compromised systems.
 
 ---
 
-## Communication and Coordination
+### 8) Communication and Coordination
 
 This section summarizes coordination between security, IT, and system owners.
 
@@ -186,7 +186,7 @@ Communication ensured containment did not unnecessarily disrupt legitimate servi
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
 This section captures defensive insights derived from this incident.
 
@@ -201,7 +201,7 @@ These lessons informed improvements documented in `detection-and-hardening-recom
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 - `suspicious-process-execution-investigation.md` — analyst workflow and telemetry pivots  
 - `case-report.md` — reconstructed activity timeline and impact framing  
@@ -209,5 +209,6 @@ These lessons informed improvements documented in `detection-and-hardening-recom
 - `incident-summary.md` — executive overview of incident and response  
 - `detection-artifact-report.md` — endpoint and process detection artifacts  
 - `detection-and-hardening-recommendations.md` — preventive and monitoring controls  
+
 
 
