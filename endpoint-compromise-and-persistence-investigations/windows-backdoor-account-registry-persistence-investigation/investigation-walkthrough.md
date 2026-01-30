@@ -85,6 +85,9 @@ As an alternative approach, the index could be queried directly using `index=mai
 
 #### ▶ 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
 
+- [2.1) Raw Event Review — Unauthorized Local Account Creation](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-21-raw-event-review--unauthorized-local-account-creation)
+- [2.2) Account Management Validation — Local User Creation Confirmed](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-22-account-management-validation--local-user-creation-confirmed)
+
 With dataset scale established, analysis shifted toward identifying whether a new local user account was created. Because adversaries frequently use built-in commands such as `net user` for account creation, searches focused on command-line indicators and process execution telemetry.
 
 A starting point was searching for `net user` activity, including explicit account creation patterns:
@@ -487,6 +490,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
