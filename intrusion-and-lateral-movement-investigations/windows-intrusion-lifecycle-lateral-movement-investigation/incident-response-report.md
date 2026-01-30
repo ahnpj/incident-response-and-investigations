@@ -1,6 +1,6 @@
 # Incident Response Report — Windows Malware Intrusion Lifecycle Investigation (Lateral Movement and Multi-Stage Host Compromise on Windows)
 
-## Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmed external access, malware execution, and registry-based persistence observed during the investigation.
 
@@ -21,7 +21,7 @@ The incident is classified as **critical** because the attacker achieved authent
 
 ---
 
-## Detection Trigger
+### 2) Detection Trigger
 
 This section explains how suspicious activity was initially detected and why it was escalated to full incident response rather than treated as routine login noise.
 
@@ -40,7 +40,7 @@ This transition from brute-force behavior to successful access triggered escalat
 
 ---
 
-## Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section outlines how analysts validated compromise and assessed the extent of attacker activity after access was confirmed.
 
@@ -51,7 +51,7 @@ Triage focused on determining:
 - Whether persistence mechanisms were established
 - Whether other systems were targeted from the compromised host
 
-### 1) Validate Post-Authentication Command Execution
+#### ▶ 3.1) Validate Post-Authentication Command Execution
 
 After confirming successful SSH authentication, analysts reviewed:
 
@@ -63,7 +63,7 @@ This revealed that the attacker executed commands rather than simply validating 
 
 This step is documented in the investigation walkthrough where command execution is correlated with authentication timestamps.
 
-### 2) Identify Malware Deployment
+#### ▶ 3.2) Identify Malware Deployment
 
 Following confirmation of command execution, analysts pivoted to filesystem inspection to identify:
 
@@ -74,7 +74,7 @@ Malware payload placement was confirmed during this stage, validating that the a
 
 File discovery and validation steps are shown in screenshots and command output within `windows-host-malware-instrusion-lifecycle-investigation.md`.
 
-### 3) Validate Persistence Mechanisms
+#### ▶ 3.3) Validate Persistence Mechanisms
 
 Because malware was confirmed, analysts next examined startup execution points to determine whether the attacker attempted to maintain long-term access.
 
@@ -86,7 +86,7 @@ This revealed registry entries configured to execute attacker-controlled binarie
 
 The registry pivot is documented after malware discovery in the walkthrough, demonstrating progression from execution validation to persistence hunting.
 
-### 4) Scope for Lateral Movement and Secondary Targets
+#### ▶ 3.4) Scope for Lateral Movement and Secondary Targets
 
 Given authenticated access, analysts reviewed:
 
@@ -99,52 +99,50 @@ Negative scope findings are documented in `case-report.md` and summarized in `de
 
 ---
 
-## Containment Actions
+### 4) Containment Actions
 
 This section documents actions required to immediately stop attacker access and prevent further exploitation.
 
 Containment prioritized **network isolation, service restriction, and session termination** to immediately break attacker control paths.
 
-### 1) Isolate the Affected Host
+#### ▶ 4.1) Isolate the Affected Host
 
 - **Remove the host from the network or place it into a quarantine VLAN.**  
   *Why:* Prevents continued command-and-control communication and blocks lateral movement attempts from the compromised host.
 
 Isolation is critical once persistence is confirmed because attackers can reconnect automatically after reboot if network access remains available.
 
-### 2) Terminate Active Remote Sessions
+#### ▶ 4.2) Terminate Active Remote Sessions
 
 - **Force logout of all SSH and remote management sessions.**  
   *Why:* Prevents attackers from maintaining real-time control during response operations.
 
-### 3) Disable or Restrict Exposed Remote Access Services
+#### ▶ 4.3) Disable or Restrict Exposed Remote Access Services
 
 - **Temporarily disable SSH access or restrict via firewall rules.**  
   *Why:* Prevents reinfection attempts using the same attack surface while remediation is ongoing.
 
 This recommendation is directly tied to the brute-force and authentication artifacts documented early in the investigation.
 
-### 4) Preserve Evidence Where Required
+#### ▶ 4.4) Preserve Evidence Where Required
 
 - **Capture volatile memory and disk artifacts prior to eradication when forensic retention is required.**  
   *Why:* Allows deeper malware analysis and verification of attacker tooling prior to cleanup.
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
-This section documents steps required to fully remove malware and persistence mechanisms.
+This section documents steps required to fully remove malware and persistence mechanisms. Eradication focused on eliminating both the payload and mechanisms enabling future execution.
 
-Eradication focused on eliminating both the payload and mechanisms enabling future execution.
-
-### 1) Remove Malware Payloads
+#### ▶ 5.1) Remove Malware Payloads
 
 - Delete all attacker-deployed binaries and scripts identified during filesystem inspection.  
   *Why:* Prevents continued execution and reduces risk of reinfection.
 
 Specific filenames and locations are documented in the walkthrough and summarized in `detection-artifact-report.md`.
 
-### 2) Remove Registry-Based Persistence
+#### ▶ 5.2) Remove Registry-Based Persistence
 
 - Delete registry autorun entries created during compromise.  
 - Validate no additional autoruns exist in:
@@ -153,7 +151,7 @@ Specific filenames and locations are documented in the walkthrough and summarize
 
 *Why:* Persistence ensures attacker access even if malware binaries are deleted.
 
-### 3) Validate No Additional Persistence Exists
+#### ▶ 5.3) Validate No Additional Persistence Exists
 
 - Review:
   - Scheduled tasks
@@ -162,7 +160,7 @@ Specific filenames and locations are documented in the walkthrough and summarize
 
 *Why:* Attackers often layer persistence, and registry entries may not be the only mechanism used.
 
-### 4) Credential Remediation
+#### ▶ 5.4) Credential Remediation
 
 - Reset credentials for:
   - Accounts used during successful authentication
@@ -170,14 +168,14 @@ Specific filenames and locations are documented in the walkthrough and summarize
 
 *Why:* Credentials may be reused to regain access even after malware removal.
 
-### 5) Patch and Harden Exposed Services
+#### ▶ 5.5) Patch and Harden Exposed Services
 
 - Apply patches to SSH services if applicable.  
 - Restrict access to management services.
 
 *Why:* Prevents immediate re-exploitation using the same vector.
 
-### 6) Consider Full System Reimage
+#### ▶ 5.6) Consider Full System Reimage
 
 - Reimage if:
   - Malware scope cannot be confidently validated
@@ -187,7 +185,7 @@ Specific filenames and locations are documented in the walkthrough and summarize
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
 This section describes how the host should be returned to production safely.
 
@@ -202,17 +200,17 @@ Post-recovery validation ensures no attacker footholds remain active.
 
 ---
 
-## Validation and Post-Incident Monitoring
+### 7) Validation and Post-Incident Monitoring
 
 This section explains how remediation effectiveness should be verified and what ongoing monitoring is required.
 
-### Validation Steps
+#### ▶ 7.1) Validation Steps
 
 - Confirm no registry autorun entries remain.
 - Verify no unknown executables persist on disk.
 - Confirm no new authentication attempts succeed from attacker IPs.
 
-### Post-Incident Monitoring
+#### ▶ 7.2) Post-Incident Monitoring
 
 - Alert on:
   - Repeated authentication failures
@@ -224,7 +222,7 @@ Detection logic should reflect the exact behaviors observed during this incident
 
 ---
 
-## Communication and Coordination
+### 8) Communication and Coordination
 
 This section summarizes coordination requirements across teams during response.
 
@@ -239,7 +237,7 @@ Clear communication ensures response actions are executed quickly and consistent
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
 This section captures defensive and response insights derived from this incident.
 
@@ -255,7 +253,7 @@ These lessons directly informed engineering recommendations documented in `detec
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 - `windows-host-malware-instrusion-lifecycle-investigation.md` — analyst workflow, pivots, and artifact discovery  
 - `case-report.md` — incident timeline and confirmed attacker actions  
@@ -263,3 +261,4 @@ These lessons directly informed engineering recommendations documented in `detec
 - `incident-summary.md` — executive overview of incident and response  
 - `detection-artifact-report.md` — detection-relevant host and network artifacts  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
+
