@@ -1,6 +1,6 @@
 # Incident Response Report — Endpoint Cryptominer Infection Investigation (Suspicious Process Execution and Resource Abuse)
 
-## Incident Classification
+### Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmation of abnormal process execution patterns consistent with malware or unauthorized script-based activity.
 
@@ -19,7 +19,7 @@ The incident was escalated because execution occurred in a manner that bypassed 
 
 ---
 
-## Detection Trigger
+### Detection Trigger
 
 This section explains what initially indicated suspicious activity and why investigation was initiated.
 
@@ -36,13 +36,13 @@ For analyst telemetry pivots and validation steps, see `suspicious-process-execu
 
 ---
 
-## Initial Triage Actions
+### Initial Triage Actions
 
 This section outlines how analysts validated that the process activity was abnormal and determined whether it represented active compromise.
 
 Triage focused on answering three questions:
 
-### 1) Is this legitimate administrative or user-driven activity?
+#### ▶ 1) Is this legitimate administrative or user-driven activity?
 
 Analysts reviewed:
 
@@ -54,7 +54,7 @@ These were compared against known legitimate application behavior and scheduled 
 
 This step was necessary to avoid false positives from IT automation or developer tooling.
 
-### 2) Does execution indicate payload staging or secondary tool deployment?
+#### ▶ 2) Does execution indicate payload staging or secondary tool deployment?
 
 Analysts examined:
 
@@ -64,7 +64,7 @@ Analysts examined:
 
 Suspicious execution was correlated with network connections and file creation events that could represent downloader or loader behavior, increasing confidence that the activity was malicious rather than benign script execution.
 
-### 3) Is there evidence of persistence or lateral movement?
+#### ▶ 3) Is there evidence of persistence or lateral movement?
 
 Analysts pivoted to:
 
@@ -76,7 +76,7 @@ No confirmed persistence mechanisms were identified during triage, but the absen
 
 ---
 
-## Containment Actions
+### Containment Actions
 
 This section documents actions taken to immediately stop suspicious execution and prevent further attacker activity.
 
@@ -209,3 +209,4 @@ These lessons informed improvements documented in `detection-and-hardening-recom
 - `incident-summary.md` — executive overview of incident and response  
 - `detection-artifact-report.md` — endpoint and process detection artifacts  
 - `detection-and-hardening-recommendations.md` — preventive and monitoring controls  
+
