@@ -2,17 +2,17 @@
 
 ---
 
-## Executive Summary
+### Executive Summary
 This investigation analyzed a suspected Windows host compromise using Splunk telemetry to determine whether an adversary established persistence through local account creation and registry activity. Evidence showed a backdoor user account was created using built-in Windows utilities, registry artifacts were written under the SAM hive consistent with the new account, and follow-on activity included encoded PowerShell execution that revealed outbound communication to a specific web resource. Security, Sysmon/registry, and PowerShell logs were correlated to reconstruct attacker behavior and document artifacts relevant to detection and response.
 
 ---
 
-## Incident Scope
+### Incident Scope
 This investigation focused on reconstructing suspicious activity observed in pre-ingested Windows logs within Splunk, treating the dataset as if it were received after an alert on a Windows workstation. Scope included validating whether a backdoor local account was created, identifying associated registry artifacts, evaluating impersonation intent, and tracing related follow-up activity including remote command execution and PowerShell-based outbound communication. Analysis was limited to the available log sources (Security, Sysmon/registry, and PowerShell) contained within the dataset and did not involve direct interaction with the Windows host generating the logs.
 
 ---
 
-## Environment, Evidence, and Tools
+### Environment, Evidence, and Tools
 This investigation was performed in an environment composed of multiple virtual machines supporting log analysis in Splunk. The primary system used for analysis was an AttackBox VM, which served as the main workstation for interacting with the environment, running searches, and accessing the logging interface. The AttackBox was assigned internal IP addresses `10.201.84.11` and `10.201.85.188`. The Splunk server was hosted on a separate VM accessible at `10.201.83.141`, which was used to access the Splunk web interface. A Windows VM operated in the background to generate telemetry and forward Windows event logs into Splunk; direct access to that VM was not required.
 
 Because internal IP addresses in the environment were ephemeral and could change on restart or refresh, active IPs were verified before beginning analysis to ensure connections were made to the correct systems.
@@ -28,7 +28,7 @@ When I first accessed the Splunk interface and ran a basic search against the "m
 
 ---
 
-## Investigative Questions
+### Investigative Questions
 The following investigative questions guided analysis and defined the pivots used during evidence review. Each question was designed to validate adversary behavior, establish attribution to specific hosts and identities, and identify concrete artifacts relevant to follow-up response and detection development.
 
 - Was a backdoor local user account created, and what username was used?
@@ -487,5 +487,6 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
