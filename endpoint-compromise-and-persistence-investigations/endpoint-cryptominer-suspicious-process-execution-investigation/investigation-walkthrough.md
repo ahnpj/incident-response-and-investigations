@@ -51,9 +51,7 @@ After identifying the suspicious executable, correlated event logs were examined
   <em>Figure 2 – Event Log Correlation for Suspicious Process</em>
 </p>
 
-Further inspection of execution details showed that the process was launched from a temporary directory rather than a standard application path. The executable path observed was:
-
-`C:\Users\Chris.Fort\temp\cudominer.exe`
+Further inspection of execution details showed that the process was launched from a temporary directory rather than a standard application path. The executable path observed was: `C:\Users\Chris.Fort\temp\cudominer.exe`
 
 Execution from a user-writable temporary directory is atypical for legitimate software and reinforced suspicion of malicious intent.
 
@@ -152,4 +150,5 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
