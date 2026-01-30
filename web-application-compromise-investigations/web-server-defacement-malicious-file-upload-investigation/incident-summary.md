@@ -1,6 +1,6 @@
 # Incident Summary — Web Server Defacement Investigation (Malicious File Upload Exploitation and Web Shell Deployment)
 
-## Overview
+### Overview
 
 This incident involved a multi-stage compromise of a public-facing web server hosting a Joomla content management system (CMS), resulting in public website defacement. The attacker conducted automated reconnaissance and vulnerability scanning, performed credential brute-force attacks against the Joomla administrative interface, uploaded and executed a malicious payload, established outbound communication with attacker-controlled infrastructure, and modified site content to display defacement material retrieved from an external source.
 
@@ -8,7 +8,7 @@ The incident demonstrates a complete web-application-to-host intrusion lifecycle
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes the confirmed attacker actions that led to public defacement. A reconstructed timeline of attacker behavior and business impact is documented in **`case-report.md`**, while detailed analyst workflow, Splunk queries, and investigative pivots are documented in **`investigation-walkthrough.md`**.
 
@@ -27,7 +27,7 @@ This sequence confirms that the defacement was not the result of a single vulner
 
 ---
 
-## How It Was Detected
+### How It Was Detected
 
 This section describes the telemetry sources that revealed the intrusion and how detection signals emerged across multiple layers of the environment.
 
@@ -42,7 +42,7 @@ Early detection signals appeared during reconnaissance and scanning phases, but 
 
 ---
 
-## Scope of Compromise
+### Scope of Compromise
 
 This section defines the systems and assets confirmed to be affected based on available telemetry.
 
@@ -68,7 +68,7 @@ Scope determinations are based on review of authentication logs, firewall teleme
 
 ---
 
-## Impact Assessment
+### Impact Assessment
 
 This section summarizes the business and technical impact of the incident. Detailed technical impact and evidence references are documented in **`case-report.md`**, while specific artifacts are cataloged in **`detection-artifact-report.md`**.
 
@@ -83,7 +83,7 @@ While data exfiltration was not confirmed, the ability to execute arbitrary code
 
 ---
 
-## Response Status
+### Response Status
 
 This section summarizes the status of response actions as represented within the lab scenario. Detailed remediation steps and response sequencing are documented in **`incident-response-report.md`**.
 
@@ -97,7 +97,7 @@ In a real-world scenario, this incident would require immediate containment, cre
 
 ---
 
-## Root Cause Summary
+### Root Cause Summary
 
 This section highlights the primary contributing factors that enabled the compromise.
 
@@ -112,7 +112,7 @@ These weaknesses allowed the attacker to progress from reconnaissance to full ho
 
 ---
 
-## Next Steps and Defensive Priorities
+### Next Steps and Defensive Priorities
 
 This section outlines where defenders should focus improvement efforts following this incident.
 
@@ -130,7 +130,7 @@ Detection strategies and preventive controls aligned to these recommendations ar
 
 ---
 
-## Related Documentation
+### Related Documentation
 
 - `investigation-walkthrough.md` — step-by-step Splunk queries and analyst pivots  
 - `case-report.md` — reconstructed attacker timeline and impact validation  
@@ -140,3 +140,4 @@ Detection strategies and preventive controls aligned to these recommendations ar
 - `detection-and-hardening-recommendations.md` — long-term security improvements  
 
 Together, these documents provide a complete incident investigation package aligned with SOC workflows and professional incident documentation standards.
+
