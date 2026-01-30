@@ -1,6 +1,6 @@
 # Incident Summary — Windows Host Compromise Investigation (Backdoor Account Creation and Registry-Based Persistence)
 
-## Overview
+### Overview
 
 This incident involved the creation of an unauthorized local backdoor account on a Windows host, followed by the establishment of registry-based persistence and attempted remote command execution using built-in administrative tools.
 
@@ -8,7 +8,7 @@ The attacker leveraged legitimate Windows utilities to maintain access, escalate
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes the confirmed attacker activity and how control of the host was established and maintained.
 
@@ -17,6 +17,8 @@ Investigation confirmed that an attacker created a new local user account and ad
 Following establishment of persistence, the attacker attempted to execute commands remotely using Windows Management Instrumentation Command-line (WMIC) and later launched PowerShell for interactive command execution and potential command-and-control behavior.
 
 The activity sequence indicates deliberate post-compromise actions rather than accidental misconfiguration or user error.
+
+---
 
 ### Timeline References
 
@@ -29,7 +31,7 @@ This separation reflects standard SOC practice of distinguishing attacker behavi
 
 ---
 
-## Impact
+### Impact
 
 This section describes the confirmed and potential impact of the compromise on system integrity and organizational risk.
 
@@ -44,6 +46,8 @@ Registry-based persistence further ensured that malicious activity could resume 
 
 Although no data exfiltration or lateral movement was confirmed during this investigation, the attacker achieved sufficient access to pivot to other systems if the compromise had remained undetected.
 
+---
+
 ### Impact Documentation References
 
 - Privileged group membership and account creation evidence is documented in `case-report.md` and validated in the walkthrough.
@@ -52,7 +56,7 @@ Although no data exfiltration or lateral movement was confirmed during this inve
 
 ---
 
-## How It Was Detected
+### How It Was Detected
 
 This section explains what security signals led to discovery of the compromise and initiation of host-based investigation.
 
@@ -68,7 +72,7 @@ Correlation of identity and process telemetry highlighted a sequence consistent 
 
 ---
 
-## Response Summary
+### Response Summary
 
 This section summarizes the high-level actions taken to contain and remediate the compromise.
 
@@ -86,7 +90,7 @@ Detailed response procedures are documented in `incident-response-report.md`.
 
 ---
 
-## Next Steps and Prevention
+### Next Steps and Prevention
 
 This section summarizes recommended actions to prevent recurrence of similar host-based compromises.
 
@@ -103,7 +107,7 @@ High-level defensive gaps are summarized in the investigation walkthrough, while
 
 ---
 
-## Related Documentation
+### Related Documentation
 
 This section lists supporting reports that provide technical investigation detail, response actions, and long-term remediation guidance.
 
@@ -113,3 +117,4 @@ This section lists supporting reports that provide technical investigation detai
 - `detection-artifact-report.md` — detection-relevant log fields and behavioral indicators  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
 - `incident-response-report.md` — containment, eradication, recovery, and monitoring actions
+
