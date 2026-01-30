@@ -41,7 +41,7 @@ The investigation began with a review of the SIEM dashboard to understand the na
 The process name immediately stood out due to its similarity to known mining tools and its deviation from standard application naming conventions typically observed in legitimate environments.
 
 ### User and Host Attribution
-After identifying the suspicious executable, correlated event logs were examined to determine where and by whom the process was executed. Process creation telemetry revealed that `cudominer.exe` was launched under the context of the user account `Chris.Fort` on the host `HR_02`. This correlation confirmed both user attribution and endpoint involvement.
+After identifying the suspicious executable, correlated event logs were examined to determine where and by whom the process was executed. Process creation telemetry revealed that `cudominer.exe` was launched under the context of the user account `Chris.Fort` on the host `HR_02`. This correlation confirmed both user attribution and endpoint involvement. Execution from a user-writable temporary directory is atypical for legitimate software and reinforced suspicion of malicious intent.
 
 <p align="left">
   <img src="images/siem-foundational-figure.02-event-log.png" 
@@ -52,8 +52,6 @@ After identifying the suspicious executable, correlated event logs were examined
 </p>
 
 Further inspection of execution details showed that the process was launched from a temporary directory rather than a standard application path. The executable path observed was: `C:\Users\Chris.Fort\temp\cudominer.exe`
-
-Execution from a user-writable temporary directory is atypical for legitimate software and reinforced suspicion of malicious intent.
 
 ### Detection Rule Review
 To ensure the alert fired as expected, the SIEM correlation rule responsible for the detection was reviewed. The rule monitors Windows process creation events and evaluates executable names for keywords commonly associated with cryptocurrency mining activity, including variations of `miner` and `crypt`.
@@ -150,5 +148,6 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
