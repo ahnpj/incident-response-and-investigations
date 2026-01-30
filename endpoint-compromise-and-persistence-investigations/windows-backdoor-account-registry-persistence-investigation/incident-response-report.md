@@ -1,6 +1,6 @@
 # Incident Response Report — Windows Host Compromise Investigation (Backdoor Account Creation and Registry-Based Persistence)
 
-## Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmation of unauthorized account creation and registry-based persistence on a Windows host.
 
@@ -19,7 +19,7 @@ This incident was categorized as **critical** because it demonstrates both **ide
 
 ---
 
-## Detection Trigger
+### 2) Detection Trigger
 
 This section explains what initially indicated suspicious activity and why investigation was initiated.
 
@@ -36,13 +36,13 @@ For analyst pivot logic and validation steps, see `windows-backdoor-account-regi
 
 ---
 
-## Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section outlines how analysts confirmed unauthorized access, validated persistence, and assessed scope.
 
 Triage focused on answering three questions:
 
-### 1) Was the new account authorized or malicious?
+#### ▶ 3.1) Was the new account authorized or malicious?
 
 Analysts reviewed:
 
@@ -52,7 +52,7 @@ Analysts reviewed:
 
 The account did not align with documented administrative provisioning processes, confirming unauthorized identity creation rather than routine IT activity.
 
-### 2) Is persistence configured on the host?
+#### ▶ 3.2) Is persistence configured on the host?
 
 Analysts pivoted to:
 
@@ -62,7 +62,7 @@ Analysts pivoted to:
 
 Registry entries were identified that ensured execution or access continuity across reboots, confirming deliberate persistence mechanisms rather than transient exploitation.
 
-### 3) Is there evidence of further attacker activity?
+#### ▶ 3.3) Is there evidence of further attacker activity?
 
 Analysts examined:
 
@@ -74,13 +74,13 @@ This scoping step was necessary to assess whether compromise extended beyond ini
 
 ---
 
-## Containment Actions
+### 4) Containment Actions
 
 This section documents actions taken to immediately stop attacker access and prevent persistence from reactivating.
 
 Containment prioritized **identity removal and host isolation**, as both credentials and system configuration were compromised.
 
-### 1) Disable and Remove Backdoor Account
+#### ▶ 4.1) Disable and Remove Backdoor Account
 
 - **Immediately disable the unauthorized local account.**  
   *Why:* Prevents continued interactive or remote authentication using attacker-controlled credentials.
@@ -91,14 +91,14 @@ Containment prioritized **identity removal and host isolation**, as both credent
 - **Audit for additional unauthorized accounts.**  
   *Why:* Attackers often create multiple backdoor identities to maintain redundancy.
 
-### 2) Endpoint Isolation
+#### ▶ 4.2) Endpoint Isolation
 
 - **Isolate affected system from the network.**  
   *Why:* Prevents lateral movement, credential harvesting, and command-and-control activity during eradication.
 
 Isolation is required because persistence indicates attackers may return even if sessions are terminated.
 
-### 3) Suspend Scheduled and Startup Execution Paths
+#### ▶ 4.3) Suspend Scheduled and Startup Execution Paths
 
 - **Temporarily disable suspicious autorun mechanisms.**  
   *Why:* Prevents malicious code from executing during containment and eradication phases.
@@ -107,13 +107,13 @@ This prevents reactivation while forensic validation continues.
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
 This section documents steps taken to remove all persistence mechanisms and attacker-controlled access paths.
 
 Eradication focused on fully restoring host trust.
 
-### 1) Remove Registry Persistence
+#### ▶ 5.1) Remove Registry Persistence
 
 - Delete all unauthorized registry entries identified during investigation.  
   *Why:* Registry-based persistence ensures execution on reboot and must be fully removed to prevent reinfection.
@@ -121,7 +121,7 @@ Eradication focused on fully restoring host trust.
 - Validate no alternate autorun keys were modified.  
   *Why:* Attackers frequently implement multiple persistence methods to survive partial cleanup.
 
-### 2) Credential and Privilege Review
+#### ▶ 5.2)  Credential and Privilege Review
 
 - Reset credentials for:
   - Local administrator accounts
@@ -129,14 +129,14 @@ Eradication focused on fully restoring host trust.
 
 *Why:* Backdoor accounts can be used to harvest or reset other credentials, expanding blast radius.
 
-### 3) Patch and Configuration Review
+#### ▶ 5.3) Patch and Configuration Review
 
 - Apply pending security updates.  
 - Review endpoint hardening and account management policies.
 
 *Why:* Prevents reuse of the same exploitation or misconfiguration pathways.
 
-### 4) Consider Full System Reimage
+#### ▶ 5.4) Consider Full System Reimage
 
 - Reimage if:
   - Integrity cannot be confidently verified
@@ -146,7 +146,7 @@ Eradication focused on fully restoring host trust.
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
 This section describes restoration of normal operations after eradication.
 
@@ -160,7 +160,7 @@ These steps ensure the system does not reintroduce malicious artifacts when retu
 
 ---
 
-## Validation and Post-Incident Monitoring
+### 7) Validation and Post-Incident Monitoring
 
 This section explains how remediation effectiveness was verified and what monitoring was applied.
 
@@ -180,7 +180,7 @@ These controls help detect reinfection or lateral movement attempts early.
 
 ---
 
-## Communication and Coordination
+### 8) Communication and Coordination
 
 This section summarizes coordination between security, IT, and system owners.
 
@@ -195,7 +195,7 @@ Cross-team coordination was required because the incident spanned both identity 
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
 This section captures defensive insights derived from this incident.
 
@@ -210,7 +210,7 @@ These lessons informed hardening improvements documented in `detection-and-harde
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 - `windows-backdoor-account-registry-persistence-investigation.md` — analyst workflow and artifact validation  
 - `case-report.md` — reconstructed attacker timeline and impact framing  
@@ -218,3 +218,4 @@ These lessons informed hardening improvements documented in `detection-and-harde
 - `incident-summary.md` — executive overview of incident and response  
 - `detection-artifact-report.md` — identity and registry persistence artifacts  
 - `detection-and-hardening-recommendations.md` — preventive and monitoring controls  
+
