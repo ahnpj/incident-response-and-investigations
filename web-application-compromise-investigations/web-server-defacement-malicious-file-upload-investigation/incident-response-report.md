@@ -225,7 +225,7 @@ Attackers may attempt to re-access systems using known credentials or vulnerabil
 
 ---
 
-### 8)Communication and Stakeholder Coordination
+### 8) Communication and Stakeholder Coordination
 
 This section documents coordination requirements during response.
 
@@ -263,4 +263,5 @@ These lessons directly inform the engineering controls documented in `detection-
 - `incident-summary.md` — executive incident overview  
 - `detection-artifact-report.md` — detection-relevant indicators  
 - `detection-and-hardening-recommendations.md` — long-term security improvements  
+
 
