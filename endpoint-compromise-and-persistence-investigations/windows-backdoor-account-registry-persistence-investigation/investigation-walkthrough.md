@@ -57,7 +57,7 @@ The following timeline summarizes the sequence of notable events and investigati
 
 ## Investigation Walkthrough
 
-### Dataset Familiarization (Event Count in `main`)
+### (1) Dataset Familiarization (Event Count in `main`)
 The investigation began by establishing the overall dataset size in the `main` index to set expectations for scope and query performance.
 
 ```spl
@@ -83,7 +83,7 @@ As an alternative approach, the index could be queried directly using `index=mai
   <em>Figure 2</em>
 </p>
 
-### Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
+### (2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
 
 With dataset scale established, analysis shifted toward identifying whether a new local user account was created. Because adversaries frequently use built-in commands such as `net user` for account creation, searches focused on command-line indicators and process execution telemetry.
 
@@ -100,7 +100,7 @@ index=main ("net user" OR "net user /add")
   <em>Figure 3</em>
 </p>
 
-**(Step 2-a)**
+#### ▶ (2.1)
 
 Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
 
@@ -485,3 +485,4 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
