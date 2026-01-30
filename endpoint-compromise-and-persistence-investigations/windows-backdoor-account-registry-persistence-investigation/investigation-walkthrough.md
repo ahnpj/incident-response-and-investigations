@@ -471,6 +471,8 @@ These detections focus on persistence and follow-on execution.
 
 ### MITRE ATT&CK Mapping
 
+**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during Security event, registry, and PowerShell log analysis. Mappings are based on directly observed activity and artifacts within scope.
 
 - **Persistence — Create Account (Local Account) (T1136.001):**  
@@ -508,6 +510,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
