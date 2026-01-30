@@ -1,6 +1,6 @@
 # Incident Response Report — Business Email Compromise (BEC) Investigation (Malicious Mailbox Rule Abuse and Account Compromise)
 
-## Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmed identity compromise and manipulation of business communication workflows.
 
@@ -19,7 +19,7 @@ Unlike phishing-only incidents, this case involved **active account takeover and
 
 ---
 
-## Detection Trigger
+### 2) Detection Trigger
 
 This section explains what initially indicated suspicious activity and why the case was escalated to a formal incident investigation.
 
@@ -37,13 +37,13 @@ For analyst log pivots and validation steps, see `business-email-compromise-mail
 
 ---
 
-## Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section outlines how analysts confirmed compromise, determined attack vector, and scoped business impact.
 
 Triage focused on answering three core questions:
 
-### 1) Was the account actually compromised?
+#### ▶ 3.1) Was the account actually compromised?
 
 Analysts reviewed Entra ID sign-in logs and filtered for:
 
@@ -53,7 +53,7 @@ Analysts reviewed Entra ID sign-in logs and filtered for:
 
 These anomalies supported credential-based access rather than delegated access or administrative changes. This step was necessary to differentiate between legitimate user actions and attacker activity before modifying account settings.
 
-### 2) What mailbox configuration changes occurred?
+#### ▶ 3.2) What mailbox configuration changes occurred?
 
 After confirming suspicious authentication, analysts pivoted to Exchange Online audit logs to identify:
 
@@ -63,7 +63,7 @@ After confirming suspicious authentication, analysts pivoted to Exchange Online 
 
 Rules were identified that suppressed financial communications, confirming deliberate mailbox manipulation rather than accidental configuration.
 
-### 3) What business processes were impacted?
+#### ▶ 3.3) What business processes were impacted?
 
 Analysts reviewed email artifacts associated with pension withdrawal workflows to determine:
 
@@ -76,13 +76,13 @@ These triage steps established the incident as **identity compromise with active
 
 ---
 
-## Containment Actions
+### 4) Containment Actions
 
 This section documents actions taken to immediately stop attacker access and prevent continued manipulation of mailbox contents.
 
 Containment prioritized **cutting off identity access first**, then removing configuration-based persistence.
 
-### 1) Credential and Session Containment
+#### ▶ 4.1) Credential and Session Containment
 
 - **Force password reset for the compromised account.**  
   *Why:* Once anomalous sign-ins and mailbox rule abuse were confirmed, credentials could no longer be trusted. Resetting credentials prevents continued interactive access.
@@ -95,7 +95,7 @@ Containment prioritized **cutting off identity access first**, then removing con
 
 These actions directly addressed the identity-based entry point confirmed during investigation.
 
-### 2) Mailbox Configuration Containment
+#### ▶ 4.2) Mailbox Configuration Containment
 
 - **Remove all unauthorized inbox rules.**  
   *Why:* Inbox rules functioned as the attacker’s persistence mechanism by suppressing victim visibility into financial communications.
@@ -110,13 +110,13 @@ This step eliminated configuration-based persistence and restored user visibilit
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
 This section documents steps taken to remove residual attacker footholds and reduce likelihood of reinfection.
 
 Unlike malware-driven incidents, eradication focused on **identity hygiene and configuration integrity** rather than host remediation.
 
-### 1) Full Mailbox Configuration Review
+#### ▶ 5.1) Full Mailbox Configuration Review
 
 - Review of:
   - Inbox rules
@@ -126,7 +126,7 @@ Unlike malware-driven incidents, eradication focused on **identity hygiene and c
 
 *Why:* Attackers sometimes deploy multiple concealment techniques. Removing only known malicious rules may leave alternate suppression mechanisms in place.
 
-### 2) Identity Risk Review
+#### ▶ 5.2) Identity Risk Review
 
 - Review recent sign-in history across:
   - VPN
@@ -135,7 +135,7 @@ Unlike malware-driven incidents, eradication focused on **identity hygiene and c
 
 *Why:* Confirms whether credentials were reused across other services or if additional accounts may be compromised.
 
-### 3) Organizational Control Validation
+#### ▶ 5.3) Organizational Control Validation
 
 - Review Conditional Access and MFA policies
 
@@ -145,17 +145,15 @@ These actions ensure attacker access is not restored through alternate identity 
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
-This section describes restoration of normal business operations and user trust.
-
-Recovery focused on:
+This section describes restoration of normal business operations and user trust. Recovery focused on:
 
 - Restoring legitimate email delivery
 - Ensuring financial transactions were not processed fraudulently
 - Supporting user remediation
 
-### Business Workflow Recovery
+#### ▶ 6.1) Business Workflow Recovery
 
 - Coordinate with HR and finance teams to:
   - Validate pension withdrawal requests
@@ -163,7 +161,7 @@ Recovery focused on:
 
 *Why:* BEC incidents directly target financial processes; technical containment alone does not resolve business impact.
 
-### User Account Restoration
+#### ▶ 6.2) User Account Restoration
 
 - Assist user with:
   - New password creation
@@ -173,11 +171,9 @@ Recovery focused on:
 
 ---
 
-## Validation and Post-Incident Monitoring
+### 7) Validation and Post-Incident Monitoring
 
-This section explains how remediation effectiveness was verified and what monitoring was implemented.
-
-Validation focused on confirming that:
+This section explains how remediation effectiveness was verified and what monitoring was implemented. Validation focused on confirming that:
 
 - No new mailbox rules were created after containment
 - No further anomalous sign-ins occurred for the account
@@ -193,11 +189,9 @@ These controls help detect re-compromise attempts early and validate that identi
 
 ---
 
-## Communication and Coordination
+### 8) Communication and Coordination
 
-This section summarizes coordination between security, IT, and business stakeholders.
-
-Response required cross-functional collaboration:
+This section summarizes coordination between security, IT, and business stakeholders. Response required cross-functional collaboration:
 
 - **Security:** Led investigation, containment, and detection improvements
 - **IT / Identity:** Assisted with account remediation and MFA enforcement
@@ -208,11 +202,9 @@ BEC incidents require rapid business coordination because attacker goals directl
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
-This section captures defensive and response insights derived from this incident.
-
-Key lessons include:
+This section captures defensive and response insights derived from this incident. Key lessons include:
 
 - Mailbox rule abuse is an effective persistence technique in cloud email environments.
 - Identity compromise can cause financial damage without any malware or endpoint indicators.
@@ -223,7 +215,7 @@ These lessons informed control improvements documented in `detection-and-hardeni
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 - `business-email-compromise-mailbox-rule-abuse-investigation.md` — analyst workflow and log pivots  
 - `case-report.md` — reconstructed attacker timeline and business impact framing  
@@ -231,3 +223,4 @@ These lessons informed control improvements documented in `detection-and-hardeni
 - `incident-summary.md` — executive overview of incident and response  
 - `detection-artifact-report.md` — identity and mailbox detection artifacts  
 - `detection-and-hardening-recommendations.md` — preventive and monitoring controls  
+
