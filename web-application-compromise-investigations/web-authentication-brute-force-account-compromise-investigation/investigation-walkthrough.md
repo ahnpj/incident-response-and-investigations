@@ -360,7 +360,7 @@ Because the value was encoded rather than hashed, it could be decoded using stan
 
 <blockquote>
 The credential value recorded in hashed_password was determined to be reversible encoding (not a one-way password hash), allowing recovery of the plaintext password during authorized analysis.
-<blockquote>
+</blockquote>
 
 <blockquote>
 The same hashed_password value appears in both failed and successful login attempts because the application logs a transformed version of the password before it checks whether the password is correct. Each time the same password is submitted, the application records the same value, regardless of whether authentication succeeds or fails. This indicates that the value being logged is not a secure, one-way password hash, but a predictable transformation of the user’s input. As a result, credential material is exposed in the logs for every login attempt, making it possible to reuse or recover credentials once a correct password is identified.
@@ -523,3 +523,4 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
