@@ -495,6 +495,8 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 ### MITRE ATT&CK Mapping (Table View)
 
+**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 | Tactic | Technique | Description |
 |------|-----------|-------------|
 | Persistence | **Create Account: Local Account (T1136.001)** | A backdoor local account was created via command-line utilities. |
@@ -504,10 +506,9 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Execution | **PowerShell (T1059.001)** | Encoded PowerShell execution was used to run attacker-controlled logic. |
 | Command and Control | **Application Layer Protocol: Web (T1071.001)** | Outbound web communication confirmed attacker command-and-control. |
 
-**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
-
 
 ---
+
 
 
 
