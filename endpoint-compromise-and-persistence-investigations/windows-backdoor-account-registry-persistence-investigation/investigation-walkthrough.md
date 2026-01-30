@@ -1,7 +1,5 @@
 # Windows Host Compromise Investigation (Backdoor Account Creation and Registry-Based Persistence)
 
----
-
 ### Executive Summary
 This investigation analyzed a suspected Windows host compromise using Splunk telemetry to determine whether an adversary established persistence through local account creation and registry activity. Evidence showed a backdoor user account was created using built-in Windows utilities, registry artifacts were written under the SAM hive consistent with the new account, and follow-on activity included encoded PowerShell execution that revealed outbound communication to a specific web resource. Security, Sysmon/registry, and PowerShell logs were correlated to reconstruct attacker behavior and document artifacts relevant to detection and response.
 
@@ -153,7 +151,7 @@ index=main EventID=4720
 
 Reviewing these events confirmed the creation of a new user account and clarified the username introduced as the backdoor. On one of the infected hosts, the adversary successfully created a backdoor user named `A1berto`.
 
-### ▶ 3) Registry Artifact Correlation (Persistence-Related Account Metadata)
+#### ▶ 3) Registry Artifact Correlation (Persistence-Related Account Metadata)
 
 After confirming suspicious account creation, analysis pivoted to registry activity to determine whether persistence-related artifacts were present on the system. When new local accounts are introduced during intrusions, registry activity is often a high-signal area because Windows writes account and profile metadata and attackers may tamper with related keys.
 
@@ -181,7 +179,7 @@ Within returned registry event details, the relevant path stood out. Windows mai
 This registry key confirmed that Windows registered the newly created account, and the timing aligned with the earlier command-line evidence. In these registry events, the `TargetObject` field is the key field because it contains the full registry key or value path that was created, modified, or deleted. Without `TargetObject`, the event would indicate a registry change occurred but would not identify which key was impacted, which is why `TargetObject` was required to extract the persistence-relevant artifact.
 
 
-### ▶ 4) Impersonation Intent (Look-Alike Username Identification)
+#### ▶ 4) Impersonation Intent (Look-Alike Username Identification)
 
 Once account creation and registry artifacts were established, analysis focused on identifying which legitimate identity the adversary attempted to mimic. Adversaries often select usernames that blend into normal naming patterns to reduce detection.
 
@@ -200,7 +198,7 @@ During review of the `User` field patterns in the field sidebar, the legitimate 
   <em>Figure 6</em>
 </p>
 
-### ▶ 5) Remote Execution Confirmation (WMIC-Based Account Creation)
+#### ▶ 5) Remote Execution Confirmation (WMIC-Based Account Creation)
 
 The next pivot focused on how the backdoor account was created. Process creation telemetry (`Event ID 4688`) was used to identify tooling and command construction indicating remote execution.
 
@@ -228,7 +226,7 @@ Because it is native to Windows environments, it can blend into legitimate admin
 </p>
 
 
-### ▶ 6) Backdoor Account Usage Review (Logon Attempt Validation)
+#### ▶ 6) Backdoor Account Usage Review (Logon Attempt Validation)
 
 After confirming remote account creation, the investigation evaluated whether the backdoor account was used for authentication attempts during the timeframe captured in the dataset.
 
@@ -264,7 +262,7 @@ To validate this conclusion using explicit Windows logon event IDs, the `EventID
 </p>
 
 
-### ▶ 7) Suspicious PowerShell Origin Identification (Host Attribution)
+#### ▶ 7) Suspicious PowerShell Origin Identification (Host Attribution)
 
 The investigation then pivoted to PowerShell activity to determine follow-on behavior. Encoded PowerShell is frequently used to download payloads, execute scripts in memory, or conceal command intent, making PowerShell telemetry a high-value source.
 
@@ -291,7 +289,7 @@ The `Hostname` field was reviewed to identify which system generated the PowerSh
 </p>
 
 
-### ▶ 8) Malicious PowerShell Volume Measurement (Event ID 4103)
+#### ▶ 8) Malicious PowerShell Volume Measurement (Event ID 4103)
 
 With the affected host identified, analysis measured the extent of suspicious PowerShell execution. The focus was placed on `Event ID 4103`, which logs PowerShell engine activity.
 
@@ -309,7 +307,7 @@ index=main EventID=4103
 Splunk returned 79 events, all associated with the encoded payload activity. This volume suggested repeated execution or a script that generated multiple engine events while unpacking or processing instructions. Quantifying these events provided context for how visible the activity would be in environments with robust PowerShell logging enabled.
 
 
-### ▶ 9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)
+#### ▶ 9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)
 
 After establishing **James.browne** as the host generating suspicious PowerShell telemetry, analysis focused on determining the outbound destination contacted by the encoded command. PowerShell events were reviewed with attention to pipeline execution details (for example, events in the PowerShell channel such as `EventID 800` that can surface execution parameters and context).
 
@@ -371,7 +369,7 @@ Before documenting the URL, it was defanged to prevent accidental clicks or dire
 ---
 
 
-## Findings Summary
+### Findings Summary
 
 This section consolidates the high-confidence conclusions derived from correlated Security, Sysmon/registry, and PowerShell telemetry. Findings are limited to what can be supported directly by the available evidence within scope.
 
@@ -391,7 +389,7 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Defensive Takeaways
+### Defensive Takeaways
 
 This section summarizes key defender-relevant patterns observed during the investigation, focusing on operational lessons and recognizable behaviors rather than specific remediation steps.
 
@@ -407,7 +405,7 @@ This investigation reinforced that Splunk analysis is not only about writing sea
 
 ---
 
-## Artifacts Identified
+### Artifacts Identified
 
 This section lists concrete artifacts uncovered during the investigation that support the final determination and can be used for validation, hunting, detection development, or follow-up analysis.
 
@@ -430,11 +428,11 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Detection and Hardening Opportunities
+### Detection and Hardening Opportunities
 
 This section summarizes high-level detection and hardening opportunities observed during the investigation. For detailed, actionable recommendations — including specific logging gaps, detection logic ideas, and configuration improvements — see: **`detection-and-hardening-recommendations.md`**
 
-### ▶ Containment Actions (Recommended)
+#### ▶ Containment Actions (Recommended)
 These actions focus on removing attacker-established persistence and limiting further access.
 
 - Immediately disable and remove the backdoor local account (`A1berto`).
@@ -443,7 +441,7 @@ These actions focus on removing attacker-established persistence and limiting fu
 - Block outbound communication to the identified command-and-control endpoint.
 - Preserve relevant logs and registry artifacts for incident documentation.
 
-### ▶ Eradication & Hardening Recommendations
+#### ▶ Eradication & Hardening Recommendations
 These steps reduce exposure to similar persistence techniques.
 
 - Restrict use of account management utilities such as `net user` to approved administrative contexts.
@@ -452,7 +450,7 @@ These steps reduce exposure to similar persistence techniques.
 - Enable and retain PowerShell logging (engine, pipeline, and script block logging).
 - Enforce stronger identity validation to prevent look-alike account creation.
 
-### ▶ Detection & Monitoring Recommendations
+#### ▶ Detection & Monitoring Recommendations
 These detections focus on persistence and follow-on execution.
 
 - Alert on local account creation events (`Event ID 4720`) initiated via command-line utilities.
@@ -461,7 +459,7 @@ These detections focus on persistence and follow-on execution.
 - Monitor for encoded PowerShell execution (`-enc`) and multi-layer obfuscation.
 - Correlate account creation with outbound network activity and PowerShell execution.
 
-### ▶ Response Validation & Follow-Up (Optional)
+#### ▶ Response Validation & Follow-Up (Optional)
 - Re-review account management and registry modification logs to confirm no additional backdoor accounts or persistence artifacts are introduced.
 - Validate that the backdoor account remains disabled or removed and does not reappear.
 - Monitor for renewed WMIC-based remote execution attempts or encoded PowerShell activity.
@@ -471,7 +469,7 @@ These detections focus on persistence and follow-on execution.
 
 ---
 
-## MITRE ATT&CK Mapping
+### MITRE ATT&CK Mapping
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during Security event, registry, and PowerShell log analysis. Mappings are based on directly observed activity and artifacts within scope.
 
@@ -493,6 +491,8 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 - **Command and Control — Application Layer Protocol: Web (T1071.001):**  
   Outbound communication to an external web endpoint was identified after decoding the PowerShell payload.
 
+---
+
 ### MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
@@ -508,12 +508,6 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
-
-
-
-
-
-
 
 
 
