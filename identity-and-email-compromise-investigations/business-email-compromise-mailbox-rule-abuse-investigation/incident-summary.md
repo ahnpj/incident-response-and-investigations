@@ -1,6 +1,6 @@
 # Incident Summary — Business Email Compromise (BEC) Investigation (Malicious Mailbox Rule Abuse and Account Compromise)
 
-## Overview
+### Overview
 
 This incident involved unauthorized access to an executive Microsoft 365 mailbox, which was subsequently used to approve fraudulent pension withdrawals.  
 The attacker abused legitimate business approval workflows and concealed financial correspondence through malicious inbox rules, delaying detection of the fraud.
@@ -11,7 +11,7 @@ This summary is intended for non-technical stakeholders and focuses on business 
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes the confirmed sequence of attacker activity at a high level. It focuses on *what occurred* and *how business processes were affected*, rather than the detailed technical steps taken by analysts during investigation.
 
@@ -22,6 +22,8 @@ The following activity was confirmed during the investigation:
 - The attacker created inbox rules that filtered messages containing financial keywords such as `withdrawal`.
 - Financial confirmation and approval emails were moved into a hidden folder (`History`) or deleted before reaching the inbox.
 - Fraudulent pension withdrawal transactions were approved using the compromised mailbox.
+
+---
 
 ### Timeline References
 
@@ -39,7 +41,7 @@ This distinction reflects real-world SOC documentation practices, where incident
 
 ---
 
-## Impact
+### Impact
 
 This section summarizes the confirmed and potential effects of the incident on business operations and risk exposure, based on evidence reviewed during investigation.
 
@@ -49,6 +51,8 @@ This section summarizes the confirmed and potential effects of the incident on b
 - **Reputational and Compliance Risk:** Exposure to regulatory and trust-related concerns due to financial process compromise.
 
 No evidence of malware execution, endpoint compromise, or data exfiltration was identified. All observed attacker activity occurred within cloud identity and email services.
+
+---
 
 ### Impact Documentation References
 
@@ -64,7 +68,7 @@ These supporting documents contain the technical and evidentiary basis for the i
 
 ---
 
-## How It Was Contained
+### How It Was Contained
 
 This section summarizes the response actions required to stop ongoing abuse and stabilize affected systems and business processes.
 
@@ -77,6 +81,8 @@ The following actions were required to contain the incident:
 
 These actions ensured that the attacker could no longer authenticate, manipulate mailbox configuration, or suppress financial communications.
 
+---
+
 ### Response Documentation References
 
 Detailed response procedures and remediation steps are documented in:
@@ -88,7 +94,7 @@ This summary reflects the high-level response outcomes rather than operational s
 
 ---
 
-## Next Steps
+### Next Steps
 
 This section summarizes recommended follow-up actions aimed at preventing recurrence and improving detection coverage based on attacker behavior observed during the incident.
 
@@ -97,6 +103,8 @@ Recommended focus areas include:
 - Strengthening identity protection for executive and finance users.
 - Improving monitoring for mailbox configuration abuse.
 - Enhancing financial approval workflows to reduce reliance on email-based authorization.
+
+---
 
 ### Prevention and Detection References
 
@@ -111,3 +119,4 @@ Recommendations are intentionally documented across two levels:
   This report provides specific identity, mailbox, logging, and business process control recommendations suitable for implementation by security and IT teams.
 
 This separation mirrors how post-incident improvement actions are typically tracked between investigative findings and engineering remediation plans.
+
