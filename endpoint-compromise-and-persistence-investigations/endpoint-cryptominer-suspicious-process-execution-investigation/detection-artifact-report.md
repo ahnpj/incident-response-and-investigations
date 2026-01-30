@@ -292,3 +292,4 @@ By following a structured pivot workflow, analysts were able to move from a sing
 
 Detection strategies that correlate these behaviors can reliably identify similar threats before they escalate into broader system compromise.
 
+
