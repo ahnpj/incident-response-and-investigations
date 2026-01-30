@@ -1,6 +1,6 @@
 # Incident Response Report — Windows Service Exploitation Investigation (Print Spooler Remote Code Execution)
 
-## Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized for response based on confirmed service exploitation and SYSTEM-level command execution.
 
@@ -18,7 +18,7 @@ Classification is based on evidence documented in `case-report.md` and validated
 
 ---
 
-## Detection Trigger
+### 2) Detection Trigger
 
 This section describes how exploitation was initially suspected and why service-level investigation was initiated.
 
@@ -36,7 +36,7 @@ Relevant detection context and pivots are documented in `windows-service-abuse-r
 
 ---
 
-## Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section outlines the first investigative steps taken to validate whether service exploitation had occurred and assess scope of compromise.
 
@@ -58,7 +58,7 @@ Detailed triage pivots and validation steps are documented in `windows-service-a
 
 ---
 
-## Containment Actions
+### 4) Containment Actions
 
 This section summarizes actions taken to immediately stop attacker access and prevent further exploitation of the Print Spooler service.
 
@@ -80,7 +80,7 @@ These actions were prioritized to immediately break command-and-control pathways
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
 This section documents steps taken to remove attacker artifacts and eliminate payloads used during service exploitation.
 
@@ -102,7 +102,7 @@ No evidence of additional malware or service persistence mechanisms was identifi
 
 ---
 
-## Recovery Actions
+### 6) Recovery Actions
 
 This section describes how the system was safely returned to operational status following compromise remediation.
 
@@ -124,7 +124,7 @@ These steps ensured the host could safely resume operations without retaining at
 
 ---
 
-## Validation and Post-Incident Monitoring
+### 7) Validation and Post-Incident Monitoring
 
 This section describes how remediation effectiveness was verified and how ongoing monitoring was conducted.
 
@@ -141,7 +141,7 @@ Detection strategies supporting this monitoring are documented in `detection-art
 
 ---
 
-## Communication and Coordination
+### 8) Communication and Coordination
 
 This section summarizes how response efforts were coordinated across technical and business stakeholders.
 
@@ -155,7 +155,7 @@ Clear communication ensured remediation actions did not disrupt essential servic
 
 ---
 
-## Lessons Learned
+### 9) Lessons Learned
 
 This section captures response process insights and defensive gaps identified during incident handling.
 
@@ -170,7 +170,7 @@ These lessons directly informed engineering and policy improvements documented i
 
 ---
 
-## Related Documentation
+### 10) Related Documentation
 
 This section lists supporting reports that provide investigation detail, detection artifacts, and long-term remediation guidance.
 
@@ -180,3 +180,4 @@ This section lists supporting reports that provide investigation detail, detecti
 - `detection-artifact-report.md` — detection-relevant host and network artifacts  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
 - `incident-summary.md` — executive-level overview of impact and response
+
