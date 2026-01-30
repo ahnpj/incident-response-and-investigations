@@ -2,8 +2,7 @@
 
 ### Overview
 
-This incident involved unauthorized access to an executive Microsoft 365 mailbox, which was subsequently used to approve fraudulent pension withdrawals.  
-The attacker abused legitimate business approval workflows and concealed financial correspondence through malicious inbox rules, delaying detection of the fraud.
+This incident involved unauthorized access to an executive Microsoft 365 mailbox, which was subsequently used to approve fraudulent pension withdrawals. The attacker abused legitimate business approval workflows and concealed financial correspondence through malicious inbox rules, delaying detection of the fraud.
 
 The incident was identified after suspicious financial transactions were observed, prompting investigation into potential identity and email compromise rather than endpoint malware activity.
 
@@ -119,4 +118,5 @@ Recommendations are intentionally documented across two levels:
   This report provides specific identity, mailbox, logging, and business process control recommendations suitable for implementation by security and IT teams.
 
 This separation mirrors how post-incident improvement actions are typically tracked between investigative findings and engineering remediation plans.
+
 
