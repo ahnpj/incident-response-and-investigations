@@ -1,6 +1,6 @@
 # Incident Response Report — Endpoint Cryptominer Infection Investigation (Suspicious Process Execution and Resource Abuse)
 
-### Incident Classification
+### 1) Incident Classification
 
 This section documents how the incident was categorized and prioritized based on confirmation of abnormal process execution patterns consistent with malware or unauthorized script-based activity.
 
@@ -19,7 +19,7 @@ The incident was escalated because execution occurred in a manner that bypassed 
 
 ---
 
-### Detection Trigger
+### 2) Detection Trigger
 
 This section explains what initially indicated suspicious activity and why investigation was initiated.
 
@@ -36,13 +36,13 @@ For analyst telemetry pivots and validation steps, see `suspicious-process-execu
 
 ---
 
-### Initial Triage Actions
+### 3) Initial Triage Actions
 
 This section outlines how analysts validated that the process activity was abnormal and determined whether it represented active compromise.
 
 Triage focused on answering three questions:
 
-#### ▶ 1) Is this legitimate administrative or user-driven activity?
+#### ▶ 3.1) Is this legitimate administrative or user-driven activity?
 
 Analysts reviewed:
 
@@ -54,7 +54,7 @@ These were compared against known legitimate application behavior and scheduled 
 
 This step was necessary to avoid false positives from IT automation or developer tooling.
 
-#### ▶ 2) Does execution indicate payload staging or secondary tool deployment?
+#### ▶ 3.2) Does execution indicate payload staging or secondary tool deployment?
 
 Analysts examined:
 
@@ -64,7 +64,7 @@ Analysts examined:
 
 Suspicious execution was correlated with network connections and file creation events that could represent downloader or loader behavior, increasing confidence that the activity was malicious rather than benign script execution.
 
-#### ▶ 3) Is there evidence of persistence or lateral movement?
+#### ▶ 3.3) Is there evidence of persistence or lateral movement?
 
 Analysts pivoted to:
 
@@ -76,27 +76,27 @@ No confirmed persistence mechanisms were identified during triage, but the absen
 
 ---
 
-### Containment Actions
+### 4) Containment Actions
 
 This section documents actions taken to immediately stop suspicious execution and prevent further attacker activity.
 
 Containment prioritized isolating the affected host and halting execution chains.
 
-### 1) Endpoint Isolation
+#### ▶ 4.1) Endpoint Isolation
 
 - **Isolate affected endpoint from the network.**  
   *Why:* Prevents additional command-and-control communication, payload downloads, and lateral movement while analysis continues.
 
 This is standard practice when active malicious execution is suspected and scope is not yet fully known.
 
-### 2) Terminate Malicious Processes
+#### ▶ 4.2) Terminate Malicious Processes
 
 - **Kill suspicious processes and child process trees.**  
   *Why:* Prevents continuation of attacker-controlled scripts or payload execution and stops any running automation loops.
 
 Termination was necessary because processes were confirmed to be unauthorized and actively executing.
 
-### 3) Disable User Sessions (if applicable)
+#### ▶ 4.3) Disable User Sessions (if applicable)
 
 - **Log off affected user sessions.**  
   *Why:* Ensures attacker cannot re-trigger execution via existing authenticated sessions.
@@ -105,13 +105,13 @@ This is particularly relevant when suspicious execution occurs under interactive
 
 ---
 
-## Eradication Actions
+### 5) Eradication Actions
 
 This section documents steps taken to remove malicious artifacts and close execution pathways.
 
 Eradication focused on eliminating dropped files and execution vectors validated during investigation.
 
-### 1) Remove Malicious Files
+#### ▶ 5.1) Remove Malicious Files
 
 - Delete executables and scripts created during suspicious execution window.  
   *Why:* Prevents re-execution through manual or automated triggers.
@@ -209,4 +209,5 @@ These lessons informed improvements documented in `detection-and-hardening-recom
 - `incident-summary.md` — executive overview of incident and response  
 - `detection-artifact-report.md` — endpoint and process detection artifacts  
 - `detection-and-hardening-recommendations.md` — preventive and monitoring controls  
+
 
