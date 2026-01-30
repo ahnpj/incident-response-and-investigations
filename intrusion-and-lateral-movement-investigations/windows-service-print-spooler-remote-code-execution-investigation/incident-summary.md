@@ -1,6 +1,6 @@
 # Incident Summary — Windows Service Exploitation Investigation (Print Spooler Remote Code Execution)
 
-## Overview
+### Overview
 
 This incident involved exploitation of the Windows Print Spooler service to achieve remote code execution (RCE) on a target host, resulting in SYSTEM-level command execution and establishment of an interactive reverse shell.
 
@@ -8,7 +8,7 @@ The attacker abused legitimate Windows service functionality and trusted system 
 
 ---
 
-## What Happened
+### What Happened
 
 This section summarizes the confirmed attacker activity and how code execution was achieved on the host.
 
@@ -17,6 +17,8 @@ Investigation confirmed that the attacker targeted the Print Spooler service by 
 After staging the payload, the service loaded the attacker-controlled DLL, which executed commands under the SYSTEM account. This resulted in successful remote command execution and establishment of a reverse shell back to the attacker-controlled host.
 
 The activity demonstrates exploitation of service-level functionality rather than user-assisted execution.
+
+---
 
 ### Timeline References
 
@@ -29,7 +31,7 @@ This separation reflects standard SOC practice of distinguishing attacker behavi
 
 ---
 
-## Impact
+### Impact
 
 This section describes the confirmed and potential impact of the service exploitation on system integrity and organizational risk.
 
@@ -44,6 +46,8 @@ With SYSTEM-level access, the attacker had the ability to:
 
 Although no lateral movement or data exfiltration was confirmed during this investigation, the attacker achieved sufficient privileges to pivot to additional systems if the compromise had not been detected.
 
+---
+
 ### Impact Documentation References
 
 - Service exploitation and DLL execution evidence is documented in `case-report.md` and validated in the investigation walkthrough.
@@ -51,7 +55,7 @@ Although no lateral movement or data exfiltration was confirmed during this inve
 
 ---
 
-## How It Was Detected
+### How It Was Detected
 
 This section explains what security signals led to discovery of the exploitation and initiation of service abuse investigation.
 
@@ -67,7 +71,7 @@ Correlation of network telemetry and host process execution indicated exploitati
 
 ---
 
-## Response Summary
+### Response Summary
 
 This section summarizes the high-level actions taken to contain and remediate the compromise.
 
@@ -85,7 +89,7 @@ Detailed response procedures are documented in `incident-response-report.md`.
 
 ---
 
-## Next Steps and Prevention
+### Next Steps and Prevention
 
 This section summarizes recommended actions to reduce risk of similar service abuse in the future.
 
@@ -102,7 +106,7 @@ High-level defensive gaps are summarized in the investigation walkthrough, while
 
 ---
 
-## Related Documentation
+### Related Documentation
 
 This section lists supporting reports that provide technical investigation detail, response actions, and long-term remediation guidance.
 
@@ -112,3 +116,4 @@ This section lists supporting reports that provide technical investigation detai
 - `detection-artifact-report.md` — detection-relevant host and network artifacts  
 - `detection-and-hardening-recommendations.md` — preventive controls and monitoring improvements  
 - `incident-response-report.md` — containment, eradication, recovery, and monitoring actions
+
