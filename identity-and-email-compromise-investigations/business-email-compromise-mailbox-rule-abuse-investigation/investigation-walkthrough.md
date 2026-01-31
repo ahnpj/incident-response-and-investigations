@@ -172,7 +172,7 @@ The sender domain (`flanaganspensions.co.uk`) appears to represent a legitimate 
 
 The email content reinforces this assessment by formally outlining a pension fund withdrawal approval process, lending credibility to subsequent financial requests.
 
-#### ◆ 4.1) Why This Is Relevant to Initial Access
+#### 🔷 4.1) Why This Is Relevant to Initial Access
 
 Identifying the external sender and understanding the context of the financial communication establishes the earliest observable attacker interaction in the incident timeline. This step clarifies how trust was established, provides a foundation for reconstructing subsequent activity, and supports detection opportunities related to external financial correspondence.
 
@@ -188,7 +188,7 @@ The activity observed involves social engineering, impersonation of a trusted ex
 
 This classification aligns with the broader incident scenario and provides the appropriate context for examining post-compromise behavior using Azure Active Directory audit logs.
 
-#### ◆ 5.1) Why Incident Classification Is Important
+#### 🔷 5.1) Why Incident Classification Is Important
 
 Early and accurate incident classification ensures that investigative and response efforts focus on the correct data sources and threat behaviors. In this case, identifying the activity as Business Email Compromise shifts analysis away from endpoint forensics and toward identity telemetry, mailbox configuration changes, and financial process abuse.
 
@@ -203,14 +203,14 @@ With the incident classified as Business Email Compromise, the investigation shi
 
 Because mailbox manipulation and financial approvals can only occur after successful authentication, this phase of the investigation focused on Azure Active Directory sign-in activity.
 
-#### ◆ 6.1) Why Authentication Logs Were Reviewed
+#### 🔷 6.1) Why Authentication Logs Were Reviewed
 
 Authentication logs provide the authoritative record of how and from where an account was accessed. Unlike email artifacts, which describe attacker communication and social engineering tactics, authentication telemetry reveals the infrastructure used to establish and maintain access to the victim’s account.
 
 Although this investigation did not include a dedicated Azure AD Sign-In Logs export, successful authentication events were identifiable within the provided Azure audit log export. In this dataset, interactive login activity is recorded as `UserLoggedIn` operations, with the source IP address embedded within the event’s audit data. These events serve as the closest available equivalent to sign-in logs for reconstructing attacker access.
 
 
-#### ◆ 6.2) Investigation Approach
+#### 🔷 6.2) Investigation Approach
 
 The Azure audit log export (`azure-export-audit-dir.csv`) was opened in Visual Studio Code to allow efficient searching and inspection of individual events containing nested JSON data. Because the file contains a mixture of mailbox operations, compliance activity, and identity-related events, the analysis first required scoping results to the compromised account.
 
@@ -258,7 +258,7 @@ Applying this criteria resulted in the identification of two external IP address
   <em>Figure 3</em>
 </p>
 
-#### ◆ 7.1) Excluded IP Addresses (Non-Threat Actor)
+#### 🔷 7.1) Excluded IP Addresses (Non-Threat Actor)
 
 Other IP addresses were observed within the Azure audit dataset, including `109.175.196.67` and `2.127.216.50`; however, these IPs were not associated with successful interactive authentication events for the compromised account. When reviewing audit records containing this IP, the corresponding `Operation` values reflected Exchange or service-mediated activity rather than `UserLoggedIn` events tied to `becky.lorray@tempestasenergy.com`. 
 
@@ -276,7 +276,7 @@ While several IP addresses appear within `UserLoggedIn` events for the compromis
 - The IP address `2.127.216.50 appears multiple times within authentication telemetry; however, its usage pattern does not align with attacker-controlled activity. While successful logins are present, this IP is not consistently associated with mailbox access, search operations, or persistence-related actions during the compromise window. The lack of sustained, purpose-driven activity suggests that this address represents transient or incidental access rather than infrastructure actively used by the threat actor.
 
 
-#### ◆ 7.2) Why this step matters
+#### 🔷 7.2) Why this step matters
 
 - In Business Email Compromise investigations, authentication activity is often the most concrete technical artifact available for attributing attacker behavior. Identifying the IP addresses used to log into the compromised account allows subsequent mailbox manipulation, persistence mechanisms, and financial actions to be correlated back to attacker-controlled sessions.
 - Establishing attacker authentication sources also provides valuable indicators for scoping impact, validating transaction timelines, and supporting future detection and response efforts. With the authentication infrastructure identified, the investigation proceeded to assess the financial impact of the compromise.
@@ -293,13 +293,13 @@ With authenticated access to the compromised mailbox confirmed, the investigatio
 Because the investigation scenario indicates that unauthorized but approved transfers occurred, email artifacts were reviewed to determine where funds were ultimately sent.
 
 
-#### ◆ 8.1) Why Email Evidence Was Reviewed for Financial Attribution
+#### 🔷 8.1) Why Email Evidence Was Reviewed for Financial Attribution
 
 While Azure audit logs are effective for identifying authentication events and mailbox manipulation, they do not contain details about external financial institutions or payment destinations. Information such as bank names, account references, and approval context is typically communicated directly through email during financial workflows.
 
 As a result, identifying the destination bank required examining the content of the emails involved in the pension withdrawal and approval process rather than relying solely on identity telemetry.
 
-#### ◆ 8.2) Investigation Methodology
+#### 🔷 8.2) Investigation Methodology
 
 To determine the destination bank, I returned to the provided email artifacts and reviewed them using Thunderbird. The analysis focused on emails associated with pension fund withdrawals and approval discussions, as these messages were most likely to reference payment instructions or banking partners.
 
@@ -312,7 +312,7 @@ Specifically, I:
 
 This approach ensured that the bank attribution was based on explicit evidence communicated during the transaction process rather than assumptions.
 
-#### ◆ 8.3) Identifying the Destination Bank
+#### 🔷 8.3) Identifying the Destination Bank
 
 To determine the destination of the fraudulent international transfer, the withdrawal email titled “20250702-Withdrawal-Bernard” was reviewed. This message contains the banking metadata required to identify the receiving financial institution.
 
@@ -341,11 +341,11 @@ Accurately identifying the legal entity is critical in financial fraud investiga
 
 Following confirmation of unauthorized authentication activity, the investigation examined mailbox configuration changes to identify attempts by the threat actor to conceal fraudulent communications. In Business Email Compromise incidents, attackers frequently manipulate mailbox structure to hide financial emails, approval requests, or replies that could expose the fraud.
 
-#### ◆ 9.1) Why this step matters
+#### 🔷 9.1) Why this step matters
 
 Following confirmation of unauthorized authentication activity, the investigation examined mailbox configuration changes to identify attempts by the threat actor to conceal fraudulent communications. In Business Email Compromise incidents, attackers commonly manipulate mailbox structure to hide financial emails, approvals, or replies that could alert the victim or other stakeholders.
 
-#### ◆ 9.2) Investigation Approach
+#### 🔷 9.2) Investigation Approach
 
 To identify mailbox manipulation activity, the Azure audit log export was reviewed for events associated with mailbox configuration changes following the initial compromise window.
 
@@ -359,7 +359,7 @@ Specifically, I:
 
 This approach ensured that only attacker-initiated mailbox changes were considered, excluding normal background or system-generated activity.
 
-#### ◆ 9.3) Identifying The Folder Created
+#### 🔷 9.3) Identifying The Folder Created
 
 To identify inbox folder creation activity, the Azure audit log export (`azure-export-audit-dir.csv`) was opened in Visual Studio Code, which allowed efficient searching through individual audit events containing nested JSON data. The following steps were performed:
 
@@ -479,7 +479,7 @@ Select-String -Path ".\azure-export-audit-dfir.csv" -Pattern "New-InboxRule" |
 
 The PowerShell output confirmed that the first inbox rule created for the compromised mailbox contained a `MoveToFolder` action targeting the History folder, corroborating the findings from Visual Studio Code and confirming the attacker’s mailbox manipulation technique.
 
-#### ◆ 9.4) Why These Findings Matter
+#### 🔷 9.4) Why These Findings Matter
 
 The creation of a custom inbox folder combined with inbox rule abuse demonstrates deliberate mailbox manipulation intended to conceal fraudulent activity. By automatically moving or deleting emails related to financial transactions, the attacker reduced the likelihood that the victim or other stakeholders would notice unauthorized pension withdrawals. This behavior confirms post-compromise persistence and aligns with common concealment techniques observed in Business Email Compromise incidents.
 
@@ -514,7 +514,7 @@ This keyword appears in the subject and body of multiple emails related to the p
 
 Targeting a high-risk financial keyword is a common Business Email Compromise technique. It allows the attacker to broadly suppress transaction-related communications while minimizing the chance that the victim notices missing or delayed emails during the approval process.
 
-#### ◆ 10.1) How the Rule Configuration Was Interpreted
+#### 🔷 10.1) How the Rule Configuration Was Interpreted
 
 Within the `New-InboxRule` audit entry, rule logic is stored as a list of parameters, each defining either:
 
@@ -548,7 +548,7 @@ This defines what happens when the condition is met. Emails matching the keyword
 
 These settings indicate that matching emails may be deleted and that no additional inbox rules should be applied afterward. This combination is commonly used to ensure emails are fully suppressed and not recovered by subsequent rules.
 
-#### ◆ 10.2) Why This Confirms Attackers Intent
+#### 🔷 10.2) Why This Confirms Attackers Intent
 
 The presence of a keyword-based condition targeting “withdrawal” confirms that the inbox rule was specifically designed to intercept financial correspondence. Rather than filtering all messages, the attacker selectively targeted emails related to pension withdrawals and financial approvals.
 
@@ -558,7 +558,7 @@ The combination of the following demonstrates deliberate mailbox manipulation in
 - automated message handling (move/delete)
 - rule processing suppression
 
-#### ◆ 10.3) Why This Matters
+#### 🔷 10.3) Why This Matters
 
 Filtering on the word withdrawal demonstrates deliberate concealment of financial activity rather than opportunistic rule creation. This behavior confirms attacker intent to hide fraud-related communications and aligns with mailbox abuse patterns commonly observed in BEC incidents.
 
@@ -679,6 +679,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
