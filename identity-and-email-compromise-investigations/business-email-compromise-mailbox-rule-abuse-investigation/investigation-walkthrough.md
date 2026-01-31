@@ -131,10 +131,10 @@ The email titled “PensionApproval” was identified as part of an existing rep
 
 Full message headers were reviewed within Thunderbird to identify the sender associated with the financial approval communication. Header analysis revealed the following details:
 
-From: `Sabastian Hague <sabastian@flanaganspensions.co.uk>`
-Sent: `02 July 2025`
-To: `becky.lorray@tempestasenergy.com`
-Cc: `liam.fray@tempestasenergy.com`
+- From: `Sabastian Hague <sabastian@flanaganspensions.co.uk>`
+- Sent: `02 July 2025`
+- To: `becky.lorray@tempestasenergy.com`
+- Cc: `liam.fray@tempestasenergy.com`
 
 The sender domain (`flanaganspensions.co.uk`) appears to represent a legitimate pension services provider, which aligns with common BEC tactics. Attackers frequently impersonate trusted third parties involved in financial workflows in order to bypass suspicion and prompt action from executives.
 
@@ -196,9 +196,10 @@ UserLoggedIn,becky.lorray@tempestasenergy.com
   <em>Figure 2</em>
 </p>
 
-<blockquote>
+
 Although the fraudulent emails appeared to originate from sabastian@flanaganspensions.co.uk, log analysis focused on Becky Lorray’s account because Business Email Compromise attacks target the victim’s internal account, not the impersonated external sender. The attacker’s goal was to abuse Becky Lorray’s authority as Chief Financial Officer to approve and process financial transactions. Azure Active Directory audit logs only record authentication and mailbox activity for internal tenant accounts, meaning no usable log data exists for the external impersonated address.
 
+<blockquote>
 If Becky’s account had not been compromised or abused, there would be no mechanism to authorize the withdrawal. The attacker sent emails to Becky to establish trust and initiate the workflow, but control was ultimately exercised through her internal account, which is why investigative log analysis centered on her activity rather than the external sender.
 </blockquote>
 
@@ -228,26 +229,26 @@ Applying this criteria resulted in the identification of two external IP address
 
 #### ◆ 7.1) Excluded IP Addresses (Non-Threat Actor)
 
-Other IP addresses were observed within the Azure audit dataset, including `109.175.196.67` and `2.127.216.50`; however, these IPs were not associated with successful interactive authentication events for the compromised account. When reviewing audit records containing this IP, the corresponding `Operation` values reflected Exchange or service-mediated activity rather than `UserLoggedIn` events tied to `becky.lorray@tempestasenergy.com`. In contrast to the identified threat actor IPs, `109.175.196.67` did not appear as the `ClientIP` value within a successful `UserLoggedIn` operation for the compromised user. As a result, this IP was assessed as post-authentication or service-related activity and excluded from the set of threat actor authentication sources.
+Other IP addresses were observed within the Azure audit dataset, including `109.175.196.67` and `2.127.216.50`; however, these IPs were not associated with successful interactive authentication events for the compromised account. When reviewing audit records containing this IP, the corresponding `Operation` values reflected Exchange or service-mediated activity rather than `UserLoggedIn` events tied to `becky.lorray@tempestasenergy.com`. 
+
+In contrast to the identified threat actor IPs, `109.175.196.67` did not appear as the `ClientIP` value within a successful `UserLoggedIn` operation for the compromised user. As a result, this IP was assessed as post-authentication or service-related activity and excluded from the set of threat actor authentication sources.
 
 While several IP addresses appear within `UserLoggedIn` events for the compromised account, attribution requires evidence of sustained and purposeful use in furtherance of the compromise. IP addresses that lack repeated usage, mailbox interaction, or correlation with malicious activity are excluded to avoid false attribution. This approach ensures that only infrastructure demonstrably leveraged by the threat actor is identified.
 
 **109.175.196.67 — Excluded**
 
-Although this IP address is associated with a successful `UserLoggedIn` event for the compromised account, it appears only once during the investigation window and is not followed by any mailbox interaction, search activity, or configuration changes. No Exchange workload operations such as `MailItemsAccessed`, `Search`, or mailbox modification events are temporally correlated with this login. The absence of follow-on activity indicates that this IP was not materially utilized by the threat actor to conduct or sustain the compromise and is therefore excluded.
-
-Unlike confirmed threat actor IP addresses, which demonstrate repeated authentication followed by mailbox interaction and operational activity, `109.175.196.67` is limited to a single authentication event with no observable impact on mailbox or financial workflows. This distinction supports its exclusion despite superficial similarity at the log field level.
+- Although this IP address is associated with a successful `UserLoggedIn` event for the compromised account, it appears only once during the investigation window and is not followed by any mailbox interaction, search activity, or configuration changes. No Exchange workload operations such as `MailItemsAccessed`, `Search`, or mailbox modification events are temporally correlated with this login. The absence of follow-on activity indicates that this IP was not materially utilized by the threat actor to conduct or sustain the compromise and is therefore excluded.
+- Unlike confirmed threat actor IP addresses, which demonstrate repeated authentication followed by mailbox interaction and operational activity, `109.175.196.67` is limited to a single authentication event with no observable impact on mailbox or financial workflows. This distinction supports its exclusion despite superficial similarity at the log field level.
 
 **2.127.216.50 — Excluded**
 
-The IP address `2.127.216.50 appears multiple times within authentication telemetry; however, its usage pattern does not align with attacker-controlled activity. While successful logins are present, this IP is not consistently associated with mailbox access, search operations, or persistence-related actions during the compromise window. The lack of sustained, purpose-driven activity suggests that this address represents transient or incidental access rather than infrastructure actively used by the threat actor.
+- The IP address `2.127.216.50 appears multiple times within authentication telemetry; however, its usage pattern does not align with attacker-controlled activity. While successful logins are present, this IP is not consistently associated with mailbox access, search operations, or persistence-related actions during the compromise window. The lack of sustained, purpose-driven activity suggests that this address represents transient or incidental access rather than infrastructure actively used by the threat actor.
 
 
 #### ◆ 7.2) Why this step matters
 
-In Business Email Compromise investigations, authentication activity is often the most concrete technical artifact available for attributing attacker behavior. Identifying the IP addresses used to log into the compromised account allows subsequent mailbox manipulation, persistence mechanisms, and financial actions to be correlated back to attacker-controlled sessions.
-
-Establishing attacker authentication sources also provides valuable indicators for scoping impact, validating transaction timelines, and supporting future detection and response efforts. With the authentication infrastructure identified, the investigation proceeded to assess the financial impact of the compromise.
+- In Business Email Compromise investigations, authentication activity is often the most concrete technical artifact available for attributing attacker behavior. Identifying the IP addresses used to log into the compromised account allows subsequent mailbox manipulation, persistence mechanisms, and financial actions to be correlated back to attacker-controlled sessions.
+- Establishing attacker authentication sources also provides valuable indicators for scoping impact, validating transaction timelines, and supporting future detection and response efforts. With the authentication infrastructure identified, the investigation proceeded to assess the financial impact of the compromise.
 
 
 ### ▶ 8) Financial Impact: Identifying the Destination Bank
@@ -331,7 +332,7 @@ This approach ensured that only attacker-initiated mailbox changes were consider
 
 To identify inbox folder creation activity, the Azure audit log export (`azure-export-audit-dir.csv`) was opened in Visual Studio Code, which allowed efficient searching through individual audit events containing nested JSON data. The following steps were performed:
 
-(1) To identify mailbox manipulation activity, the Microsoft Entra ID (Azure AD) export was opened in VS Code and searched for the `FolderCreated` operation. This approach allowed folder creation events tied to Becky Lorray’s mailbox to be quickly identified and correlated with the compromise timeline. 
+**(Step 1)** To identify mailbox manipulation activity, the Microsoft Entra ID (Azure AD) export was opened in VS Code and searched for the `FolderCreated` operation. This approach allowed folder creation events tied to Becky Lorray’s mailbox to be quickly identified and correlated with the compromise timeline. 
 
 <p align="left">
   <img src="images/business-email-compromise-azure-investigation-05.png" 
@@ -340,7 +341,7 @@ To identify inbox folder creation activity, the Azure audit log export (`azure-e
   <em>Figure 5</em>
 </p>
 
-(2) Scoped results to actions associated with the compromised account (becky.lorray@tempestasenergy.com). Because Business Email Compromise (BEC) relies on unauthorized access to a victim’s mailbox, all mailbox manipulation activity—including folder creation and inbox rule abuse must originate from the compromised user’s account, not the external sender used to initiate contact.
+**(Step 2)** Scoped results to actions associated with the compromised account (becky.lorray@tempestasenergy.com). Because Business Email Compromise (BEC) relies on unauthorized access to a victim’s mailbox, all mailbox manipulation activity—including folder creation and inbox rule abuse must originate from the compromised user’s account, not the external sender used to initiate contact.
 
 <p align="left">
   <img src="images/business-email-compromise-azure-investigation-06.png" 
@@ -349,7 +350,7 @@ To identify inbox folder creation activity, the Azure audit log export (`azure-e
   <em>Figure 6</em>
 </p>
 
-(3) Reviewed event timestamps to ensure the activity occurred after confirmed attacker authentication.
+**(Step 3)** Reviewed event timestamps to ensure the activity occurred after confirmed attacker authentication.
 
 <p align="left">
   <img src="images/business-email-compromise-azure-investigation-07.png" 
@@ -360,13 +361,13 @@ To identify inbox folder creation activity, the Azure audit log export (`azure-e
 
 Event timestamps were reviewed to confirm that the folder creation activity occurred after successful authentication to the compromised account. The `FolderCreated` events associated with `becky.lorray@tempestasenergy.com` appear on `2025-07-01` and `2025-07-02`, which is subsequent to confirmed `UserLoggedIn` activity for the same account. This timing confirms that the mailbox modifications were performed during an active authenticated session rather than being system-generated or pre-existing configuration changes.
 
-(4) Inspected the audit data payload for fields indicating the name of the newly created folder
+**(Step 4)** Inspected the audit data payload for fields indicating the name of the newly created folder
 
 The audit data payloads for the `FolderCreated` events were inspected for fields indicating the name of the newly created folder. While folder creation activity was clearly observed, the audit records did not reliably expose a human-readable folder name within the FolderCreated event data itself.
 
 At this point, the investigation pivoted to **inbox rule analysis** to identify how the newly created folder was being used.
 
-(5) Inspected the audit data for inbox rule abuse
+**(Step 5)** Inspected the audit data for inbox rule abuse
 
 After identifying folder creation activity, the investigation proceeded to examine inbox rules configured on the compromised mailbox. Inbox rules are frequently abused in BEC attacks to automatically filter, redirect, or delete emails containing specific keywords related to financial transactions or security alerts.
 
@@ -383,7 +384,7 @@ To identify mailbox inbox rule manipulation activity, the Azure AD audit log exp
   <em>Figure 8</em>
 </p>
 
-(6) Identified the Folder Name via Inbox Rule Analysis
+**(Step 6)** Identified the Folder Name via Inbox Rule Analysis
 
 Because Microsoft 365 audit logs do not consistently include folder names in `FolderCreated` events, inbox rule activity was examined to determine how messages were being routed post-compromise.
 
@@ -416,7 +417,7 @@ Inbox folder created during the compromise: `History`
 This rule enabled the attacker to suppress transaction confirmations and financial correspondence, reducing the likelihood of detection.
 </blockquote>
 
-(7) Confirmed via PowerShell
+**(Step 7)** Confirmed via PowerShell
 
 To validate this finding, the audit log was also analyzed using PowerShell to ensure consistency between GUI-based analysis and command-line parsing.
 
@@ -447,7 +448,6 @@ Select-String -Path ".\azure-export-audit-dfir.csv" -Pattern "New-InboxRule" |
 
 The PowerShell output confirmed that the first inbox rule created for the compromised mailbox contained a `MoveToFolder` action targeting the History folder, corroborating the findings from Visual Studio Code and confirming the attacker’s mailbox manipulation technique.
 
-
 #### ◆ 9.4) Why These Findings Matter
 
 The creation of a custom inbox folder combined with inbox rule abuse demonstrates deliberate mailbox manipulation intended to conceal fraudulent activity. By automatically moving or deleting emails related to financial transactions, the attacker reduced the likelihood that the victim or other stakeholders would notice unauthorized pension withdrawals. This behavior confirms post-compromise persistence and aligns with common concealment techniques observed in Business Email Compromise incidents.
@@ -457,7 +457,8 @@ The creation of a custom inbox folder combined with inbox rule abuse demonstrate
 ### ▶ 10) Identifying the Inbox Rule Keyword
 
 - [10.1) How the Rule Configuration Was Interpreted](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-101-how-the-rule-configuration-was-interpreted)
-- [10.2) Why This Matters](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-102-why-this-matters)
+- [10.2) Why This Confirms Attackers Intent](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-102-why-this-confirms-attackers-intent)
+- [10.3) Why This Matters](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-102-why-this-matters)
 
 After identifying that an inbox rule was created on the compromised mailbox, the next step was to determine what the rule was designed to look for before taking action. In Business Email Compromise incidents, attackers commonly configure inbox rules to scan incoming emails for specific keywords related to financial activity and automatically hide or delete them.
 
@@ -516,7 +517,7 @@ This defines what happens when the condition is met. Emails matching the keyword
 
 These settings indicate that matching emails may be deleted and that no additional inbox rules should be applied afterward. This combination is commonly used to ensure emails are fully suppressed and not recovered by subsequent rules.
 
-**Why This Confirms Attackers Intent**
+#### ◆ 10.2) Why This Confirms Attackers Intent
 
 The presence of a keyword-based condition targeting “withdrawal” confirms that the inbox rule was specifically designed to intercept financial correspondence. Rather than filtering all messages, the attacker selectively targeted emails related to pension withdrawals and financial approvals.
 
@@ -526,7 +527,7 @@ The combination of the following demonstrates deliberate mailbox manipulation in
 - automated message handling (move/delete)
 - rule processing suppression
 
-#### ◆ 10.2) Why This Matters
+#### ◆ 10.3) Why This Matters
 
 Filtering on the word withdrawal demonstrates deliberate concealment of financial activity rather than opportunistic rule creation. This behavior confirms attacker intent to hide fraud-related communications and aligns with mailbox abuse patterns commonly observed in BEC incidents.
 
@@ -647,6 +648,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
