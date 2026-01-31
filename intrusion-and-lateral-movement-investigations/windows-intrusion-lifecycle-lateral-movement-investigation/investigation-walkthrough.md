@@ -1,7 +1,5 @@
 # Windows Malware Intrusion Lifecycle Investigation (Lateral Movement and Multi-Stage Host Compromise on Windows)
 
----
-
 ### Executive Summary
 
 This investigation reconstructs a full malware intrusion lifecycle on a Windows endpoint, beginning with external reconnaissance and culminating in credential abuse, malware deployment, persistence, and cleanup activity. Analysis of firewall logs, authentication telemetry, Windows Security events, Sysmon logs, registry modifications, and file artifacts revealed a coordinated attack sequence leveraging exposed remote services, brute-force authentication, and post-compromise system manipulation.
