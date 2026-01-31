@@ -1214,3 +1214,4 @@ This investigation helped me understand how SIEM tools like Splunk can be used t
 
 
 
+
