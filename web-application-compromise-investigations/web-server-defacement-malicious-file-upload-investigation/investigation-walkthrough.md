@@ -2,7 +2,7 @@
 
 ---
 
-## Executive Summary
+### Executive Summary
 
 This investigation analyzes a multi-stage web server compromise that culminated in the public defacement of the domain `imreallynotbatman.com`, hosted by Wayne Enterprises. Using correlated network, web, IDS, and host telemetry within Splunk, the attack chain was reconstructed from external reconnaissance through exploitation, malware installation, command-and-control activity, and final actions on objectives.
 
@@ -12,7 +12,7 @@ The domain `imreallynotbatman.com` was defaced in a simulated breach of Wayne En
   <img src="images/splunk-web-defacement-investigation-01.png?raw=true&v=2" 
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
-       width="300"><br>
+       width="600"><br>
   <em>Figure 1</em>
 </p>
 
@@ -26,7 +26,7 @@ Evidence confirms that the attacker performed automated vulnerability scanning a
 
 ---
 
-## Incident Scope
+### Incident Scope
 
 The scope of this investigation is limited to analysis of simulated log data contained within the `botsv1` dataset and focuses on a single compromised web server (`192.168.250.70`). The investigation does not attempt live exploitation, remediation, or system recovery, and no changes are made to the environment.
 
@@ -34,30 +34,40 @@ The analysis covers attacker activity observed across multiple phases of the int
 
 ---
 
-## Environment, Evidence, and Tools
+### Environment, Evidence, and Tools
 
 This investigation was conducted within a pre-configured Splunk Enterprise environment containing the `botsv1` dataset. The dataset simulates enterprise-grade telemetry collected from web servers, endpoints, and network security devices.
 
-Primary evidence sources included:
+#### ▶ Environment
+- **Application Type:** Web application with API-based authentication
+- **Operating System:** Linux-based hosting environment
+- **Authentication Interface:** `/api/login` endpoint
+- **Access Model:** Username and password–based authentication
+- **Analysis Scope:** Application-layer telemetry only (no host or network-level logs)
+- **Incident Context:** Post-authentication compromise analysis using recorded login events
+
+#### ▶ Evidence Sources
 - stream:http — HTTP network flow and application-layer traffic
 - suricata — IDS alerts and exploit detection
 - fortigate_utm — Firewall and UTM network telemetry
 - iis — Web server access logs
 - XmlWinEventLog / Sysmon — Host-based process creation and execution events
 
-Tools and platforms used:
+#### ▶ Tools Used
 - Splunk Enterprise — Core analysis platform for log correlation and search
 - Splunk Search & Reporting App — Used for query development and investigation workflow
 - AttackBox VM — Used for independent connectivity checks and contextual reconnaissance validation
 - VirusTotal — Used to enrich extracted file hashes with reputation and malware classification
 
-### Environment Setup 
+#### ▶ Environment Setup 
 
 The investigation was performed in a virtual machine (VM) environment preconfigured for Splunk analysis. Once deployed, the VM was automatically assigned an internal IP address (`MACHINE_IP`) and initialized within a few minutes. The Splunk instance hosted the `botsv1` dataset — a realistic collection of simulated security event logs designed for enterprise-scale analysis. This dataset included various sourcetypes representing web, network, and host activity, allowing for comprehensive event correlation and threat investigation throughout the lab.
 
 <blockquote>
 <strong>Important Note:</strong> IP addresses in this investigation are ephemeral and were recorded at the time of each step (placeholders such as `MACHINE_IP` are used in this write-up when the IP changed between sessions).
 </blockquote>
+
+##### 🔷 Accessomg Splunk Enterprise on Target Virtual Machine
 
 I accessed Splunk Enterprise on the target VM (`10.201.17.82`, `http://10.201.33.31`, `10.201.117.123`, `10.201.119.166`, `10.201.5.103`, `10.201.35.24`, `10.201.116.59`, or `10.201.112.116`) using the AttackBox browser (AttackBox IP `10.201.122.5`,  `10.201.117-139`, or `10.201.81.194`). From the provided AttackBox (on the network) I verified reachability with ping, enumerated services with nmap, and inspected any web interfaces by opening `10.201.17.82` or `http://10.201.33.31` in the AttackBox browser.
 
@@ -72,9 +82,8 @@ In Splunk’s Search & Reporting app I confirmed the index=botsv1 dataset with `
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-</p>
 
-### Checking Basic Connectivity (AttackBox Linux Bash terminal)
+##### 🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)
 
 My goal here is to quickly confirm  whether the target is reachable from the AttackBox (verifies network connectivity and that the VM is up).
 
@@ -94,7 +103,7 @@ ping -c 3 10.201.17.82
 - `10.201.17.82` — Target IP assigned to the analysis VM.
 
 
-### Discovering Open Ports via Nmap (Attackbox Linux Bash terminal)
+##### 🔷 Discovering Open Ports via Nmap (Attackbox Linux Bash terminal)
 
 I also wanted to  enumerate which ports are open and which services are listening so I know where to focus further testing (web, SSH, custom services, etc.).
 
@@ -116,7 +125,7 @@ nmap -sS -sV -p- 10.201.17.82
 - `10.201.17.82` — The target IP.
 
 
-### Checking Basic Connectivity (AttackBox Linux Bash terminal)
+##### 🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)
 
 My goal here is to try verifying that the web server is present, inspect response headers (server, cookies, redirects, status codes), and quickly retrieve pages for manual review or to inform later automated testing.
 
@@ -138,7 +147,7 @@ curl http://10.201.17.82/index.php
 - `http://10.201.17.82/index.php` — Example path to fetch a specific page or endpoint to see content or responses.
 
 
-### Testing Specific TCP Ports via netcat (AttackBox Linux Bash terminal)
+##### 🔷 Testing Specific TCP Ports via netcat (AttackBox Linux Bash terminal)
 
 I wanted quick verification of whether a specific port is accepting TCP connections (faster than a full nmap when you want to check individual services).
 
@@ -159,7 +168,7 @@ nc -vz 10.201.17.82 22
 - `-z` — Zero-I/O mode: used for scanning/listening without sending data (useful for quick port checks).
 - `10.201.17.82 80` — Target IP and port to test (80 = HTTP).
 
-### Practical Checklist I Used
+##### 🔷 Practical Checklist I Used
 - Deploy the target VM and copy the target IP. 
 - Open the AttackBox and ensure I am on the network.  
 - Run `ping` to confirm host is up.  
@@ -174,7 +183,7 @@ All expected sourcetypes were present. Understanding these sources early streaml
 
 ---
 
-## Investigative Questions
+### Investigative Questions
 
 This section outlines the core questions used to guide analysis and ensure evidence-based conclusions rather than assumption-driven findings.
 
@@ -188,7 +197,7 @@ Key questions included:
 
 ---
 
-## Investigation Timeline
+### Investigation Timeline
 
 The following timeline summarizes major investigative milestones based on correlated telemetry across log sources. Timestamps are derived from event ordering rather than wall-clock reconstruction.
 
@@ -200,18 +209,69 @@ The following timeline summarizes major investigative milestones based on correl
 - T5 — Outbound communication detected: Web server initiated outbound connections to attacker-controlled domains.
 - T6 — Defacement confirmed: External image retrieved and rendered as website defacement content.
 
-
 <blockquote>
 Understanding incident handling early clarified how every detection and response task later in the investigation aligns with the **NIST SP 800‑61 r2** lifecycle and **CompTIA Security+ Domain 2 (Incident Response)**. The introduction underscored the need for predefined processes and emphasized that SIEM tools automate detection and correlation across multiple log types.
 </blockquote>
 
 ---
 
-## Investigation Walkthrough
+### Investigation Walkthrough
 
-### Objective 1 – Reconnaissance Phase 
+<blockquote>
+<details>
+<summary><strong>📚 Walkthrough navigation (click to expand)</strong></summary>
 
-#### (Objective 1 - Step 1) I began by searching the dataset for any logs referencing the domain.
+- [1) Reconnaissance Phase](#-1-reconnaissance-phase)
+  - [1.1) Reconnaissance Phase Step 1](#-11-reconnaissance-phase-step-1)
+  - [1.2) Reconnaissance Phase Step 2](#-12-reconnaissance-phase-step-2)
+  - [1.3) Reconnaissance Phase Step 3](#-13-reconnaissance-phase-step-3)
+  - [1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findings--analysis)
+- [2) Exploitation Phase](#-2-exploitation-phase)
+  - [2.1) Exploitation Phase Step 1](#-21-exploitation-phase-step-1)
+  - [2.2) Exploitation Phase Step 2](#-22-exploitation-phase-step-2)
+  - [2.3) Exploitation Phase Step 3](#-23-exploitation-phase-step-3)
+  - [2.4) Exploitation Phase Step 4](#-24-exploitation-phase-step-4)
+  - [Exploitation Phase Findings & Analysis](#-exploitation-phase-findings--analysis)
+- [3) Installation Phase](#-3-installation-phase)
+  - [Installation Phase Step 1](#-installation-phase-step-1)
+  - [Installation Phase Step 2](#-installation-phase-step-2)
+  - [Installation Phase Step 3](#-installation-phase-step-3)
+  - [Installation Phase Step 4](#-installation-phase-step-4)
+  - [Installation Phase Findings & Analysis](#-installation-phase-findings--analysis)
+- [4) Action on Objectives Phase](#-4-action-on-objectives-phase)
+  - [Action on Objectives Phase Step 1](#-action-on-objectives-phase-step-1)
+  - [Action on Objectives Phase Step 2](#-action-on-objectives-phase-step-2)
+  - [Action on Objectives Phase Step 3](#-action-on-objectives-phase-step-3)
+  - [Action on Objectives Phase Step 4](#-action-on-objectives-phase-step-4)
+  - [Action on Objectives Phase Step 5](#-action-on-objectives-phase-step-5)
+  - [Action on Objectives Phase Findings & Analysis](#-action-on-objectives-phase-findings--analysis)
+- [5) Command and Control (C2) Phase](#-5-command-and-control-c2-phase)
+  - [Command and Control (C2) Phase Step 1](#-command-and-control-c2-phase-step-1)
+  - [Command and Control (C2) Phase Step 2](#-command-and-control-c2-phase-step-2)
+  - [Command and Control (C2) Phase Findings & Analysis](#-command-and-control-c2-phase-findings--analysis)
+- [6) Weaponization Phase](#-6-weaponization-phase)
+  - [Weaponization Phase Step 1](#-weaponization-phase-step-1)
+  - [Weaponization Phase Step 2](#-weaponization-phase-step-2)
+  - [Weaponization Phase Findings & Analysis](#-weaponization-phase-findings--analysis)
+- [7) Delivery Phase](#-7-delivery-phase)
+  - [Delivery Phase Step 1](#-delivery-phase-step-1)
+  - [Delivery Phase Step 2](#-delivery-phase-step-2)
+  - [Delivery Phase Step 3](#-delivery-phase-step-3)
+  - [Delivery Phase Findings & Analysis](#-delivery-phase-findings--analysis)
+
+</details>
+</blockquote>
+
+#### ▶ 1) Reconnaissance Phase
+- [🔷 1.1) Reconnaissance Phase Step 1](#-11-reconnaissance-phase-step-1)
+- [🔷 1.2) Reconnaissance Phase Step 2](#-12-reconnaissance-phase-step-2)
+- [🔷 1.3) Reconnaissance Phase Step 3](#-13-reconnaissance-phase-step-3)
+- [🔷 1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findings--analysis)
+
+
+##### 🔷 1.1) Reconnaissance Phase Step 1
+
+I began by searching the dataset for any logs referencing the domain.
 
 ```spl
 index=botsv1
@@ -239,7 +299,7 @@ This returned several sourcetypes, including `suricata`, `stream:http`, `fortiga
 </p>
 
 
-#### (Objective 1 - Step 2) I refined the query to focus on HTTP traffic because the domain represents a web address.
+##### 🔷 1.2) Reconnaissance Phase Step 2
 
 I first limited my query to `HTTP` traffic using `sourcetype=stream:http` to focus only on web communication logs and reduce unrelated results. This made the search faster and more precise, allowing me to see which source IPs had connected to that domain. The results showed two main IPs — `40.80.148.42` and `23.22.63.114`, with the first generating the majority of HTTP requests, suggesting it was the primary host involved in the connection.
 
@@ -268,8 +328,9 @@ From this search, I identified two IPs (`40.80.148.42` and `23.22.63.114`)
   <em>Figure 9</em>
 </p>
 
+##### 🔷 1.3) Reconnaissance Phase Step 3
 
-#### (Objective 1 - Step 3) I needed to validate that this was indeed a scanning attempt by `40.80.148.42`.
+I needed to validate that this was indeed a scanning attempt by `40.80.148.42`.
 
 I started by narrowing my search query to Suricata logs using the query:
 
@@ -314,7 +375,7 @@ HTTP requests with empty headers are common with automated vulnerability scanner
 Because this activity doesn’t exploit a specific vulnerability but instead maps and tests the server’s behavior, it’s a strong indicator of active reconnaissance.
 
 
-#### Findings / Analysis (Objective 1)
+##### 🔷 1.4 Reconnaissance Phase Findings & Analysis 
 
 - `40.80.148.42` accounted for over  90 % of the requests, and was consistent with automated vulnerability scanning. Active recon evidence included frequent GET requests.
 - I filtered the Suricata logs for traffic from the attacker IP `40.80.148.42` to the web server `192.168.250.70`. In the `http_referrer` field, I found multiple entries pointing to paths such as `/joomla/index.php` and `/joomla/administrator/`. These are specific to the Joomla content management system, confirming the web server was running Joomla. This field typically shows the URL of the webpage that directed the client to the current resource, so basically where each request originated from.
@@ -327,7 +388,12 @@ Because this activity doesn’t exploit a specific vulnerability but instead map
 This part of the investigation demonstrated how correlated IDS and network logs can expose early attacker behavior. Recognizing reconnaissance helps defenders act during the earliest possible stage of an attack, aligning with **Security+ Domain 3 (Threat Detection)** and **NIST IR Phase – Identification** (Woohoo! Earning my CompTIA Sec+ cert was worth it).
 
 
-### Objective 2 – Exploitation Phase
+#### ▶ 2) Exploitation Phase
+- [🔷 2.1) Exploitation Phase Step 1](#-21-exploitation-phase-step-1)
+- [🔷 2.2) Exploitation Phase Step 2](#-22-exploitation-phase-step-2)
+- [🔷 2.3) Exploitation Phase Step 3](#-23-exploitation-phase-step-3)
+- [🔷 2.4) Exploitation Phase Step 4](#-24-exploitation-phase-step-4)
+- [🔷 Exploitation Phase Findings & Analysis](#-exploitation-phase-findings--analysis)
 
 The objective was to confirm whether the attacker attempted or succeeded in exploiting vulnerabilities discovered during reconnaissance—specifically targeting the Joomla CMS running on the web server.
 
@@ -340,7 +406,9 @@ The objective was to confirm whether the attacker attempted or succeeded in expl
  - The webserver is using the Joomla CMS.
 
 
-#### (Objective 2 - Step 1) I began by running three Splunk searches to analyze web activity targeting the imreallynotbatman.com web server
+##### 🔷 2.1) Exploitation Phase Step 1
+
+I began by running three Splunk searches to analyze web activity targeting the imreallynotbatman.com web server
 
   - <b>First query:</b> I immediately noticed `40.80.148.42` has made the majority of requests with 17483 requests and `23.22.63.114` made 1235 requests against web server (Figure 13).
   - <b>Second query:</b> Saw that `40.80.148.42`, `23.22.63.114`, and `192.168.2.50` have all made HTTP requests to the web server by looking into the `src_ip` field (Figure 14). Looking into the `http_method` field, I saw that most of the HTTP traffic observed consisted of POST requests directed at the web server (see Figure 15).
@@ -350,7 +418,7 @@ The objective was to confirm whether the attacker attempted or succeeded in expl
 Below are more details about each query and the corresponding findings.
 </blockquote>
 
-_<b>First query (Objective 2 - Step 1)</b>_
+_<b>First query</b>_
 
 This query was used to identify which client IPs accessed the domain name, and the count events per source IP, regardless of how it resolved (`sourcetype=stream:*`). This search focused on hostname-based activity across multiple Stream sourcetypes (`sourcetype=stream:*`), capturing a broad view of traffic involving the domain (including DNS and HTTP Host header references).
 
@@ -372,7 +440,7 @@ index=botsv1 imreallynotbatman.com sourcetype=stream:*
 - **stats count(src_ip) as Requests by src_ip** – Counts events per source IP. Doing so identifies hosts generating abnormal traffic.  
 - **sort -Requests** – Orders results descending. This is to highlight the most active attackers first.
 
-_<b>Second query (Objective 2 - Step 1)</b>_
+_<b>Second query</b>_
 
 This query was used to narrow the scope to HTTP requests directed specifically to the web server’s IP address to identify all inbound HTTP traffic. This provided a more focused look at network-level interactions and potential data submissions to the site. As part of the second query, I looked into the `http_method` field and saw that most of the HTTP traffic observed consisted of POST requests directed at the web server (see Figure 15). POST requests typically carry credentials during authentication.
 
@@ -392,7 +460,7 @@ dest_ip="192.168.250.70"
   <sub>Figure 14 (left) & Figure 15 (right)</sub>
 </p>
 
-_<b>Third query (Objective 2 - Step 1)</b>_ 
+_<b>Third query</b>_ 
 
 Was used to identify which IP addresses sent POST requests to the web server and counted how many requests each one made.
 
@@ -416,7 +484,9 @@ http_method=POST
 </p>
 
 
-#### (Objective 2 - Step 2) After identifying that the target web server uses the Joomla CMS, I wanted to check if anyone tried accessing the admin login page. Admin pages are important to monitor because attackers often try to reach them first when attempting to log in or exploit a site. I began by running two Splunk queries</h4>
+##### 🔷 2.2) Exploitation Phase Step 2
+
+After identifying that the target web server uses the Joomla CMS, I wanted to check if anyone tried accessing the admin login page. Admin pages are important to monitor because attackers often try to reach them first when attempting to log in or exploit a site. I began by running two Splunk queries</h4>
 
 <blockquote>
 Through a quick online search, I learned that Joomla’s admin login page is usually found at: `/joomla/administrator/index.php`. 
@@ -429,7 +499,7 @@ Through a quick online search, I learned that Joomla’s admin login page is usu
 Below are more details about each query and the corresponding findings.
 </blockquote>
 
-_<b>First query (Objective 2 - Step 2)</b>_ 
+_<b>First query</b>_ 
 
 Used to identify traffic coming into this URI (`/joomla/administrator/index.php`). 
 
@@ -454,7 +524,7 @@ uri="/joomla/administrator/index.php"
   <em>Figure 17</em>
 </p>
 
-_<b>Second query (Objective 2 - Step 2)</b>_
+_<b>Second query</b>_
 
 Was used to create a table containing important fields such as destination ip (`dest_ip`), HTTP method (`http_method`), URI (`uri`), and form data (`form_data`), and eventually extract the username and password credentials attempted using `form_data`. 
 
@@ -486,11 +556,13 @@ Inspecting the `form_data` field revealed multiple login attempts to `
 </blockquote>
 
 <blockquote>
-<strong>Note:</strong> To further narrow down my results, I could add a specific source IP to the query, such as src_ip="40.80.148.42". This would limit the search to only show HTTP requests sent from that particular client. Filtering by source IP helps identify which system initiated the traffic, making it easier to trace suspicious behavior or confirm repeated login attempts from the same host. This kind of filter is especially useful when analyzing targeted activity against the Joomla admin login page.
+To further narrow down my results, I could add a specific source IP to the query, such as src_ip="40.80.148.42". This would limit the search to only show HTTP requests sent from that particular client. Filtering by source IP helps identify which system initiated the traffic, making it easier to trace suspicious behavior or confirm repeated login attempts from the same host. This kind of filter is especially useful when analyzing targeted activity against the Joomla admin login page.
 </blockquote>
 
 
-#### (Objective 2 - Step 3) After confirming that most traffic to "/joomla/administrator/index.php" (Joomla's admin login page) were POST requests (mostly from `40.80.148.42`, with some from `23.22.63.114`), I wanted to extract the submitted form fields to see the username and password values those POST attempts used.
+##### 🔷 2.3) Exploitation Phase Step 3
+
+After confirming that most traffic to "/joomla/administrator/index.php" (Joomla's admin login page) were POST requests (mostly from `40.80.148.42`, with some from `23.22.63.114`), I wanted to extract the submitted form fields to see the username and password values those POST attempts used.
 
 Previously, after inspecting the `form_data` field and confirmed multiple login attempts to `/joomla/administrator/index.php`, I used regex to extract only the username (`username`) and password (`passwd`) fields:
 
@@ -512,7 +584,7 @@ form_data=*username*passwd*
 - **table _time uri src_ip dest_ip form_data** - Took all results from my search and displayed only the specific fields I cared about in a easy-to-read table.
 
 <blockquote>
-<strong>Note:</strong> I filtered HTTP POST traffic to `dest_ip=192.168.250.70` and the Joomla admin URI `/joomla/administrator/index.php` to find login attempts. I used the server IP rather than the domain because the IP reliably captures all traffic to that machine in this environment; adding the domain would only be necessary if the server hosted multiple sites and I needed to confirm the virtual host. I then displayed "form_data" to inspect submitted "username" and "passwd" values.
+I filtered HTTP POST traffic to `dest_ip=192.168.250.70` and the Joomla admin URI `/joomla/administrator/index.php` to find login attempts. I used the server IP rather than the domain because the IP reliably captures all traffic to that machine in this environment; adding the domain would only be necessary if the server hosted multiple sites and I needed to confirm the virtual host. I then displayed "form_data" to inspect submitted "username" and "passwd" values.
 </blockquote>
 
 <p align="left">
@@ -524,7 +596,9 @@ form_data=*username*passwd*
 </p>
 
 
-#### (Objective 2 - Step 4) After extracting the submitted form fields to see the username and password values those POST attempts used, I ran two Splunk queries utilizing regular expressions.</h4>
+##### 🔷 2.4) Exploitation Phase Step 4 
+
+After extracting the submitted form fields to see the username and password values those POST attempts used, I ran two Splunk queries utilizing regular expressions.</h4>
   
 - **The first query** was to extract all password found in the `passwd` field.
 - **The second query** was used identify whether credential submissions came from normal browsers or from automated tools/scripts; patterns in user-agents help distinguish human traffic from likely scanning or brute-force activity.
@@ -533,7 +607,7 @@ form_data=*username*passwd*
 Below are more details about each query and the corresponding findings.
 </blockquote>
 
-_<b>First query (Objective 2 - Step 4)</b>_
+_<b>First query</b>_
 
 Used to extract all password found in the `passwd` field.
 
@@ -570,7 +644,7 @@ form_data=*username*passwd*
   <em>Figure 20</em>
 </p>
 
-_<b>Second query (Objective 2 - Step 4)</b>_ 
+_<b>Second query</b>_ 
 
 I ran this query to identify whether credential submissions came from normal browsers or from automated tools/scripts. Patterns in "user-agents" helped distinguish human traffic from likely scanning or brute-force activity.
 
@@ -629,7 +703,7 @@ index=botsv1 sourcetype=stream:http dest_ip="192.168.250.70" http_method=POST fo
 - **urldecode()** converts URL-encoded characters to normal text (e.g., %40 → @, + → space), so I could read the actual username/password instead of gibberish.
 
 
-### Findings / Analysis (Objective 2)
+##### 🔷 Exploitation Phase Findings & Analysis
 
 - Evidence confirmed a brute‑force attack followed by successful authentication. `23.22.63.114` performed failed attempts while `40.80.148.42` achieved login success.
 - Analysis of the `botsv1` logs shows a coordinated scanning and credential-attack against the Joomla admin endpoint (`/joomla/administrator/index.php`) on `192.168.250.70`.
@@ -641,7 +715,12 @@ This part of the investigation taught me how to use Splunk to detect web-based b
 
 
 
-### Objective 3 – Installation Phase
+#### ▶ Installation Phase
+- [🔷 Installation Phase Step 1](#-installation-phase-step-1)
+- [🔷 Installation Phase Step 2](#-installation-phase-step-2)
+- [🔷 Installation Phase Step 3](#-installation-phase-step-3)
+- [🔷 Installation Phase Step 4](#-installation-phase-step-4)
+- [🔷 Installation Phase Findings & Analysis](#-installation-phase-findings--analysis)
 
 The objective of this task was to now verify whether the attacker successfully installed or executed any malicious payloads following exploitation. In the Cyber Kill Chain, **Installation** represents the stage where adversaries establish persistence within a target environment, typically by deploying malware or backdoors. 
 
@@ -656,7 +735,9 @@ Below are more details about each query and the corresponding findings.
 </blockquote>
 
 
-#### (Objective 3 - Step 1) After confirming successful authentication from the prior phase (`40.80.148.42` achieved a successful login using `admin:batman`), I searched for evidence of file uploads to the compromised host using the first query
+##### 🔷 Installation Phase Step 1
+
+After confirming successful authentication from the prior phase (`40.80.148.42` achieved a successful login using `admin:batman`), I searched for evidence of file uploads to the compromised host using the first query
 
 ```spl
 index=botsv1
@@ -679,7 +760,9 @@ dest_ip="192.168.250.70" *.exe
 I examined the `part_filename{}` field in Splunk to identify any files transferred over the network during the activity. The results displayed two filenames: `3791.exe` and `agent.php`, which appear to be executable files in HTTP traffic that were either downloaded or executed on the web server.
 
 
-#### (Objective 3 - Step 2) I had to confirm if any of these files came from the IP addresses that were found to be associated in objective 2
+##### 🔷 Installation Phase Step 2
+
+I had to confirm if any of these files came from the IP addresses that were found to be associated in objective 2
 
 - `40.80.148.42`,
 - `23.22.63.114`, or
@@ -717,9 +800,9 @@ I reviewed the "c_ip" field to identify which host initiated the HTTP request fo
 </blockquote>
 
 
-#### (Objective 3 - Step 3) Now, I needed to confirm whether the file, `3791.exe`, was executed
+##### 🔷 Installation Phase Step 3
 
-I ran the query `index=botsv1 "3791.exe"`, which returned 76 events distributed across multiple sourcetypes, with the majority (about 91%) coming from `XmlWinEventLog`, followed by a few from `WinEventLog`, `stream:http`, `fortigate_utm`, and `suricata`. 
+Now, I needed to confirm whether the file, `3791.exe`, was executed. I ran the query `index=botsv1 "3791.exe"`, which returned 76 events distributed across multiple sourcetypes, with the majority (about 91%) coming from `XmlWinEventLog`, followed by a few from `WinEventLog`, `stream:http`, `fortigate_utm`, and `suricata`. 
 
 This distribution shows that most of the activity involving `3791.exe` was captured through host-based Windows event logging, specifically Sysmon. While a small number of the remaining events originated from network and security monitoring sources. 
 
@@ -751,7 +834,9 @@ index=botsv1
 </p>
 
 
-#### (Objective 3 - Step 4) After confirming traces of the executable `3791.exe` were identified in multiple sources including `Sysmon`, `WinEventLog`, and `Fortigate_UTM`, I needed to determine whether the file was executed on the host. Sysmon data was examined because the majority (about 91%) of the executable's presence was coming from `XmlWinEventLog`
+##### 🔷 Installation Phase Step 4 
+
+After confirming traces of the executable `3791.exe` were identified in multiple sources including `Sysmon`, `WinEventLog`, and `Fortigate_UTM`, I needed to determine whether the file was executed on the host. Sysmon data was examined because the majority (about 91%) of the executable's presence was coming from `XmlWinEventLog`
 
 <blockquote>
 Sysmon provides detailed system-level monitoring of process activity. In particular, **Event ID 1 (Process Creation)** logs evidence of newly started processes and includes valuable fields like ProcessGUID, command line arguments, and file hashes. Leveraging this event type allows me to confirm and gather evidence of if `3791.exe` was executed on the system and when it was executed.
@@ -793,7 +878,7 @@ When examining the `CommandLine` field for `3791.exe`, I clicked the entry itsel
 </p>
 
 
-### Findings / Analysis (Objective 3)
+##### 🔷 Installation Phase Findings & Analysis 
 
 Results confirmed that `3791.exe` executed shortly after upload. This demonstrated the attacker successfully transitioned from exploitation to persistence. The malicious file likely connected to an external server to receive commands or send data.
 
@@ -813,12 +898,20 @@ I learned how to validate malware execution through cross‑referencing ne
 
 
 
-### Objective 4 – Action on Objectives Phase
+#### ▶ Action on Objectives Phase
+- [🔷 Action on Objectives Phase Step 1](#-action-on-objectives-phase-step-1)
+- [🔷 Action on Objectives Phase Step 2](#-action-on-objectives-phase-step-2)
+- [🔷 Action on Objectives Phase Step 3](#-action-on-objectives-phase-step-3)
+- [🔷 Action on Objectives Phase Step 4](#-action-on-objectives-phase-step-4)
+- [🔷 Action on Objectives Phase Step 5](#-action-on-objectives-phase-step-5)
+- [🔷 Action on Objectives Phase Findings & Analysis](#-action-on-objectives-phase-findings--analysis)
+
 
 The goal of this phase was to determine how the malicious actor defaced the company’s public website, which is a clear indicator of the **Actions on Objectives** stage of the Cyber Kill Chain.
 
+##### 🔷 Action on Objectives Phase Step 1
 
-#### (Objective 4 - Step 1): I first examined inbound traffic to the defaced website at IP `192.168.250.70`.
+I first examined inbound traffic to the defaced website at IP `192.168.250.70`.
 
 To do so, I ran the following query to analyze inbound network traffic targeting the web server at IP `192.168.250.70` and looked at the `src_ip` field:
 
@@ -844,9 +937,9 @@ This query looks at inbound network traffic going to the web server 192.168.250.
 
 This was unusual as the logs did not show any external IP communicating with the server.
 
+##### 🔷 Action on Objectives Phase Step 2
 
-
-#### (Objective 4 - Step 2) Because there were no external IP communicating with the server, I reversed the flow so that 192.168.250.70 was the source. I wanted to see if any outbound traffic originated from the server instead.
+Because there were no external IP communicating with the server, I reversed the flow so that 192.168.250.70 was the source. I wanted to see if any outbound traffic originated from the server instead.
 
 To do so, I ran the following query to analyze outbound network traffic from the web server at IP `192.168.250.70`, then looked at the `dest_ip` field:
 
@@ -872,7 +965,9 @@ This query revealed outbound requests to `prankglassinebracket.jumpingcrab
 
 What was interesting about this output is that web servers don't usually originate traffic. The browser or client would originate the traffic as the source and the server would be the destination. I noticed immediately that the web server initiated large traffic to `40.80.148.42`, `22.23.63.114`, and `192.168.250.40`. 
 
-#### (Objective 4 - Step 3) I checked Suricata logs for the top three destination IPs and found evidence of defacement from `23.22.63.114`
+##### 🔷 Action on Objectives Phase Step 3
+
+I checked Suricata logs for the top three destination IPs and found evidence of defacement from `23.22.63.114`
 
 I found evidence from `23.22.63.114` by running the following query, then looking into the `url` field:
 
@@ -898,7 +993,9 @@ That query filters Suricata logs to show outbound network traffic from the web s
 The `url` field showed 2 PHP files and a JPEG file. The JPEG file looked interesting, so I investigated more into it.
 
 
-#### (Objective 4 - Step 4) I wanted to investigate the JPEG file and created a table to get a hollistic view</h4>
+##### 🔷 Action on Objectives Phase Step 4
+
+I wanted to investigate the JPEG file and created a table to get a hollistic view
 
 To do so, I ran the following query:
 
@@ -922,7 +1019,9 @@ The investigation revealed that the file `poisonivy-is-coming-for-you-batman.jpe
 </blockquote>
 
 
-#### (Objective 4 - Step 5) To deepen my investigaton, I used a query to review firewall logs for traffic sent from the web server to 23.22.63.114</h4>
+##### 🔷 Action on Objectives Phase Step 5
+
+To deepen my investigaton, I used a query to review firewall logs for traffic sent from the web server to 23.22.63.114</h4>
 
 To do so, I checked Fortigate UTM data to help determine whether this outbound connection was permitted, blocked, or flagged as suspicious, which gave more insight into the server’s network behavior and possible compromise indicators. I searched for the top three external IPs that showed when I searched outbound traffic from the webserver: `40.80.148.42`, `22.23.63.114`, and `192.168.250.40`. I found an SQL injection attempt  from `40.80.148.42` by looking at the `signature` field.
 
@@ -941,7 +1040,7 @@ sourcetype=fortigate_utm
 </p>
 
 
-#### Findings / Analysis (Objective 4)
+##### 🔷 Action on Objectives Phase Findings & Analysis 
 
 The attacker’s intent was to publicly deface the website to demonstrate control.
 
@@ -971,12 +1070,17 @@ Recommended next steps:
 This part of the investigation taught me how to trace adversary objectives using Splunk by following the attack from reconnaissance to impact. Understanding "Actions on Objectives" is vital for incident classification and damage assessment with a DOC. The technique relates to **MITRE ATT&CK T1491 (Defacement)** and NIST's **Recovery Phase** of incident handling. Documenting such activity supports executive reporting and post-incident remediation plans.
 
 
-### Objective 5 – Command and Control (C2) Phase
+#### ▶ Command and Control (C2) Phase
+- [🔷 Command and Control (C2) Phase Step 1](#-command-and-control-c2-phase-step-1)
+- [🔷 Command and Control (C2) Phase Step 2](#-command-and-control-c2-phase-step-2)
+- [🔷 Command and Control (C2) Phase Findings & Analysis](#-command-and-control-c2-phase-findings--analysis)
+
 
 This part of the investigation focused on identifying if the attacker establed a **Command and Control (C2)** channel with external infrastrucutre. C2 allows threat actors to remotely control infected hosts and execute further commands.
 
+##### 🔷 Command and Control (C2) Phase Step 1
 
-#### (Objective 5 - Step 1) I searched firewall and network logs for evidence of communication with the domain `prankglassinebracket.jumpingcrab.com`
+I searched firewall and network logs for evidence of communication with the domain `prankglassinebracket.jumpingcrab.com`
 
 ```spl
 index=botsv1
@@ -998,7 +1102,9 @@ Immediately I noticed I could see the source IP (`src_ip`), the destination IP (
 </p>
 
 
-#### (Objective 5 - Step 2) I verified by looking at other log sources. For this step, I checked HTTP sources
+##### 🔷 Command and Control (C2) Phase Step 2
+
+I verified by looking at other log sources. For this step, I checked HTTP sources
 
 To do so, I ran the following query:
 
@@ -1020,14 +1126,17 @@ I identified the suspicious domain as the C2 server, which seems to where the at
   <em>Figure 34</em>
 </p>
 
-
-#### Findings / Analysis (Objective 5)
+##### 🔷 Command and Control (C2) Phase Findings & Analysis 
 
 Using Fortigate UTM logs, I discovered that the compromised web server (`192.168.250.70`) reached out to an external IP (`23.22.63.114`) while requesting a suspicious file named `poisonivy-is-coming-for-you-batman.jpeg`. The request’s URL revealed the domain `prankglassinebracket.jumpingcrab.com:1337`, indicating outbound communication to a likely attacker-controlled host. I validated this finding by examining HTTP stream logs, which confirmed consistent traffic between the infected server and the same domain. Finally, DNS logs showed that the attacker used a dynamic DNS to resolve the malicious IP, confirming that `jumpingcrab.com` functioned as the attacker’s C2 domain. This correlation across multiple log sources demonstrated the full command-and-control phase of the attack.
 
 I learned to detect C2 communications by correlating IDS, firewall, and endpoint data. Dynamic DNS is a common tactic for maintaining C2 reachability, and Splunk queries can identify these patterns through consistent destiniation host names and ports. This aligns with **MITRE ATT&CK T1071 (Application Layer Protocol)** and **Securty+ Domain 3.3 (Analyze thread data to support an incident response)**.
 
-### Objective 6 – Weaponization Phase
+#### ▶ Weaponization Phase
+
+- [🔷 Weaponization Phase Step 1](#-weaponization-phase-step-1)
+- [🔷 Weaponization Phase Step 2](#-weaponization-phase-step-2)
+- [🔷 Weaponization Phase Findings & Analysis](#-weaponization-phase-findings--analysis)
 
 To see how the attacker built and delivered their paylods, I looked up known indicators with OSINT tools. In the Cyber Kill Chain, **Weaponization** is the stage where the attacker creates the malware or exploit files that will later be used in the **Delivery** phase. 
 
@@ -1040,12 +1149,16 @@ I conducted open-source lookups on malicious domains and associated infrastructu
 From the previous objective, we know that the domain `prankglassinebracket.jumpingcrab.com` was associated with the attack.
 </blockquote>
 
-#### (Objective 6 - Step 1) Went to Robtex to find the IP address tied to the domains that may potentially be pre-staged to attack the web server
+##### 🔷 Weaponization Phase Step 1
+
+Went to Robtex to find the IP address tied to the domains that may potentially be pre-staged to attack the web server
 
 - I went to [Robotex's website](https://www.robtex.com/) and entered `prankglassinebracket.jumpingcrab.com` in the search field at the top. I was able to identify several other IP addresses associated with this domain. I was also able to see other domains and subdomains associated with this domain.
 - I then entered the attacker's IP (`23.22.63.114`) in the search bar at the top and found this IP associated with domains that looked pretty similar to websites from the fictional company, Wayne Enterprises.
 
-#### (Objective 6 - Step 2) Went on Virustotal to analyze suspicious files, domains, IP, etc, but more specifically to search for the IP address on the virustotal site
+##### 🔷 Weaponization Phase Step 2
+
+Went on Virustotal to analyze suspicious files, domains, IP, etc, but more specifically to search for the IP address on the virustotal site
 
 I investigated the suspicious domain `po1s0n1vy.com` using VirusTotal to identify any malicious activity or links to known infrastructure. The results showed that none of the 95 security vendors flagged the domain as malicious. However, passive DNS records revealed that the domain has resolved to multiple IP addresses over time, including `38.207.236.88`, `156.254.170.147`, and `23.22.63.114`.
 
@@ -1054,14 +1167,18 @@ I investigated the suspicious domain `po1s0n1vy.com` using VirusTotal to identif
 - In the list of domains, I saw the domain that is associated with the attacker (`www.po1s0n1vy.com`). I searched the domain in the search field on Virustotal.
 - I saw that Virustotal listed several related subdomains such as `ftp.po1s0n1vy.com`, `smtp.po1s0n1vy.com`, and `lillian.po1s0n1vy.com`, which might indicate shared hosting or possible attacker infrastructure reuse.
 
-#### Findings / Analysis (Objective 6)
+##### 🔷 Weaponization Phase Findings & Analysis
 
 The domain was associated with multiple subdomains and related IP addresses used in previous campaigns. This confirmed the attacker leveraged pre-existing malware infrastructure to deliver payloads, a common APT pattern. These lookups linked `jumpingcrab.com` to an email address `lillian.rose@po1son1vy.com`, indicated possible threat-actor attribution.
 
 Weaponization is rarely observable in internal logs, but threat-based OSINT correlation can expose it indirectly. I learned how OSINT supports SIEM data and helps analysts build context beyond raw data. This related to **MITRE ATT&CK T1587 (Develop Capabilities)** and **Security+ Domain 1.4 (Explain threat actors and attributes)**. 
 
 
-### Objective 7 – Delivery Phase
+#### ▶ Delivery Phase
+- [🔷 Delivery Phase Step 1](#-delivery-phase-step-1)
+- [🔷 Delivery Phase Step 2](#-delivery-phase-step-2)
+- [🔷 Delivery Phase Step 3](#-delivery-phase-step-3)
+- [🔷 Delivery Phase Findings & Analysis](#-delivery-phase-findings--analysis)
 
 The purpose of this investigation phase was to use the information I have so far about the attack and use various OSINT sites to find any malware identified during the **Weaponization** stage and determine how the malicious payload reached the target.
 
@@ -1071,20 +1188,26 @@ I conducted open-source lookups on malicious domains and using external intellig
 - VirusTotal - I used VirusTotal to check file hashes, URLs, and domains against several antivirus engines. This helped confirm whether the payloads or domains were flagged as malicious and provided more context about known malware behavior.
 - Hybrid Analysis - I used this site to conduct a behavioral analysis of the malicious file identified from ThreatMiner
 
-#### (Objective 7 - Step 1) ThreatMiner - I found three files and their corresponding hashes, one of which was the malware identified in the Fortigate and Sysmon logs from Objective 3 - Step 4
+##### 🔷 Delivery Phase Step 1
+
+ThreatMiner - I found three files and their corresponding hashes, one of which was the malware identified in the Fortigate and Sysmon logs from Objective 3 - Step 4
 
 After identifying the same MD5 hash (`c99131e0169171935c5ac32615ed6261`) of the malicious file (`3791.exe`) found in **Objective 3, Step 4**, I clicked on it and observed that the file appeared under a different name, indicating that although the filenames were different, the file content was identical. The file name appeared as `MirandaTateScreensaver.scr.exe`, and as noted in **Objective 3**, it was delivered via HTTP download and executed through a user interaction.
 
-#### (Objective 7 - Step 2) VirusTotal - To gather more intelligence, I entered this hash value on VirusTotal and saw other important details
+##### 🔷 Delivery Phase Step 2
+
+VirusTotal - To gather more intelligence, I entered this hash value on VirusTotal and saw other important details
 
 One of the first things I noticed was that this hash value was associated with the IP `23.22.63.114`, was was previously identified and confirmed as the attacker who attacked the website.
 
-#### (Objective 7 - Step 3) Hybrid Analysis - I entered the malicious executable identified in ThreatMiner to gather more intelligence such as metadata, DNS requests, MITRE ATT&CK mappings, and more
+##### 🔷 Delivery Phase Step 3
+
+Hybrid Analysis - I entered the malicious executable identified in ThreatMiner to gather more intelligence such as metadata, DNS requests, MITRE ATT&CK mappings, and more
 
 I confirmed that the file `MirandaTateScreensaver.scr.exe` has the same MD5 hash (`c99131e0169171935c5ac32615ed6261`) as the malicious file `3791.exe`, meaning they are identical in content but have different names. The file is a Windows executable compiled with Microsoft C++, confirming it’s the same malware under a new name.
 
 
-#### Findings / Analysis (Objective 7)
+##### 🔷 Delivery Phase Findings & Analysis 
 
 In this phase, I used OSINT tools to learn more about the malware used in the attack. Through ThreatMiner, I discovered that the attacker’s IP (`23.22.63.114`) was linked to several files, including one matching the same MD5 hash as the malicious file `3791.exe` found earlier. VirusTotal confirmed this file and IP were associated with known malicious activity. Finally, Hybrid Analysis showed that the file was a Windows executable with identical content but a different name (`MirandaTateScreensaver.scr.exe`), confirming it was the same malware reused under a new filename.
 
@@ -1092,7 +1215,7 @@ I learned how threat intelligence enhances forensic findings within Splunk. Malw
 
 ---
 
-## Findings Summary
+### Findings Summary
 
 This section consolidates high-confidence conclusions supported directly by log evidence and cross-source correlation.
 
@@ -1108,7 +1231,7 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Defensive Takeaways
+### Defensive Takeaways
 This investigation highlights several defender-relevant patterns that are broadly applicable to real-world SOC operations.
 
 - Reconnaissance activity often leaves detectable signatures long before exploitation occurs.
@@ -1119,7 +1242,7 @@ This investigation highlights several defender-relevant patterns that are broadl
 
 ---
 
-## Artifacts Identified
+### Artifacts Identified
 The following artifacts were extracted and validated during analysis and may support detection engineering or threat hunting.
 
 - Target domain: imreallynotbatman.com
@@ -1146,30 +1269,30 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Detection and Hardening Opportunities
+### Detection and Hardening Opportunities
 
 This section summarizes high-level detection and hardening opportunities observed during the investigation. For detailed, actionable recommendations — including specific logging gaps, detection logic ideas, and configuration improvements — see: **`detection-and-hardening-recommendations.md`**
 
 This section outlines actionable improvements based on observed attacker behavior.
 
-Web & Application Security:
+▶ Web & Application Security:
 - Alert on repeated POST requests to administrative endpoints.
 - Detect malformed HTTP headers and automated scanner user-agents.
 - Enforce strong credential policies and rate limiting for CMS logins.
 
-Host & Network Monitoring:
+▶ Host & Network Monitoring:
 - Monitor servers for outbound HTTP requests to untrusted domains.
 - Alert on executable uploads via web applications.
 - Correlate file upload events with subsequent process creation.
 
-Operational Hardening:
+▶ Operational Hardening:
 - Patch CMS platforms and plugins regularly.
 - Restrict web server egress where possible.
 - Enable and retain detailed Sysmon telemetry on internet-facing hosts.
 
 ---
 
-## MITRE ATT&CK Mapping
+### MITRE ATT&CK Mapping
 This section maps observed behaviors to MITRE ATT&CK tactics and techniques using evidence identified during analysis.
 
 - **Reconnaissance — Active Scanning (T1595):**  
@@ -1190,6 +1313,8 @@ This section maps observed behaviors to MITRE ATT&CK tactics and techniques usin
 - **Impact — Defacement (T1491):**  
   Website content was altered to retrieve and display an attacker-controlled image, resulting in public-facing defacement of the domain.
 
+---
+
 ### MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
@@ -1206,11 +1331,12 @@ This section maps observed behaviors to MITRE ATT&CK tactics and techniques usin
 
 ---
 
-## Analyst Notes
+### Analyst Notes
 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
