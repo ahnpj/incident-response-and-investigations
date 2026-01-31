@@ -88,7 +88,7 @@ Based on correlated authentication and mailbox activity, the incident was classi
 ### Investigation Walkthrough
 
 <details>
-<summary><strong>🧭 Walkthrough navigation</strong></summary>
+<summary><strong>📚 Walkthrough navigation (click to expand)</strong></summary>
 
 - [1) Initial Access Analysis: Email Artifact Review](#-1-initial-access-analysis-email-artifact-review)
 - [2) Determining Investigation Approach](#-2-determining-investigation-approach)
@@ -679,6 +679,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
