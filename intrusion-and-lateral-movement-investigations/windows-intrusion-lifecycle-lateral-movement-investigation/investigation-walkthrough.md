@@ -2,28 +2,13 @@
 
 ---
 
-## Executive Summary
+### Executive Summary
 
 This investigation reconstructs a full malware intrusion lifecycle on a Windows endpoint, beginning with external reconnaissance and culminating in credential abuse, malware deployment, persistence, and cleanup activity. Analysis of firewall logs, authentication telemetry, Windows Security events, Sysmon logs, registry modifications, and file artifacts revealed a coordinated attack sequence leveraging exposed remote services, brute-force authentication, and post-compromise system manipulation.
 
 The objective of this investigation is to document attacker behavior across reconnaissance, initial access, persistence, collection, and impact phases, and to identify concrete detection and prevention opportunities aligned to MITRE ATT&CK techniques.
 
 ---
-
-
-## Incident Scope
-
-**Scope:** Post-compromise reconstruction of attacker activity across reconnaissance, access, persistence, and impact.
-
-This investigation is limited to a single Windows endpoint identified as compromised following abnormal firewall and endpoint activity. The scope includes post-compromise reconstruction of attacker actions using available network, authentication, endpoint, file system, and registry telemetry.
-
-Activities outside this host, including lateral movement to additional systems or confirmed data exfiltration beyond local staging, are not within scope due to lack of supporting evidence.
-
-I analyzed logs and endpoint artifacts from a compromised Windows host to reconstruct attacker activity across the full intrusion lifecycle. The primary objective was to identify how the attacker interacted with the system, determine which techniques were used at each stage, and map confirmed behaviors to the MITRE ATT&CK framework. This report documents a full, defender-focused investigation of a compromised Windows host.
-
-This investigation focuses on incident reconstruction, not alert tuning or malware reverse engineering. By correlating network activity, account usage, file creation, and persistence mechanisms, the investigation aims to answer:
-
-The objective is to reconstruct attacker activity from initial reconnaissance through impact by analyzing endpoint artifacts, logs, registry changes, and file system activity. Rather than focusing on exploit development or malware reverse engineering, this investigation prioritizes **incident reconstruction**, **attacker tradecraft identification**, and **defender-oriented analysis**.
 
 ### Scenario Context
 
@@ -33,7 +18,25 @@ As the responding analyst, my role is to investigate available artifacts, valida
 
 ---
 
-## Environment, Evidence, and Tools
+### Incident Scope
+
+**Scope:** Post-compromise reconstruction of attacker activity across reconnaissance, access, persistence, and impact.
+
+This investigation is limited to a single Windows endpoint identified as compromised following abnormal firewall and endpoint activity. The scope includes post-compromise reconstruction of attacker actions using available network, authentication, endpoint, file system, and registry telemetry.
+
+Activities outside this host, including lateral movement to additional systems or confirmed data exfiltration beyond local staging, are not within scope due to lack of supporting evidence.
+
+<blockquote>
+I analyzed logs and endpoint artifacts from a compromised Windows host to reconstruct attacker activity across the full intrusion lifecycle. The primary objective was to identify how the attacker interacted with the system, determine which techniques were used at each stage, and map confirmed behaviors to the MITRE ATT&CK framework. This report documents a full, defender-focused investigation of a compromised Windows host.
+</blockquote>
+
+This investigation focuses on incident reconstruction, not alert tuning or malware reverse engineering. By correlating network activity, account usage, file creation, and persistence mechanisms, the investigation aims to answer:
+
+The objective is to reconstruct attacker activity from initial reconnaissance through impact by analyzing endpoint artifacts, logs, registry changes, and file system activity. Rather than focusing on exploit development or malware reverse engineering, this investigation prioritizes **incident reconstruction**, **attacker tradecraft identification**, and **defender-oriented analysis**.
+
+---
+
+### Environment, Evidence, and Tools
 The investigation was conducted in a Windows endpoint environment with access to both network-level and host-level telemetry. Analysis focused on correlating multiple evidence sources to reconstruct attacker behavior chronologically.
 
 **Environment**
@@ -57,7 +60,7 @@ The investigation was conducted in a Windows endpoint environment with access to
 
 ---
 
-## Investigative Questions
+### Investigative Questions
 
 This investigation was guided by a set of focused questions designed to reconstruct attacker activity and validate each phase of the intrusion lifecycle.
 
@@ -68,6 +71,8 @@ Key questions included:
 - What persistence mechanisms were established?
 - What malware artifacts were introduced and how were they executed?
 - What impact actions or cleanup behaviors occurred post-compromise?
+
+---
 
 ### Approach & Methodology
 
@@ -86,7 +91,7 @@ Each phase builds on evidence from the previous step.
 
 ---
 
-## Investigation Timeline
+### Investigation Timeline
 The following timeline summarizes key attacker actions in chronological order based on correlated evidence across network, authentication, endpoint, and registry telemetry.
 
 - **T0 — External reconnaissance observed:** Firewall logs show TCP SYN-only probes across common service ports.
@@ -104,7 +109,9 @@ The following timeline summarizes key attacker actions in chronological order ba
 
 ## Investigation Walkthrough
 
-### Step 1: Reconnaissance Activity & Service Enumeration Analysis **(Lab Questions 1–3)**
+### ▶ 1) Reconnaissance Activity & Service Enumeration Analysis 
+
+#### 🔷 1.1) Reviewing FortiGate Firewall Traffic
 
 I began the investigation by reviewing FortiGate firewall traffic logs to determine whether the endpoint had been scanned or probed prior to compromise. At this stage, the goal was not to identify exploitation, but to assess whether an external system was attempting to enumerate exposed services on the host.
 
@@ -143,11 +150,14 @@ From a defender perspective, this pattern indicates that the attacker is mapping
 
 This activity aligns with common attacker behavior used to identify exposed services before exploitation. From a defender perspective, this suggests the attacker was identifying exposed services that could allow remote access.
 
+#### 🔷 1.2) Validating Attacker's Target Ports
+
 To validate what the attacker was likely checking for, local enumeration commands such as `netstat -an` would be used to identify listening services on the endpoint. This aligns with the attacker’s external behavior observed in the logs.
 
 In addition to identifying listening services, active connections could also be identified by filtering network connections for the attacker’s IP address. For example, running `netstat -ano | findstr 192.168.1.33` would reveal any established or recently active connections involving the suspected source system, along with the associated process ID. This approach can help confirm which service was actively used during the intrusion, rather than only identifying services that were exposed.
 
-**Identifying Listening Services and Initial Access Vector**
+#### 🔷 1.3) Identifying Listening Services and Initial Access Vector
+
 After identifying multiple ports being probed during reconnaissance, the next step was to determine which services were actually listening on the endpoint, as only listening services could realistically be leveraged for initial access.
 
 To do this, I opened Windows PowerShell on the compromised host and executed the following command:
@@ -169,7 +179,7 @@ Reviewing the output revealed several listening services, including ports 80 (HT
 
 Given that port 22 was both probed during reconnaissance and confirmed to be actively listening on the endpoint, this strongly indicates that the attacker leveraged SSH over port 22 to gain initial access to the system.
 
-**MITRE ATT&CK Mapping:**
+#### 🔷 1.4) MITRE ATT&CK Mapping
 - **Reconnaissance:** Active Scanning (T1595)
 
 The firewall logs show repeated TCP SYN-only connection attempts from an external source IP to a single internal host across multiple common service ports (21, 22, 80, 443, 3389, 445), with no sessions established and no data transferred. This pattern indicates the attacker was identifying which services were exposed on the host prior to exploitation.
@@ -186,7 +196,7 @@ Active Scanning covers scenarios where an adversary probes a target from the out
 The firewall log evidence aligns most closely with Network Service Scanning, as the attacker focuses on a single destination host and probes a range of common service ports associated with file transfer, web services, and remote administration. Although T1046 (Network Service Discovery) correctly describes what the attacker is doing at a technical level (identifying available services), T1595 (Active Scanning) correctly describes when and where the activity occurs within the attack lifecycle. Because MITRE ATT&CK distinguishes techniques based on attacker position and phase, Active Scanning (T1595) is the appropriate reconnaissance classification for this activity.
 
 
-### Step 2: Initial Access Identification & Confirmation **(Lab Question 6)**
+### ▶ 2) Initial Access Identification & Confirmation 
 
 After identifying exposed services, the attacker leveraged a remote service to gain initial access to the system. Evidence shows no user interaction, phishing, or email-based delivery, indicating a **service-based entry point**. This strongly suggests that an externally accessible service was abused to establish an initial foothold on the host.
 
@@ -199,7 +209,7 @@ After identifying exposed services, the attacker leveraged a remote service to g
 
 No user interaction was required, indicating a service-based entry point rather than phishing or social engineering. 
 
-**Evidence for Initial Access via Valid Accounts (T1078)**
+#### 🔷 2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)
 
 To determine how the attacker achieved initial access, I investigated whether access occurred through user interaction (e.g., phishing or user-executed malware) or through authenticated use of an exposed service. Due to restrictions in the lab environment, direct access to the Windows Security event log (e.g., Event ID 4624) was not available, preventing direct validation of the authentication event itself.
 
@@ -219,19 +229,17 @@ Despite this limitation, multiple artifacts support initial access via valid cre
 Get-Service | Where-Object {$_.Name -like "*ssh*"}
 ```
 
-<blockquote>
 This command retrieves all registered Windows services and filters the results to those with names containing “ssh”. The output confirms whether SSH components are present on the host, which helps validate the availability of SSH-based remote access. When combined with earlier evidence showing that port 22 was externally probed and actively listening, this supports the conclusion that the attacker authenticated to the system using valid credentials rather than exploiting a vulnerability or relying on user interaction.
-</blockquote>
 
 The presence of SSH functionality, combined with confirmation that port 22 was exposed and listening, indicates that the attacker authenticated to the system using an existing account rather than exploiting a vulnerability or relying on user interaction. This conclusion is further supported by subsequent attacker behavior observed later in the investigation, including account creation, administrative group membership changes, and account deletion — all of which are consistent with credential-based access.
 
 Taken together, this evidence supports classification of the attacker’s initial access technique as Valid Accounts (T1078). While access occurred over a remote service (SSH), the defining factor is that the attacker successfully authenticated using credentials, not that the service itself was exploited.
 
-**MITRE ATT&CK Mapping:**
+#### 🔷 2.2) MITRE ATT&CK Mapping
 - **Initial Access:** Valid Accounts (T1078)
 
 
-### Step 3: Account Access & Credential Activity
+### ▶ 3): Account Access & Credential Activity
 
 After identifying that port 22 (SSH) was both probed externally and listening locally, I pivoted from “what services are exposed?” to “which credentials were actually used to gain access?” At this stage, my objective was to reconstruct how the attacker authenticated, which account they accessed, and when that first successful access occurred.
 
@@ -245,7 +253,7 @@ This log records sshd activity directly and includes:
 - the source port and protocol metadata (`ssh2)
 - a precise timestamp
 
-**Identifying the Account Accessed by the Attacker**
+#### 🔷 3.1) Identifying the Account Accessed by the Attacker
 
 I began by searching for evidence of successful authentication activity to identify the account first accessed by the attacker. Within Event Viewer, I navigated to: Event Viewer → Applications and Services Logs → OpenSSH → Operational.
 
@@ -285,7 +293,7 @@ In the OpenSSH/Operational log, the first successful login event for the adminis
   <em>Figure 6</em>
 </p>
 
-**Identifying the MITRE ATT&CK Credential Access Technique**
+#### 🔷 3.2) Identifying the MITRE ATT&CK Credential Access Technique
 
 Next, I mapped the observed access method to the MITRE ATT&CK framework. Review of the OpenSSH Operational logs shows multiple consecutive authentication failures for the administrator account originating from the same external IP address, followed by a successful authentication event.
 
@@ -298,7 +306,7 @@ There is no evidence that the attacker bypassed authentication controls or explo
 Brute Force describes adversaries attempting multiple password combinations against an account until valid credentials are identified. The sequence of failed login attempts followed by a successful authentication directly supports this technique.
 
 
-**Identifying the Account Created by the Attacker**
+#### 🔷 3.3) Identifying the Account Created by the Attacker
 
 After confirming that the attacker successfully authenticated as the administrator account via SSH, I pivoted to the Windows Security log to identify any account creation activity that occurred after initial access was established. The Security log records all local account lifecycle events, making it the authoritative source for detecting attacker-created users.
 
@@ -316,7 +324,7 @@ Because this account was created immediately following authenticated attacker ac
 </p>
 
 
-**Identifying the MITRE ATT&CK Persistence Technique**
+#### 🔷 3.4) Identifying the MITRE ATT&CK Persistence Technique
 
 After identifying that the attacker created a new local user account (sys admin) following successful access, I assessed how this action fits into the MITRE ATT&CK framework from a persistence perspective.
 
@@ -329,7 +337,7 @@ This behavior maps to: MITRE ATT&CK – Create Account (T1136)
 Specifically, the attacker created a local user account to establish persistence and reduce dependence on the initially compromised account.
 
 
-**Identifying When the Account Was Added to the Administrators Group**
+#### 🔷 3.5) Identifying When the Account Was Added to the Administrators Group
 
 After identifying the attacker-created account and establishing the timestamp of the attacker’s first successful access, I next examined whether the attacker escalated privileges for this account. On Windows systems, changes to local group membership are recorded in the Security log.
 
@@ -355,7 +363,7 @@ The timestamp associated with this event represents the moment the attacker adde
 The attacker added the account to the admin group on 11/18/2022 at 5:15:33 PM.
 
 
-**Identifying If Any Accounts Were Deleted** 
+#### 🔷 3.6) Identifying If Any Accounts Were Deleted
 
 To determine whether the attacker attempted to clean up evidence, I reviewed the Windows Security log for Event ID 4726, which records when a user account is deleted.
 
@@ -373,7 +381,7 @@ Deleting a separate account after establishing persistent administrative access 
 </p>
 
 
-**Identifying the MITRE ATT&CK Impact Technique**
+#### 🔷 3.7) Identifying the MITRE ATT&CK Impact Technique
 
 After identifying account manipulation activity (creation + elevation), I reviewed whether the attacker took actions that directly impacted legitimate access to the system. The Security log confirms an account deletion event (Event ID 4726), showing that a user account was removed after the attacker had established control.
 
@@ -382,7 +390,7 @@ Deleting user accounts is an impact action because it prevents legitimate access
 MITRE ATT&CK Mapping (Impact): Account Access Removal (T1531)
 
 
-**Identifying the MITRE ATT&CK Detection ID** 
+#### 🔷 3.8) Identifying the MITRE ATT&CK Detection ID
 Finally, I identified the applicable MITRE ATT&CK Detection ID associated with the attacker’s actions. Detection IDs describe defensive detection opportunities that security teams can use to identify similar activity in production environments.
 
 Based on the observed behavior—including repeated failed authentication attempts, successful credential-based access, account creation, and privilege escalation—the activity maps to the following detection category: MITRE ATT&CK Detection: DS0002
@@ -390,7 +398,7 @@ Based on the observed behavior—including repeated failed authentication attemp
 This detection category applies to activity observable through authentication logs and account management events, reinforcing the importance of monitoring Windows Security logs for suspicious credential and account activity.
 
 
-**Summary of Account Activity**
+#### 🔷 3.9) Summary of Account Activity
 
 Reviewing authentication and account management activity in the Windows Security and OpenSSH logs revealed a clear and chronological sequence of credential-related attacker behavior following initial access.
 
@@ -408,7 +416,7 @@ By identifying the timestamp of the first successful SSH authentication, I was a
 
 The progression from authenticated access to account manipulation indicates that the attacker had moved beyond reconnaissance and initial access and was actively consolidating control over the system.
 
-**MITRE ATT&CK Mapping:**
+#### 🔷 3.10) MITRE ATT&CK Mapping
 
 Credential Access:
 - Brute Force (T1110) – Multiple failed SSH authentication attempts followed by a successful login
@@ -421,13 +429,13 @@ Impact:
 - Account Access Removal (T1531) – Deletion of a user account to disrupt access or reduce visibility
 
 
-### Step 4: File Extraction & Malware Artifact Analysis
+### ▶ 4): File Extraction & Malware Artifact Analysis
 
 After confirming initial access, privilege escalation, and account manipulation activity, I shifted focus to identifying if there were any malware-related file artifacts created during the compromise window. The goal of this step was to determine whether any compressed archives or executables were introduced to the system following the attacker’s successful authentication and privilege escalation.
 
 Because Windows Security logs do not reliably capture file extraction activity, I pivoted to Sysmon logs, which provide high-fidelity visibility into process creation, command-line execution, and file interaction.
 
-**Identifying the Extracted Compressed File**
+#### 🔷 4.1) Identifying the Extracted Compressed File
 
 To identify the compressed file that was extracted, I reviewed Sysmon Event ID 1 (Process Create). This event records detailed information about executed processes, including the full command line, which is critical for identifying archive extraction commands.
 
@@ -463,7 +471,7 @@ This execution occurred at 11/18/2022 5:22:40 PM, shortly after the attacker com
   <em>Figure 10</em>
 </p>
 
-**Correlating Activity Before the Extraction (Contextual Evidence)**
+#### 🔷 4.2) Correlating Activity Before the Extraction (Contextual Evidence)
 
 Events immediately preceding this extraction support earlier findings in the investigation:
 
@@ -499,7 +507,7 @@ Events immediately preceding this extraction support earlier findings in the inv
 This sequencing reinforces that `keylogger.rar` was extracted only after the attacker had full administrative control, making it part of deliberate post-exploitation activity rather than benign user behavior.
 
 
-**Identifying the MITRE ATT&CK Collection Technique**
+#### 🔷 4.3) Identifying the MITRE ATT&CK Collection Technique
 
 After identifying that the attacker extracted the compressed archive `keylogger.rar`, I assessed the intended functionality of the extracted content to determine the applicable MITRE ATT&CK collection technique.
 
@@ -512,7 +520,7 @@ MITRE ATT&CK Mapping: Collection: Input Capture (T1056)
 This technique describes adversaries capturing user input through keylogging or similar mechanisms in order to collect credentials or sensitive data. The extraction of keylogger.rar following administrative access strongly suggests the attacker intended to deploy a keylogging capability as part of post-compromise collection activity.
 
 
-**Identifying the Collection Sub-Technique**
+#### 🔷 4.4) Identifying the Collection Sub-Technique
 
 After identifying that the attacker used Input Capture (T1056) as the collection technique, I determined the specific sub-technique based on the extracted file’s purpose.
 
@@ -525,7 +533,7 @@ MITRE ATT&CK Mapping: Collection: Keylogging (T1056.001)
 This sub-technique specifically describes adversaries capturing keystrokes from a victim system to collect sensitive information. The extraction of a keylogger immediately after administrative access strongly supports this mapping.
 
 
-**Identifying Files Created from the Extraction**
+#### 🔷 4.5) Identifying Files Created from the Extraction
 
 To determine which files were created as a result of the archive extraction, I analyzed Sysmon Event ID 11 (FileCreate) events around the confirmed extraction timeframe.
 
@@ -565,7 +573,7 @@ Note on rundll32.exe Usage
 The use of rundll32.exe in this investigation does not inherently indicate DLL injection or DLL hijacking. Instead, it represents living-off-the-land execution, where a legitimate Windows utility is abused to execute malicious code stored in a DLL. DLL injection involves forcing a DLL into the address space of another running process, while DLL hijacking relies on placing a malicious DLL in a location where a legitimate application will load it unintentionally. In this case, rundll32.exe is explicitly invoked to execute a DLL function, which aligns more closely with proxy execution using trusted binaries rather than injection or hijacking. I recognized this distinction based on concepts learned during my CompTIA Security+ studies, where rundll32 is highlighted as a common tool abused by threat actors to evade detection by leveraging legitimate system binaries.
 </blockquote>
 
-**Identifying the File Path of Created Files**
+#### 🔷 4.6) Identifying the File Path of Created Files
 
 After identifying `rundll33.exe` and `svchost.exe` as the two files created from the archive extraction in the previous step, I next needed to determine where these files were written on disk. I continued reviewing subsequent Sysmon Event ID 11 (FileCreate) events to determine what actions occurred immediately afterward.
 
@@ -596,11 +604,11 @@ Because both extracted files were created within the same directory, this confir
 </p>
 
 
-### Step 5: Malware & File Artifact Analysis (Q19-Q21)
+### ▶ 5) Malware & File Artifact Analysis (Q19-Q21)
 
 After identifying the malware files, I investigated whether the malware modified the system to support execution or persistence. 
 
-**Identifying the Created .sys File (Q19)**
+#### 🔷 5.1) Identifying the Created .sys File (Q19)
 
 After determining that the archive extraction resulted in the creation of `svchost.exe` (11/18/2022 5:24:21 PM) and `rundll33.exe` (11/18/2022 5:25:27 PM), I continued reviewing Sysmon Event ID 11 (FileCreate) events occurring between those two timestamps to identify any additional artifacts created during this execution window.
 
@@ -622,7 +630,7 @@ By correlating file creation timestamps and locations across consecutive Sysmon 
 MITRE ATT&CK:
 - Defense Evasion: Rootkit (T1014) 
 
-**Confirming the Registry Value Creation Timestamp (Q20)**
+#### 🔷 5.2) Confirming the Registry Value Creation Timestamp (Q20)
 
 After identifying the malware files written to disk, I examined registry activity that occurred immediately afterward to determine when persistence was first established. The Windows Registry is a centralized configuration database used by the operating system to control system and user behavior. Within the registry, a registry key functions like a folder, while a registry value represents an individual configuration setting stored inside that key.
 
@@ -633,7 +641,7 @@ Reviewing the timeline shows that the first registry value associated with the m
 Correlating registry modification timestamps with file creation events is critical because it confirms attacker intent and validates the sequence of actions taken. In this case, the timing demonstrates that registry changes were not preexisting system settings, but were instead introduced by the attacker as part of a structured persistence setup following malware execution.
 
 
-**Confirming Registry Values Created by the Malware (Q21)**
+#### 🔷 5.3) Confirming Registry Values Created by the Malware (Q21)
 
 To confirm registry values created by the malware, I focused on Sysmon Event ID 13, which records registry value creation or modification. 
 
@@ -681,11 +689,11 @@ Because these two registry values were:
 they represent the two registry values created by the malware.
 
 
-### Step 6: Persistence Technique Identification (Q22-Q23)
+### ▶ 6) Persistence Technique Identification (Q22-Q23)
 
 After confirming registry modification, I assessed how the malware ensured it would execute again after reboot or logon.
 
-**Identifying the Persistence Technique (Q22)**
+#### 🔷 6.1) Identifying the Persistence Technique (Q22)
 
 The malware modified Windows registry locations that are evaluated during user logon. Specifically, it created registry values that reference malicious executables located in the user’s roaming profile directory. These registry entries cause the referenced binaries to be executed automatically when the system starts or when the user logs in.
 
@@ -703,7 +711,7 @@ Because these registry values directly cause the referenced executables to autom
 This clarification reinforces that the malware relied on a straightforward registry autorun mechanism rather than a more complex event-based persistence method.
 </blockquote>
 
-**Identifying the Persistence Sub-Technique (Q23)**
+#### 🔷 6.2) Identifying the Persistence Sub-Technique (Q23)
 
 To further refine the persistence mechanism, I examined the exact registry locations and values that were created. The malware added registry values under Windows startup-related registry paths, including locations that reference executables masquerading as legitimate system components (e.g., svchost.exe and rundll33.exe).
 
@@ -712,11 +720,11 @@ These registry entries function as autorun keys, instructing Windows to execute 
 MITRE ATT&CK (Q23): Registry Run Keys / Startup Folder (T1547.001)
 
 
-### Step 7: Malware Attribution (Q24)
+### ▶ 7) Malware Attribution (Q24)
 
 The final step of the investigation focused on attribution.
 
-**Identifying the GitHub Author of the Malware (Q24)**
+#### 🔷 7.1) Identifying the GitHub Author of the Malware (Q24)
 
 After completing the technical analysis of the malware’s behavior and artifacts, I performed open-source intelligence (OSINT) research to identify the origin of the malware. Based on earlier findings, the malware exhibited the following characteristics:
 
@@ -735,7 +743,7 @@ This step demonstrates how OSINT can be used to complement technical forensic an
 
 ---
 
-## Findings Summary
+### Findings Summary
 
 This section consolidates high-confidence conclusions derived from direct evidence correlation across multiple telemetry sources.
 
@@ -754,7 +762,7 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Defensive Takeaways
+### Defensive Takeaways
 
 This investigation highlights several defender-relevant patterns and operational lessons.
 
@@ -768,7 +776,7 @@ This investigation highlights several defender-relevant patterns and operational
 
 ---
 
-## Artifacts Identified
+### Artifacts Identified
 The following artifacts were confirmed during investigation and support the final determination.
 
 - External source IP conducting reconnaissance: `192.168.1.33`
@@ -793,22 +801,22 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Detection and Hardening Opportunities
+### Detection and Hardening Opportunities
 
 This section summarizes high-level detection and hardening opportunities observed during the investigation. For detailed, actionable recommendations — including specific logging gaps, detection logic ideas, and configuration improvements — see: **`detection-and-hardening-recommendations.md`**
 
-### Containment Actions (Recommended)
+#### ▶ Containment Actions (Recommended)
 - Disable or restrict external SSH access where not required
 - Reset compromised credentials and remove unauthorized accounts
 - Review administrator group membership changes
 
-### Eradication & Hardening Recommendations
+#### ▶ Eradication & Hardening Recommendations
 - Enforce strong password policies and lockout thresholds
 - Implement MFA for remote administrative access
 - Restrict autorun registry modifications via endpoint controls
 - Harden user-writable directories against execution
 
-### Detection & Monitoring Recommendations
+#### ▶ Detection & Monitoring Recommendations
 - Alert on external port scanning behavior
 - Monitor repeated SSH authentication failures followed by success
 - Alert on local account creation and admin group changes
@@ -816,9 +824,9 @@ This section summarizes high-level detection and hardening opportunities observe
 
 ---
 
-## MITRE ATT&CK Mapping
+### MITRE ATT&CK Mapping
 
-**Reconnaissance**
+#### ▶ Reconnaissance
 
 (1) Active Scanning (T1595)
 Referenced in: Step 1 – Reconnaissance Activity Analysis
@@ -833,7 +841,7 @@ Referenced in: Step 2 – Initial Access Identification
 
 - Why this applies: The attacker gained access by authenticating to an externally exposed service (OpenSSH on port 22). SSH is a remote service that provides interactive access when reachable from outside the host.
 
-**Credential Access**
+#### ▶ Credential Access
 
 (1) Brute Force (T1110)
 Referenced in: Step 3 – Account Access & Credential Activity
@@ -854,7 +862,7 @@ Including both techniques reflects the full sequence accurately:
 - T1110 → how access was achieved
 - T1078 → how access was maintained and used
 
-**Persistence**
+#### ▶ Persistence
 
 (1) Create Account (T1136)
 Referenced in: Step 3 – Account Creation Analysis
@@ -876,7 +884,7 @@ This sub-technique is appropriate because:
 - They pointed to malicious executables
 - They ensured repeated execution
 
-**Collection**
+#### ▶ Collection
 
 (1) Input Capture (T1056)
 Referenced in: Step 4 – File Extraction & Malware Artifact Analysis
@@ -893,7 +901,7 @@ Referenced in: Step 5 – Malware & File Artifact Analysis
 
 - Why this applies: The extracted archive created multiple files locally, including executables and supporting components. These actions demonstrate access to and staging of data on the local system. Even though large-scale exfiltration was not observed, the technique covers local data access and staging, which is sufficient per MITRE.
 
-**Defense Evasion / Cleanup**
+#### ▶ Defense Evasion / Cleanup
 
 (1) Rootkit (T1014)
 Referenced in: Step 5 – Malware & File Artifact Analysis
@@ -915,6 +923,8 @@ Referenced in: Step 3 – Account Deletion Analysis
 - Credential Dumping (T1003): No LSASS access, memory dumping, or credential extraction artifacts observed.
 - Exploitation for Privilege Escalation (T1068): Privileges were gained through group membership changes, not exploits.
 - Inhibit System Recovery (T1490): No evidence of shadow copy deletion, recovery disabling, or backup tampering.
+
+---
 
 ### MITRE ATT&CK Mapping (Table View)
 
