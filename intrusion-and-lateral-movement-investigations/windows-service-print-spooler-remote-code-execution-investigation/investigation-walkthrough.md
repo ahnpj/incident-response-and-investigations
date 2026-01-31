@@ -32,12 +32,24 @@ Network printer sharing relies on SMB to transfer printer drivers and related fi
 
 ### Environment, Evidence, and Tools
 
-- **Operating System:** Windows
-- **Data Sources Reviewed:**
-  - Windows Event Logs (Security, System)
-  - Network Traffic Capture (PCAP)
-  - File System Artifacts
-- **Tools Used:** Event Viewer, Wireshark, PowerShell / Command Prompt
+#### ▶ Environment
+- Operating System: Windows
+- Service in Scope: Windows Print Spooler (`spoolsv.exe`)
+- Scenario Type: Post-compromise analysis of service abuse (RCE)
+- Scope: Single compromised Windows host
+
+#### ▶ Evidence Sources
+- Windows Security Event Logs (authentication, SMB access, service interaction)
+- Sysmon Operational Logs (process creation, file creation, network connections)
+- Network Traffic Capture (PCAP)
+- File system artifacts (printer driver directories)
+
+#### ▶ Tools Used
+- Event Viewer – Reviewed Security and Sysmon event logs
+- Sysmon – Analyzed file creation, process execution, and outbound connections
+- Wireshark – Validated reverse shell and interactive command activity in PCAP
+- PowerShell / Command Prompt – Assisted with log review and artifact correlation
+
 
 ---
 
@@ -540,6 +552,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
