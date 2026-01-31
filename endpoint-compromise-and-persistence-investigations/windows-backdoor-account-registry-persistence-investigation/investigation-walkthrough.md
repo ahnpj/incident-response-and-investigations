@@ -101,8 +101,8 @@ As an alternative approach, the index could be queried directly using `index=mai
 
 ### ▶ 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
 
-- [2.1) Raw Event Review — Unauthorized Local Account Creation](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-21-raw-event-review--unauthorized-local-account-creation)
-- [2.2) Account Management Validation — Local User Creation Confirmed](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-22-account-management-validation--local-user-creation-confirmed)
+- [🔷 2.1) Raw Event Review — Unauthorized Local Account Creation](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-21-raw-event-review--unauthorized-local-account-creation)
+- [🔷 2.2) Account Management Validation — Local User Creation Confirmed](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-22-account-management-validation--local-user-creation-confirmed)
 
 With dataset scale established, analysis shifted toward identifying whether a new local user account was created. Because adversaries frequently use built-in commands such as `net user` for account creation, searches focused on command-line indicators and process execution telemetry.
 
@@ -119,7 +119,7 @@ index=main ("net user" OR "net user /add")
   <em>Figure 3</em>
 </p>
 
-#### ◆ 2.1) Raw Event Review — Unauthorized Local Account Creation
+#### 🔷 2.1) Raw Event Review — Unauthorized Local Account Creation
 
 Reviewing raw events surfaced a suspicious command that added a new local user and included a password, which is highly anomalous outside legitimate provisioning workflows. Across returned results, the command consistently observed was:
 
@@ -134,7 +134,7 @@ The same action was recorded by multiple telemetry sources. The activity appeare
 Process IDs (PIDs) associated with returned events were reviewed. As expected, PIDs differed across logs capturing the same action, but the events consistently pointed back to execution of `net.exe` with the `/add` parameters. Taken together, the `/add` flag, the presence of a cleartext password, and corroboration across multiple telemetry channels—this activity was assessed as adversary-driven creation of a backdoor local account using standard Windows utilities.
 
 
-#### ◆ 2.2) Account Management Validation — Local User Creation Confirmed
+#### 🔷 2.2) Account Management Validation — Local User Creation Confirmed
 
 To validate account creation from an account management perspective, Windows Security events tied to account creation (for example, Event ID 4720) were also queried:
 
@@ -510,6 +510,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
