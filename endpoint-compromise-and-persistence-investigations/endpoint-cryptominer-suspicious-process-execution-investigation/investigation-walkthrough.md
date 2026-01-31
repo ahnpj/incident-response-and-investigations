@@ -28,7 +28,7 @@ The investigation began when the SIEM generated an alert indicating suspicious p
 ### Investigation Walkthrough
 
 <details>
-<summary><strong>🧭 Walkthrough Navigation (click to expand)</strong></summary>
+<summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
 - [1) Suspicious Process Identification](#suspicious-process-identification)
 - [2) User and Host Attribution](#user-and-host-attribution)
@@ -160,6 +160,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
 
