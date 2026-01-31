@@ -1,6 +1,5 @@
 # Web Server Defacement Investigation (Malicious File Upload Exploitation and Web Shell Deployment)
 
----
 
 ### Executive Summary
 
@@ -1293,7 +1292,10 @@ This section outlines actionable improvements based on observed attacker behavio
 ---
 
 ### MITRE ATT&CK Mapping
+
 This section maps observed behaviors to MITRE ATT&CK tactics and techniques using evidence identified during analysis.
+
+This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 - **Reconnaissance — Active Scanning (T1595):**  
   Automated vulnerability scanning activity was detected via Suricata alerts and HTTP telemetry, including Acunetix user-agent strings and malformed request patterns targeting the web server prior to compromise.
@@ -1317,6 +1319,8 @@ This section maps observed behaviors to MITRE ATT&CK tactics and techniques usin
 
 ### MITRE ATT&CK Mapping (Table View)
 
+This section provides a high-level table summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 | Tactic | Technique | Description |
 |------|-----------|-------------|
 | Reconnaissance | **Active Scanning (T1595)** | Automated vulnerability scanning observed through IDS alerts and HTTP telemetry, including Acunetix scanner signatures targeting Joomla endpoints. |
@@ -1326,9 +1330,6 @@ This section maps observed behaviors to MITRE ATT&CK tactics and techniques usin
 | Command and Control | **Application Layer Protocol: Web (T1071.001)** | Outbound HTTP connections from the server to attacker-controlled domains following malware execution. |
 | Impact | **Defacement (T1491)** | Web content was modified to display attacker-controlled imagery, resulting in visible website defacement. |
 
-**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
-
-
 ---
 
 ### Analyst Notes
@@ -1336,6 +1337,7 @@ This section maps observed behaviors to MITRE ATT&CK tactics and techniques usin
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
