@@ -1,6 +1,6 @@
 # Web Application Authentication Compromise Investigation (Brute-Force Attempts and Account Compromise Detection)
 
-## Executive Summary
+### Executive Summary
 
 This investigation analyzes abnormal authentication activity against a web application that resulted in credential abuse and successful account compromise. Application-layer authentication logs revealed a high volume of failed login attempts originating from a single external IP address, followed by successful authentication events and subsequent credential reuse from a secondary source.
 
@@ -8,7 +8,7 @@ Analysis confirmed that the activity involved automated authentication abuse, ac
 
 ---
 
-## Incident Scope
+### Incident Scope
 
 The scope of this investigation is limited to post-incident analysis of web application authentication telemetry. The analysis focused exclusively on application-layer authentication logs captured in JSON format and associated HTTP request metadata.
 
@@ -18,31 +18,45 @@ The objective was to reconstruct attacker behavior, determine whether credential
 
 ---
 
-## Environment, Evidence, and Tools
+### Environment, Evidence, and Tools
 
-- **Environment:** Linux-based web application environment  
-- **Evidence Sources:**  
-  - Application authentication logs (JSON format)  
-  - HTTP request metadata (source IPs, User-Agent strings, timestamps, endpoints, outcomes)  
-- **Tools Used:**  
-  - JSON Crack (interactive JSON exploration and field correlation)
+#### ▶ Environment
+- **Platform:** Linux-based web application
+- **Scope:** Single web application authentication workflow
+- **Analysis Type:** Post-incident authentication telemetry review
+- **Access Layer:** Application-level (no host or network forensics)
 
-### Detection Context
+#### ▶ Evidence Sources
+- Application authentication logs (JSON format)
+- HTTP request metadata:
+  - Source IP addresses
+  - User-Agent strings
+  - Target authentication endpoint
+  - Supplied usernames
+  - Authentication outcomes (success / failure)
+- Credential-handling fields recorded by the application (encoded password values)
+
+#### ▶ Tools Used
+- **JSON Crack:** Interactive exploration and correlation of nested JSON authentication logs
+- **Command-line utilities:** Base64 decoding to validate credential exposure
+- **Manual timeline correlation:** Source IP, username targeting, User-Agent consistency, and outcome sequencing
+
+#### ▶ Detection Context
+
+- Analysis Tooling: JSON Crack (interactive JSON analysis)
+
+JSON Crack was used to analyze and navigate the application’s authentication logs stored in JSON format. The tool provides an interactive, structured view of nested JSON data, allowing rapid exploration of log fields without requiring custom parsing or scripting.
+
+By leveraging JSON Crack, authentication events could be quickly filtered and correlated based on source IP address, timestamps, usernames, User-Agent strings, and authentication outcomes. This enabled efficient identification of repeated failure patterns, attribution of activity to a single source, and correlation of authentication behavior across multiple log entries.
 
 - **Alert Source:** Web application authentication logs
 - **Trigger Condition:** Elevated volume of failed login attempts
 - **Suspected Activity:** Credential brute-force or password spraying
 - **Environment:** Linux-based web application
 
-Analysis Tooling: JSON Crack (interactive JSON analysis)
-
-JSON Crack was used to analyze and navigate the application’s authentication logs stored in JSON format. The tool provides an interactive, structured view of nested JSON data, allowing rapid exploration of log fields without requiring custom parsing or scripting.
-
-By leveraging JSON Crack, authentication events could be quickly filtered and correlated based on source IP address, timestamps, usernames, User-Agent strings, and authentication outcomes. This enabled efficient identification of repeated failure patterns, attribution of activity to a single source, and correlation of authentication behavior across multiple log entries.
-
 ---
 
-## Investigative Questions
+### Investigative Questions
 The following questions guided the investigation and structured analysis of authentication telemetry:
 
 - Which source IP address was responsible for the abnormal authentication activity?
@@ -56,7 +70,7 @@ The following questions guided the investigation and structured analysis of auth
 
 ---
 
-## Investigation Timeline
+### Investigation Timeline
 - **T0 — Elevated authentication failures detected:** High-volume failed login attempts observed within a short timeframe.
 - **T1 — Attacking source identified:** Repeated failures attributed to a single external IP address.
 - **T2 — Automated behavior confirmed:** Identical User-Agent strings indicated scripted authentication abuse.
@@ -69,9 +83,40 @@ The following questions guided the investigation and structured analysis of auth
 
 ---
 
-## Investigation Walkthrough
+### Investigation Walkthrough
 
-### 1. Source IP Responsible for Attack Activity
+<blockquote>
+<details>
+<summary><strong>📚 Walkthrough navigation (click to expand)</strong></summary>
+
+- [1) Source IP Responsible for Attack Activity](#-1-source-ip-responsible-for-attack-activity)
+  - [1.1) Identifying The Origin Of Failed Login Attempted](#-11-identifying-the-origin-of-failed-login-attempted)
+  - [1.2) MITRE ATT&CK Technique Reference — Finding 1](#-12-mitre-attck-technique-reference--finding-1)
+- [2) User-Agent Analysis](#-2-user-agent-analysis)
+  - [2.1) MITRE ATT&CK Technique Reference — Finding 2](#-21-mitre-attck-technique-reference--finding-2)
+- [3) Non-Existent Account Targeting (Account Enumeration)](#-3-non-existent-account-targeting-account-enumeration)
+  - [3.1) Determining Whether Authentication Attempts Targeted Valids Accounts](#-31-determining-whether-authentication-attempts-targeted-valids-accounts)
+  - [3.2) MITRE ATT&CK Mapping — Finding 3](#-32-mitre-attck-mapping--finding-3)
+- [4) Valid Accounts Targeted](#-4-valid-accounts-targeted)
+  - [4.1) Determining Whether Application User Accounts Were Targeted](#-41-determining-whether-application-user-accounts-were-targeted)
+  - [4.2) MITRE ATT&CK Mapping — Finding 4](#-42-mitre-attck-mapping--finding-4)
+- [5) Successful Authentication Event](#-5-successful-authentication-event)
+  - [5.1) Determinig Whether Any Attacker Login Attempts Were Successful](#-51-determinig-whether-any-attacker-login-attempts-were-successful)
+- [6) Secondary Login Source](#-6-secondary-login-source)
+  - [6.1) Investigating Any Second Login Source From Attacker](#-61-investigating-any-second-login-source-from-attacker)
+  - [6.2) MITRE ATT&CK Mapping — Finding 6](#-62-mitre-attck-mapping--finding-6)
+- [7) Authentication Endpoint Used](#-7-authentication-endpoint-used)
+  - [7.1) Reviewing Authentication Request Events Across All Login Attempts](#-71-reviewing-authentication-request-events-across-all-login-attempts)
+- [8) Credential Exposure](#-8-credential-exposure)
+  - [8.1) Examining How Credentials Were Being Processed Within Application Logs](#-81-examining-how-credentials-were-being-processed-within-application-logs)
+  - [8.2) MITRE ATT&CK Mapping — Finding 8](#-82-mitre-attck-mapping--finding-8)
+
+</details>
+</blockquote>
+
+#### ▶ 1) Source IP Responsible for Attack Activity
+- [🔷 1.1) Identifying The Origin Of Failed Login Attempted](#-11-identifying-the-origin-of-failed-login-attempted)
+- [🔷 1.2) MITRE ATT&CK Technique Reference — Finding 1](#-12-mitre-attck-technique-reference--finding-1)
 
 The investigation began by examining the application’s authentication telemetry contained within the `application-logs.json` file. This file captures application-layer login events, where each record represents an authentication attempt processed by the web application.
 
@@ -84,6 +129,8 @@ Each log entry includes key fields required for attribution and behavioral analy
 - Authentication result (success or failure)
 - Failure reason (when applicable)
  Target authentication endpoint
+
+##### 🔷 1.1) Identifying The Origin Of Failed Login Attempted
 
 To identify the origin of the suspicious activity, the analysis focused on the `client.ip_address` field across all failed authentication events. Reviewing the log entries in chronological order revealed a single external IP address repeatedly submitting authentication requests within a narrow time window.
 
@@ -100,12 +147,12 @@ The concentration of failed authentication attempts originating from a single so
   <em>Figure 1</em>
 </p>
 
-**MITRE ATT&CK Technique Reference — Finding 1**
+##### 🔷 1.2) MITRE ATT&CK Technique Reference — Finding 1
+
+The repeated failed authentication attempts originating from a single source IP align with MITRE ATT&CK technique T1110 (Brute Force). This technique describes adversary behavior involving systematic attempts to guess or validate credentials by submitting repeated authentication requests.
 
 - Tactic: Credential Access
 - Technique: T1110 – Brute Force
-
-The repeated failed authentication attempts originating from a single source IP align with MITRE ATT&CK technique T1110 (Brute Force). This technique describes adversary behavior involving systematic attempts to guess or validate credentials by submitting repeated authentication requests.
 
 Evidence supporting this mapping includes:
 
@@ -116,7 +163,9 @@ Evidence supporting this mapping includes:
 - This activity demonstrates a clear attempt to obtain valid credentials through automated means, consistent with credential brute-force or password spraying techniques.
 
 
-### 2. User-Agent Analysis
+#### ▶ 2) User-Agent Analysis
+
+- [🔷 2.1) MITRE ATT&CK Technique Reference — Finding 2](#-21-mitre-attck-technique-reference--finding-2)
 
 After identifying the source IP responsible for the repeated authentication failures, the next step was to analyze the User-Agent values associated with those requests. User-Agent strings provide insight into the client software initiating authentication attempts and can help differentiate between legitimate user behavior and automated tooling.
 
@@ -143,7 +192,7 @@ When correlated with the high volume of failed login attempts and the short inte
   <em>Figure 2</em>
 </p>
 
-**MITRE ATT&CK Technique Reference — Finding 2**
+##### 🔷 2.1) MITRE ATT&CK Technique Reference — Finding 2
 
 - Tactic: Credential Access
 - Technique: T1110 – Brute Force
@@ -161,9 +210,13 @@ Evidence supporting this mapping includes:
 The uniform User-Agent behavior strengthens the conclusion that the authentication attempts were generated by automated tooling rather than legitimate interactive sessions, reinforcing the broader brute-force assessment established in Finding 1.
 
 
-### 3. Non-Existent Account Targeting (Account Enumeration)
+#### ▶ 3) Non-Existent Account Targeting (Account Enumeration)
+- [🔷 3.1) Determining Whether Authentication Attempts Targeted Valids Accounts](#-31-determining-whether-authentication-attempts-targeted-valids-accounts)
+- [🔷 3.2) MITRE ATT&CK Mapping — Finding 3](#-32-mitre-attck-mapping--finding-3)
 
 After identifying the attacking source IP and confirming the use of a consistent automated User-Agent, the next step was to determine whether the authentication attempts targeted valid user accounts, non-existent accounts, or both.
+
+##### 🔷 3.1) Determining Whether Authentication Attempts Targeted Valids Accounts
 
 To assess this, failed authentication events originating from the attacking IP were reviewed with a focus on the username field and the associated authentication failure reason. The application logs differentiate between failures caused by invalid credentials and those caused by user accounts that do not exist within the application.
 
@@ -201,20 +254,23 @@ The repeated targeting of these non-existent accounts, combined with the automat
   <img src="images/web-authentication-alert-investigation-03i.png" width="48%" />
 </div>
 
-**MITRE ATT&CK Mapping — Finding 3**
+##### 🔷 3.2) MITRE ATT&CK Mapping — Finding 3
+
+The observed targeting of multiple usernames, including non-existent accounts, aligns with MITRE ATT&CK sub-technique T1110.003 (Password Spraying). This technique involves attempting a small number of common or reused passwords across many accounts to identify valid users and potentially obtain access.
 
 - Tactic: Credential Access
 - Technique: T1110 – Brute Force
 - Sub-technique: T1110.003 – Password Spraying
 
-The observed targeting of multiple usernames, including non-existent accounts, aligns with MITRE ATT&CK sub-technique T1110.003 (Password Spraying). This technique involves attempting a small number of common or reused passwords across many accounts to identify valid users and potentially obtain access.
-
 The differentiation in authentication failure responses enabled the attacker to identify which usernames were valid, facilitating more focused credential attacks against legitimate accounts later in the activity sequence.
 
-
-### 4. Valid Accounts Targeted
+#### ▶ 4) Valid Accounts Targeted
+- [🔷 4.1) Determining Whether Application User Accounts Were Targeted](#-41-determining-whether-application-user-accounts-were-targeted)
+- [🔷 4.2) MITRE ATT&CK Mapping — Finding 4](#-42-mitre-attck-mapping--finding-4)
 
 After identifying authentication attempts against non-existent accounts, the analysis shifted to determining whether the attacker also targeted valid application user accounts.
+
+##### 🔷 4.1) Determining Whether Application User Accounts Were Targeted
 
 Review of authentication events originating from the attacking IP revealed repeated login attempts against several usernames that were later confirmed to be valid accounts based on successful authentication activity observed elsewhere in the logs.
 
@@ -235,7 +291,7 @@ Unlike the previously identified non-existent accounts, these usernames were ass
 
 This transition from testing generic account names to targeting confirmed valid users is consistent with attacker behavior following successful account enumeration and suggests an increased likelihood of credential compromise.
 
-**MITRE ATT&CK Mapping — Finding 4**
+##### 🔷 4.2) MITRE ATT&CK Mapping — Finding 4
 
 - Tactic: Credential Access
 - Technique: T1110 – Brute Force
@@ -244,9 +300,12 @@ This transition from testing generic account names to targeting confirmed valid 
 The targeting of multiple valid accounts aligns with MITRE ATT&CK sub-technique T1110.003 (Password Spraying), where adversaries attempt commonly reused passwords across a set of known or likely valid users. The observed activity demonstrates a progression from reconnaissance and enumeration into targeted credential access attempts, increasing the risk of successful account compromise.
 
 
-### 5. Successful Authentication Event
+#### ▶ 5) Successful Authentication Event
+- [🔷 5.1) Determinig Whether Any Attacker Login Attempts Were Successful](#-51-determinig-whether-any-attacker-login-attempts-were-successful)
 
 After identifying valid accounts targeted during the authentication abuse, the investigation focused on determining whether any of those attempts resulted in a successful login.
+
+##### 🔷 5.1) Determinig Whether Any Attacker Login Attempts Were Successful
 
 A successful authentication was identified following multiple failed login attempts. Review of authentication events for the valid account `webadmin` revealed multiple failed login attempts followed by a successful authentication within seconds. 
 
@@ -269,9 +328,13 @@ All events occurred within a narrow time window and shared identical client meta
   <em>Figure 5</em>
 </p>
 
-### 6. Secondary Login Source
+#### ▶ 6) Secondary Login Source
+- [🔷 6.1) Investigating Any Second Login Source From Attacker](#-61-investigating-any-second-login-source-from-attacker)
+- [🔷 6.2) MITRE ATT&CK Mapping — Finding 6](#-62-mitre-attck-mapping--finding-6)
 
 Following the initial successful authentication against the webadmin account, the investigation examined whether the compromised credentials were subsequently used from additional sources.
+
+##### 🔷 6.1) Investigating Any Second Login Source From Attacker
 
 Review of authentication logs revealed a second successful login to the same account originating from a different source IP address. This login occurred several minutes after the first successful authentication and retained identical application-level characteristics.
 
@@ -294,7 +357,7 @@ The change in source IP following successful authentication represents a post-co
   <em>Figure 6</em>
 </p>
 
-**MITRE ATT&CK Mapping — Finding 6**
+##### 🔷 6.2) MITRE ATT&CK Mapping — Finding 6
 
 - Tactic: Credential Access
 - Technique: T1078 – Valid Accounts
@@ -309,9 +372,12 @@ Evidence supporting this mapping includes:
 - Persistence of normal-looking client metadata
 
 
-### 7. Authentication Endpoint Used
+#### ▶ 7) Authentication Endpoint Used
+- [🔷 7.1) Reviewing Authentication Request Events Across All Login Attempts](#-71-reviewing-authentication-request-events-across-all-login-attempts)
 
-After confirming credential compromise and subsequent reuse from a secondary source, I examined how authentication requests were being submitted to the application.
+After confirming credential compromise and subsequent reuse from a secondary source, the investigation shifted to reviewing if any authentication requests were being submitted to the application.
+
+##### 🔷 7.1) Reviewing Authentication Request Events Across All Login Attempts
 
 Review of authentication events across **all failed and successful login attempts** revealed that every authentication request targeted the same application endpoint. This was consistent across:
 
@@ -333,22 +399,25 @@ The concentration of activity against `/api/login` also establishes this endpoin
 </p>
 
 
-### 8. Credential Exposure
+#### ▶ 8) Credential Exposure
+- [🔷 8.1) Examining How Credentials Were Being Processed Within Application Logs](#-81-examining-how-credentials-were-being-processed-within-application-logs)
+- [🔷 8.2) MITRE ATT&CK Mapping — Finding 8](#-82-mitre-attck-mapping--finding-8)
 
-Following confirmation of successful authentication and credential reuse, I examined how credential material was being handled within the application logs.
+Following confirmation of successful authentication and credential reuse, the next phase was to examine how credential material was being handled within the application logs.
+
+##### 🔷 8.1) Examining How Credentials Were Being Processed Within Application Logs
 
 During review of the authentication logs, a `hashed_password` field was observed in both failed and successful login attempts. The value associated with this field remained identical across multiple authentication events for the same username, indicating that the application was logging a deterministic transformation of the submitted password rather than a securely stored credential hash.
 
 To validate the nature of this value, a Linux terminal session was opened on the Ubuntu-based analysis environment and the credential value was examined using standard command-line utilities. The following command was executed:
 
-[bash]
+```bash
 echo <encoded_value> | base64 --decode
+```
 
 This command takes the encoded string as input and pipes it into the Base64 decoding utility. The echo command outputs the string, while `base64 --decode` reverses Base64 encoding and returns the original plaintext data. The decoded output confirmed that the value recorded in the logs could be directly recovered to its original plaintext form.
 
-Why this was possible: 
-
-Base64 is not a hashing algorithm. It is an encoding scheme designed to represent binary data using printable ASCII characters for safe transport and storage. Encoding is fully reversible by design, whereas secure password hashing must be one-way and irreversible. Several characteristics of the logged value indicated that it was not a cryptographic password hash:
+Why this was possible: Base64 is not a hashing algorithm. It is an encoding scheme designed to represent binary data using printable ASCII characters for safe transport and storage. Encoding is fully reversible by design, whereas secure password hashing must be one-way and irreversible. Several characteristics of the logged value indicated that it was not a cryptographic password hash:
 
 - The value was short compared to modern password hashes
 - It contained only alphanumeric characters, consistent with Base64 encoding
@@ -362,9 +431,7 @@ Because the value was encoded rather than hashed, it could be decoded using stan
 The credential value recorded in hashed_password was determined to be reversible encoding (not a one-way password hash), allowing recovery of the plaintext password during authorized analysis.
 </blockquote>
 
-<blockquote>
-The same hashed_password value appears in both failed and successful login attempts because the application logs a transformed version of the password before it checks whether the password is correct. Each time the same password is submitted, the application records the same value, regardless of whether authentication succeeds or fails. This indicates that the value being logged is not a secure, one-way password hash, but a predictable transformation of the user’s input. As a result, credential material is exposed in the logs for every login attempt, making it possible to reuse or recover credentials once a correct password is identified.
-</blockquote>
+The same `hashed_password` value appears in both failed and successful login attempts because the application logs a transformed version of the password before it checks whether the password is correct. Each time the same password is submitted, the application records the same value, regardless of whether authentication succeeds or fails. This indicates that the value being logged is not a secure, one-way password hash, but a predictable transformation of the user’s input. As a result, credential material is exposed in the logs for every login attempt, making it possible to reuse or recover credentials once a correct password is identified.
 
 The presence of recoverable credential material within application logs represents a critical security weakness. Further analysis determined that the stored value was not a securely salted cryptographic hash, but rather an encoded representation that could be decoded to reveal the original plaintext password.
 
@@ -378,10 +445,9 @@ Recovered Password: `webadmin1234`
   <em>Figure 8</em>
 </p>
 
-
 This finding explains how repeated failed attempts transitioned into a successful authentication and why the compromised credentials could subsequently be reused from a secondary source IP. Logging recoverable credential material effectively eliminates the security guarantees provided by authentication controls.
 
-**MITRE ATT&CK Mapping — Finding 8**
+##### 🔷 8.2) MITRE ATT&CK Mapping — Finding 8
 
 - Tactic: Credential Access
 - Technique: T1552 – Unsecured Credentials
@@ -397,7 +463,7 @@ Evidence supporting this mapping includes:
 
 ---
 
-## Findings Summary
+### Findings Summary
 This section consolidates high-confidence conclusions derived from application authentication telemetry and HTTP metadata.
 
 - A single external IP generated a high volume of failed authentication attempts.
@@ -414,10 +480,9 @@ Overall, the evidence reflects a full credential-based attack lifecycle: enumera
 **Detailed Evidence Reference:**  
 For a full, artifact-level breakdown of logs, alerts, and forensic indicators that support these findings — including where each artifact was identified during the investigation — see: **`detection-artifact-report.md`**
 
-
 ---
 
-## Defensive Takeaways
+### Defensive Takeaways
 
 This section highlights defender-relevant patterns observed during the investigation, focusing on behaviors and telemetry that can be operationalized for detection and monitoring rather than exploit mechanics.
 
@@ -431,7 +496,7 @@ This section highlights defender-relevant patterns observed during the investiga
 
 ---
 
-## Artifacts Identified
+### Artifacts Identified
 
 This section lists concrete artifacts uncovered during the investigation that support the final determination and can be used for validation, hunting, detection development, or follow-up analysis.
 
@@ -451,11 +516,11 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Detection and Hardening Opportunities
+### Detection and Hardening Opportunities
 
 This section outlines actionable opportunities to improve detection coverage and reduce the effectiveness of similar techniques. Recommendations are based directly on behaviors and artifacts observed during the investigation.
 
-### Containment Actions (Recommended)
+### ▶ Containment Actions (Recommended)
 These actions focus on limiting immediate impact and preventing further unauthorized access following detection of credential abuse.
 
 - Immediately reset credentials for all affected and potentially exposed user accounts, prioritizing administrative and service accounts.
@@ -464,7 +529,7 @@ These actions focus on limiting immediate impact and preventing further unauthor
 - Review authentication and access logs for additional successful logins or suspicious activity involving the compromised accounts during the affected timeframe.
 - Notify application and security stakeholders of the confirmed credential compromise to coordinate response and remediation.
 
-### Eradication & Hardening Recommendations
+### ▶ Eradication & Hardening Recommendations
 These recommendations address systemic weaknesses that enabled the attack and reduce the likelihood of recurrence.
 
 - Enforce account lockout thresholds or progressive authentication backoff after repeated failed login attempts.
@@ -474,7 +539,7 @@ These recommendations address systemic weaknesses that enabled the attack and re
 - Standardize authentication failure responses to prevent attackers from distinguishing between valid and invalid usernames.
 - Review and harden authentication endpoints to ensure they are protected against automated abuse.
 
-### Detection & Monitoring Recommendations
+### ▶ Detection & Monitoring Recommendations
 
 This section summarizes high-level detection and hardening opportunities observed during the investigation. For detailed, actionable recommendations — including specific logging gaps, detection logic ideas, and configuration improvements — see: **`detection-and-hardening-recommendations.md`**
 
@@ -487,7 +552,7 @@ These recommendations focus on improving visibility and early detection of simil
 - Track authentication anomalies by endpoint, particularly for sensitive paths such as `/api/login`.
 - Correlate authentication events with source IP reputation and geolocation data to identify anomalous access patterns.
 
-### Response Validation & Follow-Up (Optional)
+### ▶ Response Validation & Follow-Up (Optional)
 - Review authentication logs after containment to confirm that failed and successful login rates return to expected baselines.
 - Validate that compromised credentials are no longer accepted and that session invalidation is effective.
 - Monitor for renewed authentication abuse from the same or related IP addresses.
@@ -496,8 +561,12 @@ These recommendations focus on improving visibility and early detection of simil
 
 ---
 
-## MITRE ATT&CK Mapping
+### MITRE ATT&CK Mapping
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during application authentication log analysis. Mappings are based on directly observed activity and artifacts within scope.
+
+<blockquote>
+This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+</blockquote>
 
 - **Credential Access — Brute Force (T1110):**  
   High-volume authentication failures from a single source IP were observed targeting multiple accounts.
@@ -511,7 +580,11 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 - **Credential Access — Unsecured Credentials (T1552):**  
   Reversible credential material was exposed in application logs, allowing recovery of plaintext passwords.
 
+---
+
 ### MITRE ATT&CK Mapping (Table View)
+
+**Note:** This section provides a high-level table summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -520,7 +593,6 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Credential Access | **Valid Accounts (T1078)** | Successful login using compromised credentials and reuse from another IP. |
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
-**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
-
 ---
+
 
