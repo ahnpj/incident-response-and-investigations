@@ -27,6 +27,7 @@ The investigation began when the SIEM generated an alert indicating suspicious p
 
 ### Investigation Walkthrough
 
+<blockquote>
 <details>
 <summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
@@ -35,7 +36,7 @@ The investigation began when the SIEM generated an alert indicating suspicious p
 - [3) Detection Rule Review](#detection-rule-review)
 
 </details>
-
+</blockquote>
 
 #### ▶ 1) Suspicious Process Identification
 The investigation began with a review of the SIEM dashboard to understand the nature of the alert and identify the process responsible for triggering detection. The alert highlighted an abnormal executable associated with behavior commonly linked to cryptocurrency mining. This initial review established `cudominer.exe` as the focal point of the investigation.
@@ -160,6 +161,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
 
