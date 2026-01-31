@@ -105,7 +105,7 @@ The following timeline summarizes key attacker actions in chronological order ba
 
 ---
 
-## Investigation Walkthrough
+### Investigation Walkthrough
 
 ### ▶ 1) Reconnaissance Activity & Service Enumeration Analysis 
 
