@@ -163,7 +163,7 @@ I began the investigation by reviewing FortiGate firewall traffic logs to determ
 
 To better analyze this behavior, I filtered the firewall logs by the source IP address and extracted the relevant connection attempts into a separate table for clarity. This allowed me to isolate and examine all activity associated with the suspicious source and identify patterns that may not be immediately apparent when reviewing raw log entries.
 
-The firewall logs show a single source IP (192.168.1.33) initiating multiple inbound connection attempts to the same destination host (192.168.1.43) across several different destination ports. Each connection attempt is marked with a TCP SYN flag and shows zero bytes transferred, indicating that the source system was attempting to initiate connections without completing a full TCP session.
+The firewall logs show a single source IP (192.168.1.33) initiating multiple inbound connection attempts to the same destination host (`192.168.1.43`) across several different destination ports. Each connection attempt is marked with a TCP SYN flag and shows zero bytes transferred, indicating that the source system was attempting to initiate connections without completing a full TCP session.
 
 Several characteristics of this activity strongly indicate reconnaissance rather than legitimate traffic:
 
