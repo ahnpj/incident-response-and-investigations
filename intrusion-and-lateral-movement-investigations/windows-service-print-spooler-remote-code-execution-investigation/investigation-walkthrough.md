@@ -1,14 +1,6 @@
 # Windows Service Exploitation Investigation (Print Spooler Remote Code Execution)
 
-> **Related Detection Output**  
-Detection-ready artifacts extracted during this investigation are documented in  
-**[detection-artifact-report.md](./detection-artifact-report.md)**  
-This walkthrough documents the investigative process used to identify attacker behavior and extract artifacts for the **red team and detection engineering teams**. The focus is on reconstructing activity as it was observed, not on answering lab questions directly.
-
-
----
-
-## Executive Summary
+### Executive Summary
 This investigation analyzes a simulated security incident involving the abuse of a trusted Windows service that resulted in unauthorized file transfer, remote code execution, and the establishment of a reverse shell connection. The attacker leveraged native Windows components to execute malicious code and communicate with external infrastructure without relying on custom tooling.
 
 The purpose of this investigation is to reconstruct the attacker’s activity using host-based and network-based telemetry and to identify observable artifacts that can support reliable detections. Findings from this analysis highlight how legitimate Windows services can be abused and which indicators are most valuable for SOC and detection engineering teams.
@@ -16,7 +8,7 @@ The purpose of this investigation is to reconstruct the attacker’s activity us
 
 ---
 
-## Incident Scope
+### Incident Scope
 
 This investigation examines a simulated post-compromise scenario in which a known vulnerability in Windows Print Services was exploited to abuse the Print Spooler service. To recreate realistic conditions, a deliberately vulnerable Windows environment was deployed and a working exploit was executed prior to analysis.
 
@@ -38,7 +30,7 @@ Network printer sharing relies on SMB to transfer printer drivers and related fi
 
 ---
 
-## Environment, Evidence, and Tools
+### Environment, Evidence, and Tools
 
 - **Operating System:** Windows
 - **Data Sources Reviewed:**
@@ -49,7 +41,7 @@ Network printer sharing relies on SMB to transfer printer drivers and related fi
 
 ---
 
-## Investigative Questions
+### Investigative Questions
 
 The following questions guided the investigation and helped structure analysis of host-based and network-based evidence. They are designed to reconstruct the attacker’s activity, validate exploitation of the Windows Print Spooler service, and identify artifacts relevant for detection and response.
 
@@ -64,7 +56,7 @@ The following questions guided the investigation and helped structure analysis o
 
 ---
 
-## Investigation Timeline
+### Investigation Timeline
 
 This timeline summarizes the reconstructed sequence of attacker activity based on correlated host-based and network-based evidence. Events are ordered to reflect the progression of the intrusion from initial service abuse through post-exploitation activity and outbound communication.
 
@@ -79,13 +71,13 @@ This timeline summarizes the reconstructed sequence of attacker activity based o
 
 ---
 
-## Investigation Walkthrough
+### Investigation Walkthrough
 
-### Initial Triage: Attacker Infrastructure Discovery
+#### ▶ 1) Initial Triage: Attacker Infrastructure Discovery
 
 As part of the investigation, saved Windows Security event logs were reviewed to identify infrastructure involved in the simulated attack. Because one of the primary goals of detection engineering is to distinguish attacker-controlled resources from legitimate internal activity, the first step was to determine whether the affected system communicated with external or non-enterprise infrastructure.
 
-#### Identifying Attacker-Controlled Domain Context
+##### 🔷 1.1) Identifying Attacker-Controlled Domain Context
 
 The Security log was filtered for authentication and network share–related events (Event IDs `4624`, `4625`, `4672`, `5140`, and `5145`). These events commonly capture activity related to logons, privilege usage, and SMB-based file access, all of which are relevant when investigating service abuse and remote exploitation.
 
@@ -121,7 +113,7 @@ For this reason, Security logs were the appropriate source for identifying the r
 
 **Artifact Identified:** Attacker-controlled DNS domain used in the test environment (redteam.lab)
 
-#### Confirming Infrastructure via SMB Telemetry
+##### 🔷 1.2) Confirming Infrastructure via SMB Telemetry
 
 To accurately identify the domain used by the red team for their test setup, the investigation focused on network-related activity, specifically Event ID `5145` (Detailed File Share). This event type reflects SMB-based network access and includes system-generated metadata about the host involved in the activity.
 
@@ -144,11 +136,11 @@ Identifying this domain is critical for detection efforts. Fully qualified domai
 
 **Artifact Identified:** SMB-based service interaction associated with Print Spooler abuse (Security Event ID 5145)
 
-### Initial Access: Payload Delivery via Print Spooler Abuse
+#### ▶ 2) Initial Access: Payload Delivery via Print Spooler Abuse
 
 With attacker-controlled infrastructure identified, the investigation next focuses on how the exploit was delivered to the host. This phase examines evidence of Print Spooler abuse and identifies the malicious payload introduced through the trusted printer driver mechanism.
 
-#### Identifying the Malicious Printer Driver Payload
+##### 🔷 2.1) Identifying the Malicious Printer Driver Payload
 
 During Sysmon Event ID 11 analysis, multiple DLL files were observed being written under the printer driver directory by the `spoolsv.exe` process. Understanding which of these files are expected and which represent malicious activity requires basic knowledge of how Windows printing works.
 
@@ -180,11 +172,11 @@ Taken together, this activity suggests that the attacker abused the Print Spoole
 - File creation event showing malicious DLL written by `spoolsv.exe` (Sysmon Event ID 11)
 
 
-### Payload Staging: File System Impact and Driver Placement
+#### ▶ 3) Payload Staging: File System Impact and Driver Placement
 
 Once execution-related network activity was observed, file system artifacts were reviewed to understand where and how the malicious payload was written to disk. This section documents the staging location used by the attacker and explains its significance within the Print Spooler driver workflow.
 
-#### Malicious Driver Staging within Print Spooler Directories
+##### 🔷 3.1) Malicious Driver Staging within Print Spooler Directories
 
 During analysis of Sysmon Event ID 11 (FileCreate) events, it was observed that the malicious file `printevil.dll` was copied to the following directory: `C:\Windows\System32\spool\drivers\x64\3\New\printevil.dll`
 
@@ -197,11 +189,11 @@ The presence of the non-standard DLL, `printevil.dll`, in the `spool\drivers\x64
 Artifact Identified: Printer driver staging path used for malicious payload placement (`C:\Windows\System32\spool\drivers\x64\3\New\printevil.dll`)
 
 
-### Payload Execution and Reverse Shell Establishment
+#### ▶ 4) Payload Execution and Reverse Shell Establishment
 
 After confirming payload delivery, the investigation shifts to determining whether the malicious code was executed and resulted in external communication. This section analyzes host and network telemetry to identify outbound connections consistent with reverse shell behavior.
 
-#### Identifying Reverse Shell Execution via Host Telemetry
+##### 🔷 4.1) Identifying Reverse Shell Execution via Host Telemetry
 
 To identify the attacker’s reverse shell endpoint, the Sysmon Operational log was opened in Event Viewer and filtered for Event ID 3 (Network Connection). This event records process-initiated network connections and provides authoritative source and destination details.
 
@@ -233,7 +225,7 @@ Key fields in this event provide additional context:
 Artifact Identified:
 Attacker command-and-control endpoint (`10.0.2.5:443`)
 
-#### Validating Reverse Shell Activity via Packet Capture Analysis (Wireshark)
+##### 🔷 4.2) Validating Reverse Shell Activity via Packet Capture Analysis (Wireshark)
 
 After identifying the outbound connection in Sysmon, the provided packet capture was opened in Wireshark to confirm the activity at the network level. The traffic was filtered using `ip.addr == 10.0.2.5 && tcp.port == 443` to isolate communication between the compromised host and the suspected attacker endpoint, confirming that the connection observed in host-based logs was reflected in the packet capture. 
 
@@ -256,9 +248,11 @@ Following the TCP stream in Wireshark revealed an interactive command session be
 Artifact Identified: Attacker command-and-control endpoint (`10.0.2.5:443`)
 
 
-### SMB-Based Print Spooler Service Interaction
+#### ▶ 3) SMB-Based Print Spooler Service Interaction
 
 After confirming that the exploit resulted in an outbound reverse shell, the investigation shifted to understanding how the Print Spooler service was accessed at the network level. Because Windows printing relies on SMB for remote printer and driver operations, SMB-related Security events are a key source of evidence when investigating Print Spooler abuse.
+
+##### 🔷 3.1) Identifying How PRint Spooler Service Was Accessed
 
 To identify evidence of Print Spooler interaction over SMB, the Windows Security log was filtered for Event ID 5145 (Detailed File Share) because this event records SMB access metadata such as:
 - `AccountName`
@@ -304,9 +298,11 @@ During review of Security Event ID 5145, two log entries were identified that me
 </blockquote>
 
 
-### Exploit Side Effects: Error Handling and Abnormal Process Behavior
+#### ▶ 4) Exploit Side Effects: Error Handling and Abnormal Process Behavior
 
 After confirming successful exploitation and reverse shell activity, the investigation shifted back to host-based process telemetry to understand whether the abuse of the Print Spooler service caused any secondary or abnormal process behavior. Exploits often destabilize services, which can trigger built-in Windows error-handling mechanisms, providing additional evidence of malicious activity.
+
+##### 🔷 4.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior
 
 To identify this behavior, Sysmon process creation events (Event ID 1) were reviewed in Event Viewer. Sysmon was used for this step because it records detailed process execution metadata, including parent–child relationships and command-line context, which are not consistently available in standard Security logs.
 
@@ -341,7 +337,7 @@ Windows processes are always launched from executable files, which use the `.exe
 Identifying that `WerFault.exe` was launched by `spoolsv.exe` provides additional confirmation that a trusted Windows service was abused, the abuse caused abnormal execution behavior, and exploitation progressed far enough to destabilize the service. From a detection standpoint, unexpected parent–child relationships involving trusted services and error-handling binaries can serve as valuable indicators of exploitation activity.
 
 
-### Reconstructing the Exploitation Execution Chain
+#### ▶ 5) Reconstructing the Exploitation Execution Chain
 
 To better understand why WerFault.exe executed, the investigation remained within the Sysmon Operational logs and focused on process creation events (Event ID 1). Sysmon was used for this step because it records detailed execution metadata, including parent process relationships and command-line context, which are necessary for reconstructing execution flow after exploitation.
 
@@ -365,7 +361,7 @@ Unlike earlier system-generated processes, this command represents interactive a
 </blockquote>
 
 
-### Post-Exploitation Privilege Validation
+#### ▶ 6) Post-Exploitation Privilege Validation
 
 After confirming successful exploitation and service abuse, the final step of the investigation focused on determining the level of access gained by the attacker. Establishing the execution context is critical for assessing impact and severity.
 
@@ -377,7 +373,7 @@ From an investigative standpoint, this validation confirms that the attack progr
 
 ---
 
-## Findings Summary
+### Findings Summary
 
 This section consolidates high-confidence conclusions derived from correlated Windows Security logs, Sysmon telemetry, and network traffic analysis. Findings are limited to activity that can be directly supported by observed host-based and network-based evidence within scope.
 
@@ -396,7 +392,7 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Defensive Takeaways
+### Defensive Takeaways
 
 This section highlights defender-relevant patterns observed during the investigation, focusing on behaviors and telemetry that can be operationalized for detection and monitoring rather than exploit mechanics.
 
@@ -412,7 +408,7 @@ This investigation reinforces the importance of combining service telemetry, fil
 
 ---
 
-## Artifacts Identified
+### Artifacts Identified
 
 This section lists concrete artifacts uncovered during the investigation that support the final determination and can be used for validation, hunting, detection development, or follow-up analysis.
 
@@ -431,12 +427,12 @@ For a full, artifact-level breakdown of logs, alerts, and forensic indicators th
 
 ---
 
-## Detection and Hardening Opportunities
+### Detection and Hardening Opportunities
 
 This section summarizes high-level detection and hardening opportunities observed during the investigation. For detailed, actionable recommendations — including specific logging gaps, detection logic ideas, and configuration improvements — see: **`detection-and-hardening-recommendations.md`**
 
 
-### Containment Actions (Recommended)
+#### ▶ Containment Actions (Recommended)
 These actions focus on halting exploitation and cutting off attacker access.
 
 - Immediately isolate the affected host from the network.
@@ -445,7 +441,7 @@ These actions focus on halting exploitation and cutting off attacker access.
 - Preserve malicious artifacts (`printevil.dll`) and associated event logs for response analysis.
 - Revoke any credentials or service accounts observed interacting with the exploited service.
 
-### Eradication & Hardening Recommendations
+#### ▶ Eradication & Hardening Recommendations
 These steps address the abuse of trusted Windows services.
 
 - Apply security updates and patches addressing known Print Spooler vulnerabilities.
@@ -454,7 +450,7 @@ These steps address the abuse of trusted Windows services.
 - Monitor and restrict driver installation paths used by system services.
 - Limit service account privileges associated with printing infrastructure.
 
-### Detection & Monitoring Recommendations
+#### ▶ Detection & Monitoring Recommendations
 These detections focus on service abuse and post-exploitation behavior.
 
 - Alert on SMB access to `IPC$` shares targeting `spoolss` from non-administrative sources.
@@ -463,7 +459,7 @@ These detections focus on service abuse and post-exploitation behavior.
 - Monitor outbound connections initiated by system-level processes.
 - Correlate Print Spooler activity with network connections and elevated execution context.
 
-### Response Validation & Follow-Up (Optional)
+#### ▶ Response Validation & Follow-Up (Optional)
 - Review service execution and file system logs after containment to confirm no further DLL writes occur in Print Spooler directories.
 - Validate that Print Spooler is disabled or restricted on systems where it is not required.
 - Monitor for any additional outbound network connections initiated by system-level processes.
@@ -473,7 +469,9 @@ These detections focus on service abuse and post-exploitation behavior.
 
 ---
 
-## MITRE ATT&CK Mapping
+### MITRE ATT&CK Mapping
+
+**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during host-based and network telemetry analysis. Mappings are based on directly observed activity and artifacts within scope.
 
@@ -492,7 +490,11 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 - **Discovery — System Owner/User Discovery (T1033):**  
   Post-exploitation commands were executed to confirm SYSTEM-level privileges.
 
+---
+
 ### MITRE ATT&CK Mapping (Table View)
+
+**Note:** This section provides a high-level summary table of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -502,6 +504,5 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Command and Control | **Application Layer Protocol: Web (T1071.001)** | Reverse shell communication established over web protocols. |
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
-**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
-
 ---
+
