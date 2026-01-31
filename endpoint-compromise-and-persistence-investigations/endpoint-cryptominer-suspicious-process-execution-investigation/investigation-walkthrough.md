@@ -11,7 +11,26 @@ This investigation focused on a single automatically generated SIEM alert associ
 ---
 
 ### Environment, Evidence, and Tools
+
 The investigation was conducted within a Windows domain environment identified as `cybertees.local`. Evidence reviewed consisted of SIEM alert metadata and correlated Windows Security Event Logs, specifically process creation events generated under Event ID 4688. These data sources provided visibility into executable names, execution paths, user context, and host attribution. Analysis was performed using the SIEM dashboard and its built-in log correlation and filtering capabilities.
+
+#### ▶ Environment
+- Operating System: Windows (domain-joined)
+- Domain Context: cybertees.local
+- Scope: Single SIEM alert tied to a single compromised endpoint (HR_02)
+
+#### ▶ Evidence Sources
+- SIEM alert metadata (alert title, timestamp, detection context)
+- SIEM correlation rule definition / logic (keyword-based miner detection)
+- Windows Security Event Logs (Event ID 4688 – Process Creation)
+- Correlated user + host attribution fields (Chris.Fort, HR_02)
+- Execution path artifact (`C:\Users\Chris.Fort\temp\cudominer.exe`)
+
+#### ▶ Tools Used
+- SIEM dashboard – Reviewed alert details and performed log correlation/filtering
+- Windows Security telemetry (4688 via SIEM) – Validated process creation context and attribution
+- Detection rule review (SIEM) – Confirmed match logic for mining-related executable names
+
 
 ---
 
@@ -161,6 +180,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
 
