@@ -55,6 +55,7 @@ The following timeline summarizes the sequence of notable events and investigati
 
 ### Investigation Walkthrough
 
+<blockquote>
 <details>
 <summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
@@ -71,7 +72,7 @@ The following timeline summarizes the sequence of notable events and investigati
 - [9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)](#-9-encoded-powershell-decoding-and-url-extraction-cyberchef--defang)
 
 </details>
-
+</blockquote>
 
 #### ▶ 1) Dataset Familiarization (Event Count in `main`)
 The investigation began by establishing the overall dataset size in the `main` index to set expectations for scope and query performance.
@@ -510,6 +511,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
