@@ -107,6 +107,7 @@ The following timeline summarizes key attacker actions in chronological order ba
 
 ### Investigation Walkthrough
 
+<blockquote>
 <details>
 <summary><strong>📚 Walkthrough navigation (click to expand) </strong></summary>
 
@@ -147,7 +148,7 @@ The following timeline summarizes key attacker actions in chronological order ba
   - [7.1) Identifying the GitHub Author of the Malware](#-71-identifying-the-github-author-of-the-malware-q24)
 
 </details>
-
+</blockquote>
 
 #### ▶ 1) Reconnaissance Activity & Service Enumeration Analysis 
 
