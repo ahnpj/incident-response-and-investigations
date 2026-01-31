@@ -646,7 +646,7 @@ These detections focus on early identification of mailbox abuse and credential c
 ---
 
 
-### ▶ MITRE ATT&CK Mapping
+### MITRE ATT&CK Mapping
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during mailbox audit, authentication, and message trace analysis. Mappings are based on directly observed activity and artifacts within scope and reflect confirmed behaviors associated with the business email compromise.
 
 - **Initial Access — Phishing (T1566):**  
@@ -666,7 +666,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 ---
 
-### ▶ MITRE ATT&CK Mapping (Table View)
+### MITRE ATT&CK Mapping (Table View)
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -679,6 +679,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
