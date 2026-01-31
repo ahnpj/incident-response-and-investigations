@@ -107,6 +107,48 @@ The following timeline summarizes key attacker actions in chronological order ba
 
 ### Investigation Walkthrough
 
+<details>
+<summary><strong>🧭 Walkthrough navigation</strong></summary>
+
+- [1) Reconnaissance Activity & Service Enumeration Analysis](#-1-reconnaissance-activity--service-enumeration-analysis)
+  - [1.1) Reviewing FortiGate Firewall Traffic](#-11-reviewing-fortigate-firewall-traffic)
+  - [1.2) Validating Attacker's Target Ports](#-12-validating-attackers-target-ports)
+  - [1.3) Identifying Listening Services and Initial Access Vector](#-13-identifying-listening-services-and-initial-access-vector)
+  - [1.4) MITRE ATT&CK Mapping](#-14-mitre-attck-mapping)
+- [2) Initial Access Identification & Confirmation](#-2-initial-access-identification--confirmation)
+  - [2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)](#-21-finding-evidence-for-initial-access-via-valid-accounts-t1078)
+  - [2.2) MITRE ATT&CK Mapping](#-22-mitre-attck-mapping)
+- [3) Account Access & Credential Activity](#-3-account-access--credential-activity)
+  - [3.1) Identifying the Account Accessed by the Attacker](#-31-identifying-the-account-accessed-by-the-attacker)
+  - [3.2) Identifying the MITRE ATT&CK Credential Access Technique](#-32-identifying-the-mitre-attck-credential-access-technique)
+  - [3.3) Identifying the Account Created by the Attacker](#-33-identifying-the-account-created-by-the-attacker)
+  - [3.4) Identifying the MITRE ATT&CK Persistence Technique](#-34-identifying-the-mitre-attck-persistence-technique)
+  - [3.5) Identifying When the Account Was Added to the Administrators Group](#-35-identifying-when-the-account-was-added-to-the-administrators-group)
+  - [3.6) Identifying If Any Accounts Were Deleted](#-36-identifying-if-any-accounts-were-deleted)
+  - [3.7) Identifying the MITRE ATT&CK Impact Technique](#-37-identifying-the-mitre-attck-impact-technique)
+  - [3.8) Identifying the MITRE ATT&CK Detection ID](#-38-identifying-the-mitre-attck-detection-id)
+  - [3.9) Summary of Account Activity](#-39-summary-of-account-activity)
+  - [3.10) MITRE ATT&CK Mapping](#-310-mitre-attck-mapping)
+- [4) File Extraction & Malware Artifact Analysis](#-4-file-extraction--malware-artifact-analysis)
+  - [4.1) Identifying the Extracted Compressed File](#-41-identifying-the-extracted-compressed-file)
+  - [4.2) Correlating Activity Before the Extraction (Contextual Evidence)](#-42-correlating-activity-before-the-extraction-contextual-evidence)
+  - [4.3) Identifying the MITRE ATT&CK Collection Technique](#-43-identifying-the-mitre-attck-collection-technique)
+  - [4.4) Identifying the Collection Sub-Technique](#-44-identifying-the-collection-sub-technique)
+  - [4.5) Identifying Files Created from the Extraction](#-45-identifying-files-created-from-the-extraction)
+  - [4.6) Identifying the File Path of Created Files](#-46-identifying-the-file-path-of-created-files)
+- [5) Malware & File Artifact Analysis](#-5-malware--file-artifact-analysis)
+  - [5.1) Identifying the Created .sys File](#-51-identifying-the-created-sys-file-q19)
+  - [5.2) Confirming the Registry Value Creation Timestamp](#-52-confirming-the-registry-value-creation-timestamp-q20)
+  - [5.3) Confirming Registry Values Created by the Malware](#-53-confirming-registry-values-created-by-the-malware-q21)
+- [6) Persistence Technique Identification](#-6-persistence-technique-identification)
+  - [6.1) Identifying the Persistence Technique](#-61-identifying-the-persistence-technique-q22)
+  - [6.2) Identifying the Persistence Sub-Technique](#-62-identifying-the-persistence-sub-technique-q23)
+- [7) Malware Attribution](#-7-malware-attribution)
+  - [7.1) Identifying the GitHub Author of the Malware](#-71-identifying-the-github-author-of-the-malware-q24)
+
+</details>
+
+
 ### ▶ 1) Reconnaissance Activity & Service Enumeration Analysis 
 
 - [🔷 1.1) Reviewing FortiGate Firewall Traffic](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-11-reviewing-fortigate-firewall-traffic)
