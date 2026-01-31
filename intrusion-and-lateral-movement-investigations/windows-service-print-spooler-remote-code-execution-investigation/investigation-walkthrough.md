@@ -76,46 +76,29 @@ This timeline summarizes the reconstructed sequence of attacker activity based o
 <details>
 <summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
-- [1) Reconnaissance Activity & Service Enumeration Analysis](#-1-reconnaissance-activity--service-enumeration-analysis)
-  - [1.1) Reviewing FortiGate Firewall Traffic](#-11-reviewing-fortigate-firewall-traffic)
-  - [1.2) Validating Attacker's Target Ports](#-12-validating-attackers-target-ports)
-  - [1.3) Identifying Listening Services and Initial Access Vector](#-13-identifying-listening-services-and-initial-access-vector)
-  - [1.4) MITRE ATT&CK Mapping](#-14-mitre-attck-mapping)
-- [2) Initial Access Identification & Confirmation](#-2-initial-access-identification--confirmation)
-  - [2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)](#-21-finding-evidence-for-initial-access-via-valid-accounts-t1078)
-  - [2.2) MITRE ATT&CK Mapping](#-22-mitre-attck-mapping)
-- [3) Account Access & Credential Activity](#-3-account-access--credential-activity)
-  - [3.1) Identifying the Account Accessed by the Attacker](#-31-identifying-the-account-accessed-by-the-attacker)
-  - [3.2) Identifying the MITRE ATT&CK Credential Access Technique](#-32-identifying-the-mitre-attck-credential-access-technique)
-  - [3.3) Identifying the Account Created by the Attacker](#-33-identifying-the-account-created-by-the-attacker)
-  - [3.4) Identifying the MITRE ATT&CK Persistence Technique](#-34-identifying-the-mitre-attck-persistence-technique)
-  - [3.5) Identifying When the Account Was Added to the Administrators Group](#-35-identifying-when-the-account-was-added-to-the-administrators-group)
-  - [3.6) Identifying If Any Accounts Were Deleted](#-36-identifying-if-any-accounts-were-deleted)
-  - [3.7) Identifying the MITRE ATT&CK Impact Technique](#-37-identifying-the-mitre-attck-impact-technique)
-  - [3.8) Identifying the MITRE ATT&CK Detection ID](#-38-identifying-the-mitre-attck-detection-id)
-  - [3.9) Summary of Account Activity](#-39-summary-of-account-activity)
-  - [3.10) MITRE ATT&CK Mapping](#-310-mitre-attck-mapping)
-- [4) File Extraction & Malware Artifact Analysis](#-4-file-extraction--malware-artifact-analysis)
-  - [4.1) Identifying the Extracted Compressed File](#-41-identifying-the-extracted-compressed-file)
-  - [4.2) Correlating Activity Before the Extraction (Contextual Evidence)](#-42-correlating-activity-before-the-extraction-contextual-evidence)
-  - [4.3) Identifying the MITRE ATT&CK Collection Technique](#-43-identifying-the-mitre-attck-collection-technique)
-  - [4.4) Identifying the Collection Sub-Technique](#-44-identifying-the-collection-sub-technique)
-  - [4.5) Identifying Files Created from the Extraction](#-45-identifying-files-created-from-the-extraction)
-  - [4.6) Identifying the File Path of Created Files](#-46-identifying-the-file-path-of-created-files)
-- [5) Malware & File Artifact Analysis](#-5-malware--file-artifact-analysis)
-  - [5.1) Identifying the Created .sys File](#-51-identifying-the-created-sys-file-q19)
-  - [5.2) Confirming the Registry Value Creation Timestamp](#-52-confirming-the-registry-value-creation-timestamp-q20)
-  - [5.3) Confirming Registry Values Created by the Malware](#-53-confirming-registry-values-created-by-the-malware-q21)
-- [6) Persistence Technique Identification](#-6-persistence-technique-identification)
-  - [6.1) Identifying the Persistence Technique](#-61-identifying-the-persistence-technique-q22)
-  - [6.2) Identifying the Persistence Sub-Technique](#-62-identifying-the-persistence-sub-technique-q23)
-- [7) Malware Attribution](#-7-malware-attribution)
-  - [7.1) Identifying the GitHub Author of the Malware](#-71-identifying-the-github-author-of-the-malware-q24)
+- [1) Initial Triage: Attacker Infrastructure Discovery](#-1-initial-triage-attacker-infrastructure-discovery)
+  - [1.1) Identifying Attacker-Controlled Domain Context](#-11-identifying-attacker-controlled-domain-context)
+  - [1.2) Confirming Infrastructure via SMB Telemetry](#-12-confirming-infrastructure-via-smb-telemetry)
+- [2) Initial Access: Payload Delivery via Print Spooler Abuse](#-2-initial-access-payload-delivery-via-print-spooler-abuse)
+  - [2.1) Identifying the Malicious Printer Driver Payload](#-21-identifying-the-malicious-printer-driver-payload)
+- [3) Payload Staging: File System Impact and Driver Placement](#-3-payload-staging-file-system-impact-and-driver-placement)
+  - [3.1) Malicious Driver Staging within Print Spooler Directories](#-31-malicious-driver-staging-within-print-spooler-directories)
+- [4) Payload Execution and Reverse Shell Establishment](#-4-payload-execution-and-reverse-shell-establishment)
+  - [4.1) Identifying Reverse Shell Execution via Host Telemetry](#-41-identifying-reverse-shell-execution-via-host-telemetry)
+  - [4.2) Validating Reverse Shell Activity via Packet Capture Analysis (Wireshark)](#-42-validating-reverse-shell-activity-via-packet-capture-analysis-wireshark)
+- [5) SMB-Based Print Spooler Service Interaction](#-5-smb-based-print-spooler-service-interaction)
+  - [5.1) Identifying How PRint Spooler Service Was Accessed](#-51-identifying-how-print-spooler-service-was-accessed)
+- [6) Exploit Side Effects: Error Handling and Abnormal Process Behavior](#-6-exploit-side-effects-error-handling-and-abnormal-process-behavior)
+  - [6.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior](#-61-determing-if-print-spooler-service-abuse-caused-any-other-abnormal-behavior)
+- [7) Reconstructing the Exploitation Execution Chain](#-7-reconstructing-the-exploitation-execution-chain)
+- [8) Post-Exploitation Privilege Validation](#-8-post-exploitation-privilege-validation)
 
 </details>
 
 
 #### ▶ 1) Initial Triage: Attacker Infrastructure Discovery
+- [🔷 1.1) Identifying Attacker-Controlled Domain Context](#-11-identifying-attacker-controlled-domain-context)
+- [🔷 1.2) Confirming Infrastructure via SMB Telemetry](#-12-confirming-infrastructure-via-smb-telemetry)
 
 As part of the investigation, saved Windows Security event logs were reviewed to identify infrastructure involved in the simulated attack. Because one of the primary goals of detection engineering is to distinguish attacker-controlled resources from legitimate internal activity, the first step was to determine whether the affected system communicated with external or non-enterprise infrastructure.
 
@@ -180,6 +163,8 @@ Identifying this domain is critical for detection efforts. Fully qualified domai
 
 #### ▶ 2) Initial Access: Payload Delivery via Print Spooler Abuse
 
+- [🔷 2.1) Identifying the Malicious Printer Driver Payload](#-21-identifying-the-malicious-printer-driver-payload)
+
 With attacker-controlled infrastructure identified, the investigation next focuses on how the exploit was delivered to the host. This phase examines evidence of Print Spooler abuse and identifies the malicious payload introduced through the trusted printer driver mechanism.
 
 ##### 🔷 2.1) Identifying the Malicious Printer Driver Payload
@@ -216,6 +201,8 @@ Taken together, this activity suggests that the attacker abused the Print Spoole
 
 #### ▶ 3) Payload Staging: File System Impact and Driver Placement
 
+- [🔷 3.1) Malicious Driver Staging within Print Spooler Directories](#-31-malicious-driver-staging-within-print-spooler-directories)
+
 Once execution-related network activity was observed, file system artifacts were reviewed to understand where and how the malicious payload was written to disk. This section documents the staging location used by the attacker and explains its significance within the Print Spooler driver workflow.
 
 ##### 🔷 3.1) Malicious Driver Staging within Print Spooler Directories
@@ -232,6 +219,8 @@ Artifact Identified: Printer driver staging path used for malicious payload plac
 
 
 #### ▶ 4) Payload Execution and Reverse Shell Establishment
+- [🔷 4.1) Identifying Reverse Shell Execution via Host Telemetry](#-41-identifying-reverse-shell-execution-via-host-telemetry)
+- [🔷 4.2) Validating Reverse Shell Activity via Packet Capture Analysis (Wireshark)](#-42-validating-reverse-shell-activity-via-packet-capture-analysis-wireshark)
 
 After confirming payload delivery, the investigation shifts to determining whether the malicious code was executed and resulted in external communication. This section analyzes host and network telemetry to identify outbound connections consistent with reverse shell behavior.
 
@@ -290,11 +279,12 @@ Following the TCP stream in Wireshark revealed an interactive command session be
 Artifact Identified: Attacker command-and-control endpoint (`10.0.2.5:443`)
 
 
-#### ▶ 3) SMB-Based Print Spooler Service Interaction
+#### ▶ 5) SMB-Based Print Spooler Service Interaction
+- [🔷 5.1) Identifying How PRint Spooler Service Was Accessed](#-51-identifying-how-print-spooler-service-was-accessed)
 
 After confirming that the exploit resulted in an outbound reverse shell, the investigation shifted to understanding how the Print Spooler service was accessed at the network level. Because Windows printing relies on SMB for remote printer and driver operations, SMB-related Security events are a key source of evidence when investigating Print Spooler abuse.
 
-##### 🔷 3.1) Identifying How PRint Spooler Service Was Accessed
+##### 🔷 5.1) Identifying How PRint Spooler Service Was Accessed
 
 To identify evidence of Print Spooler interaction over SMB, the Windows Security log was filtered for Event ID 5145 (Detailed File Share) because this event records SMB access metadata such as:
 - `AccountName`
@@ -340,11 +330,12 @@ During review of Security Event ID 5145, two log entries were identified that me
 </blockquote>
 
 
-#### ▶ 4) Exploit Side Effects: Error Handling and Abnormal Process Behavior
+#### ▶ 6) Exploit Side Effects: Error Handling and Abnormal Process Behavior
+- [🔷 6.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior](#-61-determing-if-print-spooler-service-abuse-caused-any-other-abnormal-behavior)
 
 After confirming successful exploitation and reverse shell activity, the investigation shifted back to host-based process telemetry to understand whether the abuse of the Print Spooler service caused any secondary or abnormal process behavior. Exploits often destabilize services, which can trigger built-in Windows error-handling mechanisms, providing additional evidence of malicious activity.
 
-##### 🔷 4.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior
+##### 🔷 6.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior
 
 To identify this behavior, Sysmon process creation events (Event ID 1) were reviewed in Event Viewer. Sysmon was used for this step because it records detailed process execution metadata, including parent–child relationships and command-line context, which are not consistently available in standard Security logs.
 
@@ -379,7 +370,7 @@ Windows processes are always launched from executable files, which use the `.exe
 Identifying that `WerFault.exe` was launched by `spoolsv.exe` provides additional confirmation that a trusted Windows service was abused, the abuse caused abnormal execution behavior, and exploitation progressed far enough to destabilize the service. From a detection standpoint, unexpected parent–child relationships involving trusted services and error-handling binaries can serve as valuable indicators of exploitation activity.
 
 
-#### ▶ 5) Reconstructing the Exploitation Execution Chain
+#### ▶ 7) Reconstructing the Exploitation Execution Chain
 
 To better understand why WerFault.exe executed, the investigation remained within the Sysmon Operational logs and focused on process creation events (Event ID 1). Sysmon was used for this step because it records detailed execution metadata, including parent process relationships and command-line context, which are necessary for reconstructing execution flow after exploitation.
 
@@ -403,7 +394,7 @@ Unlike earlier system-generated processes, this command represents interactive a
 </blockquote>
 
 
-#### ▶ 6) Post-Exploitation Privilege Validation
+#### ▶ 8) Post-Exploitation Privilege Validation
 
 After confirming successful exploitation and service abuse, the final step of the investigation focused on determining the level of access gained by the attacker. Establishing the execution context is critical for assessing impact and severity.
 
@@ -547,5 +538,6 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
