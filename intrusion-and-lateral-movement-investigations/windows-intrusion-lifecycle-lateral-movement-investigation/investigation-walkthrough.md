@@ -37,11 +37,11 @@ The objective is to reconstruct attacker activity from initial reconnaissance th
 ### Environment, Evidence, and Tools
 The investigation was conducted in a Windows endpoint environment with access to both network-level and host-level telemetry. Analysis focused on correlating multiple evidence sources to reconstruct attacker behavior chronologically.
 
-**Environment**
+#### ▶ Environment
 - Operating System: Windows
 - Scope: Single compromised endpoint
 
-**Evidence Sources**
+#### ▶ Evidence Sources
 - FortiGate firewall logs
 - OpenSSH Operational logs
 - Windows Security Event Logs
@@ -49,7 +49,7 @@ The investigation was conducted in a Windows endpoint environment with access to
 - File system artifacts
 - Registry modifications
 
-**Tools Used**
+#### ▶ Tools Used
 - Windows Event Viewer – Reviewed authentication, account, and system events
 - Sysmon – Analyzed process execution, file creation, and registry activity
 - PowerShell – Performed service enumeration and validation
