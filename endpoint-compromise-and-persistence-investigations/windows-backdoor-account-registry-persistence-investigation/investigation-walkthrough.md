@@ -56,7 +56,7 @@ The following timeline summarizes the sequence of notable events and investigati
 ### Investigation Walkthrough
 
 <details>
-<summary><strong>🧭 Walkthrough Navigation (click to expand)</strong></summary>
+<summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
 - [1) Dataset Familiarization (Event Count in `main`)](#-1-dataset-familiarization-event-count-in-main)
 - [2) Backdoor Account Creation Evidence](#-2-backdoor-account-creation-evidence-command-line-and-account-management-telemetry)
@@ -510,6 +510,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
