@@ -44,11 +44,8 @@ The objective was to reconstruct attacker behavior, determine whether credential
 #### ▶ Detection Context
 
 - Analysis Tooling: JSON Crack (interactive JSON analysis)
-
-JSON Crack was used to analyze and navigate the application’s authentication logs stored in JSON format. The tool provides an interactive, structured view of nested JSON data, allowing rapid exploration of log fields without requiring custom parsing or scripting.
-
-By leveraging JSON Crack, authentication events could be quickly filtered and correlated based on source IP address, timestamps, usernames, User-Agent strings, and authentication outcomes. This enabled efficient identification of repeated failure patterns, attribution of activity to a single source, and correlation of authentication behavior across multiple log entries.
-
+- JSON Crack was used to analyze and navigate the application’s authentication logs stored in JSON format. The tool provides an interactive, structured view of nested JSON data, allowing rapid exploration of log fields without requiring custom parsing or scripting.
+- By leveraging JSON Crack, authentication events could be quickly filtered and correlated based on source IP address, timestamps, usernames, User-Agent strings, and authentication outcomes. This enabled efficient identification of repeated failure patterns, attribution of activity to a single source, and correlation of authentication behavior across multiple log entries.
 - **Alert Source:** Web application authentication logs
 - **Trigger Condition:** Elevated volume of failed login attempts
 - **Suspected Activity:** Credential brute-force or password spraying
@@ -594,5 +591,6 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
