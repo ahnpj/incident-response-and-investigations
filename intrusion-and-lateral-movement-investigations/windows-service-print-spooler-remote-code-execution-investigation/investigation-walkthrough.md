@@ -73,6 +73,7 @@ This timeline summarizes the reconstructed sequence of attacker activity based o
 
 ### Investigation Walkthrough
 
+<blockquote>
 <details>
 <summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
@@ -94,6 +95,7 @@ This timeline summarizes the reconstructed sequence of attacker activity based o
 - [8) Post-Exploitation Privilege Validation](#-8-post-exploitation-privilege-validation)
 
 </details>
+</blockquote>
 
 
 #### ▶ 1) Initial Triage: Attacker Infrastructure Discovery
@@ -538,6 +540,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
