@@ -11,18 +11,46 @@ This investigation focused on reconstructing suspicious activity observed in pre
 ---
 
 ### Environment, Evidence, and Tools
-This investigation was performed in an environment composed of multiple virtual machines supporting log analysis in Splunk. The primary system used for analysis was an AttackBox VM, which served as the main workstation for interacting with the environment, running searches, and accessing the logging interface. The AttackBox was assigned internal IP addresses `10.201.84.11` and `10.201.85.188`. The Splunk server was hosted on a separate VM accessible at `10.201.83.141`, which was used to access the Splunk web interface. A Windows VM operated in the background to generate telemetry and forward Windows event logs into Splunk; direct access to that VM was not required.
+This investigation was performed in an environment composed of multiple virtual machines supporting log analysis in Splunk. The primary system used for analysis was an AttackBox VM, which served as the main workstation for interacting with the environment, running searches, and accessing the logging interface. 
+
+The AttackBox was assigned internal IP addresses `10.201.84.11` and `10.201.85.188`. The Splunk server was hosted on a separate VM accessible at `10.201.83.141`, which was used to access the Splunk web interface. A Windows VM operated in the background to generate telemetry and forward Windows event logs into Splunk; direct access to that VM was not required.
 
 Because internal IP addresses in the environment were ephemeral and could change on restart or refresh, active IPs were verified before beginning analysis to ensure connections were made to the correct systems.
+
+#### ▶ Environment
+- Operating System: Windows (workstation telemetry analyzed via Splunk)
+- Analysis Platform: Splunk Enterprise (web interface)
+- Lab / Analyst Workstation: AttackBox VM
+  - AttackBox IPs: 10.201.84.11, 10.201.85.188
+- Logging / SIEM Server: Splunk server VM
+  - Splunk server IP: 10.201.83.141
+- Scope: Multi-host Windows dataset (pre-ingested logs), investigation limited to evidence available in `index=main`
+
+#### ▶ Evidence Sources
+- Splunk Enterprise – pre-ingested Windows telemetry (`index=main`)
+- Windows Security Event Logs
+  - Process creation (Event ID 4688)
+  - Account management (Event ID 4720)
+  - Logon validation (Event IDs 4624 / 4625)
+- Sysmon telemetry
+  - Process creation (Event ID 1)
+  - Registry activity (Event ID 12) including SAM hive artifacts
+- PowerShell logging
+  - PowerShell engine / pipeline activity (Event ID 4103)
+  - HostApplication evidence showing `-enc` Base64 payloads
+- Key artifact fields used for correlation
+  - Hostname, User, CommandLine, TargetObject (registry), HostApplication (PowerShell)
+
+#### ▶ Tools Used
+- Splunk Enterprise (web interface) – Ran searches, filtered by EventID/hostname/user, and correlated timelines across data sources
+- Windows Security logs (via Splunk) – Validated account creation, process execution context, and logon attempt evidence
+- Sysmon (via Splunk) – Correlated process creation with registry artifacts tied to the backdoor account
+- PowerShell telemetry (via Splunk) – Identified encoded execution, quantified activity volume, and extracted payload indicators
+- CyberChef – Decoded multi-layer Base64 PowerShell (`UTF-16LE`) and extracted/defanged the outbound URL
 
 <blockquote>
 When I first accessed the Splunk interface and ran a basic search against the "main" index, I noticed that event data was already present. This is expected based on how the environment is structured. The Windows VM operating in the background is configured to automatically forward its event logs into Splunk as soon as the environment becomes active. Because of that, the ingestion pipeline is already running by the time I begin my analysis, and the main index contains a baseline of system activity, service events, and any simulated malicious behavior that occurred on the host. This pre-ingested data allowed me to start reviewing events immediately without having to manually trigger log generation or configure forwarding on my own.
 </blockquote>
-
-- **Platform:** Splunk Enterprise (web interface)
-- **Data Source:** Pre-ingested Windows event logs (Security, Sysmon/registry, and PowerShell logging)
-- **Index Used:** `main`
-- **Role:** Acting as a SOC analyst / incident responder reviewing logs after a suspected compromise on a Windows endpoint.
 
 ---
 
@@ -511,6 +539,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
