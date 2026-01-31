@@ -28,13 +28,24 @@ This investigation mirrors a **post-incident SOC workflow**, where analysis is p
 
 ### Environment, Evidence, and Tools
 
-- **Identity Platform:** Azure Active Directory (Microsoft Entra ID)
-- **Email Platform:** Microsoft Exchange Online
-- **Data Sources Reviewed:**
-  - Azure AD Sign-In Logs
-  - Azure AD Audit Logs
-  - Email message artifacts
-- **Tools Used:** Azure Portal, audit log filtering, email metadata analysis
+#### ▶ Environment
+- Identity Platform: Azure Active Directory (Microsoft Entra ID)
+- Email Platform: Microsoft Exchange Online (Microsoft 365)
+- Scope: Single compromised executive mailbox (BEC scenario)
+
+#### ▶ Evidence Sources
+- Email artifacts (content + full headers)
+- Azure AD Sign-in telemetry (successful logins / source IPs)
+- Azure AD Audit Logs (mailbox configuration changes)
+- Inbox rule creation/modification events (e.g., New-InboxRule)
+- Mailbox folder manipulation events (e.g., FolderCreated)
+
+#### ▶ Tools Used
+- Thunderbird – Reviewed preserved email messages and headers offline
+- Azure Portal – Reviewed sign-ins and audit activity
+- VS Code – Searched and inspected exported audit log CSV/JSON
+- PowerShell – Parsed audit exports (e.g., Select-String) to extract rule parameters and timelines
+
 
 <blockquote>
 Analyst Note: Unlike malware-driven intrusions, BEC incidents often leave no endpoint artifacts. Identity, authentication, and email audit logs therefore become the primary sources of evidence when reconstructing attacker activity.
@@ -680,6 +691,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
