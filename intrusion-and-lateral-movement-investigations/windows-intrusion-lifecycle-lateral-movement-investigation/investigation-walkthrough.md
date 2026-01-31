@@ -108,7 +108,7 @@ The following timeline summarizes key attacker actions in chronological order ba
 ### Investigation Walkthrough
 
 <details>
-<summary><strong>🧭 Walkthrough navigation</strong></summary>
+<summary><strong>📚 Walkthrough navigation (click to expand) </strong></summary>
 
 - [1) Reconnaissance Activity & Service Enumeration Analysis](#-1-reconnaissance-activity--service-enumeration-analysis)
   - [1.1) Reviewing FortiGate Firewall Traffic](#-11-reviewing-fortigate-firewall-traffic)
