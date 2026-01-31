@@ -87,6 +87,38 @@ Based on correlated authentication and mailbox activity, the incident was classi
 
 ### Investigation Walkthrough
 
+<details>
+<summary><strong>🧭 Walkthrough navigation</strong></summary>
+
+- [1) Initial Access Analysis: Email Artifact Review](#-1-initial-access-analysis-email-artifact-review)
+- [2) Determining Investigation Approach](#-2-determining-investigation-approach)
+- [3) Identifying the Initial Phishing Email](#-3-identifying-the-initial-phishing-email)
+- [4) Extracting Sender Information from Message Headers (Artifact Identified)](#-4-extracting-sender-information-from-message-headers-artifact-identified)
+  - [4.1) Why This Is Relevant to Initial Access](#-41-why-this-is-relevant-to-initial-access)
+- [5) Compromise Classification: Determining the Type of Attack](#-5-compromise-classification-determining-the-type-of-attack)
+  - [5.1) Why Incident Classification Is Important](#-51-why-incident-classification-is-important)
+- [6) Post-Compromise Activity: Authentication Source via Azure Sign-In Logs](#-6-post-compromise-activity-authentication-source-via-azure-sign-in-logs)
+  - [6.1) Why Authentication Logs Were Reviewed](#-61-why-authentication-logs-were-reviewed)
+  - [6.2) Investigation Approach](#-62-investigation-approach)
+- [7) Identifying Threat Actor IP Addresses](#-7-identifying-threat-actor-ip-addresses)
+  - [7.1) Excluded IP Addresses (Non-Threat Actor)](#-71-excluded-ip-addresses-non-threat-actor)
+  - [7.2) Why this step matters](#-72-why-this-step-matters)
+- [8) Financial Impact: Identifying the Destination Bank](#-8-financial-impact-identifying-the-destination-bank)
+  - [8.1) Why Email Evidence Was Reviewed for Financial Attribution](#-81-why-email-evidence-was-reviewed-for-financial-attribution)
+  - [8.2) Investigation Methodology](#-82-investigation-methodology)
+  - [8.3) Identifying the Destination Bank](#-83-identifying-the-destination-bank)
+- [9) Mailbox Manipulation: Inbox Folder Creation](#-9-mailbox-manipulation-inbox-folder-creation)
+  - [9.1) Why this step matters](#-91-why-this-step-matters)
+  - [9.2) Investigation Approach](#-92-investigation-approach)
+  - [9.3) Identifying The Folder Created](#-93-identifying-the-folder-created)
+  - [9.4) Why These Findings Matter](#-94-why-these-findings-matter)
+- [10) Identifying the Inbox Rule Keyword](#-10-identifying-the-inbox-rule-keyword)
+  - [10.1) How the Rule Configuration Was Interpreted](#-101-how-the-rule-configuration-was-interpreted)
+  - [10.2) Why This Confirms Attackers Intent](#-102-why-this-confirms-attackers-intent)
+  - [10.3) Why This Matters](#-103-why-this-matters)
+
+</details>
+
 
 ### ▶ 1) Initial Access Analysis: Email Artifact Review
 
@@ -146,7 +178,6 @@ Identifying the external sender and understanding the context of the financial c
 
 With the initial access context established through email analysis, the investigation can now transition to identity telemetry to examine authenticated activity performed after the compromise.
 
-
 ### ▶ 5) Compromise Classification: Determining the Type of Attack
 
 - [5.1) Why Incident Classification Is Important](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#why-incident-classification-is-important)
@@ -163,7 +194,6 @@ Early and accurate incident classification ensures that investigative and respon
 
 Establishing the correct incident type provides a structured foundation for the remainder of the investigation and reduces the risk of misdirected analysis or missed evidence.
 
-
 ### ▶ 6) Post-Compromise Activity: Authentication Source via Azure Sign-In Logs
 
 - [6.1) Why Authentication Logs Were Reviewed](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#why-authentication-logs-were-reviewed)
@@ -178,6 +208,7 @@ Because mailbox manipulation and financial approvals can only occur after succes
 Authentication logs provide the authoritative record of how and from where an account was accessed. Unlike email artifacts, which describe attacker communication and social engineering tactics, authentication telemetry reveals the infrastructure used to establish and maintain access to the victim’s account.
 
 Although this investigation did not include a dedicated Azure AD Sign-In Logs export, successful authentication events were identifiable within the provided Azure audit log export. In this dataset, interactive login activity is recorded as `UserLoggedIn` operations, with the source IP address embedded within the event’s audit data. These events serve as the closest available equivalent to sign-in logs for reconstructing attacker access.
+
 
 #### ◆ 6.2) Investigation Approach
 
@@ -196,7 +227,6 @@ UserLoggedIn,becky.lorray@tempestasenergy.com
   <em>Figure 2</em>
 </p>
 
-
 Although the fraudulent emails appeared to originate from sabastian@flanaganspensions.co.uk, log analysis focused on Becky Lorray’s account because Business Email Compromise attacks target the victim’s internal account, not the impersonated external sender. The attacker’s goal was to abuse Becky Lorray’s authority as Chief Financial Officer to approve and process financial transactions. Azure Active Directory audit logs only record authentication and mailbox activity for internal tenant accounts, meaning no usable log data exists for the external impersonated address.
 
 <blockquote>
@@ -206,6 +236,7 @@ If Becky’s account had not been compromised or abused, there would be no mecha
 This approach ensured that only successful login events for the compromised account were reviewed, excluding activity generated by other users (such as Liam) as well as background system and service operations.
 
 Each matching `UserLoggedIn` event was then reviewed individually. For every event, the embedded audit data was examined to locate the `ClientIP` field, which records the source IP address associated with that authentication session. Because the export does not expose IP addresses as a standalone column, this step required manually inspecting the JSON payload within each event.
+
 
 ### ▶ 7) Identifying Threat Actor IP Addresses
 - [7.1) Excluded IP Addresses (Non-Threat Actor)](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-71-excluded-ip-addresses-non-threat-actor)
@@ -648,6 +679,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
