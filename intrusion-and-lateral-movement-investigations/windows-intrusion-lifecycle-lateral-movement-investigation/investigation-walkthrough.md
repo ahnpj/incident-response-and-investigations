@@ -107,19 +107,29 @@ The following timeline summarizes key attacker actions in chronological order ba
 
 ### Investigation Walkthrough
 
+This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
+
+<!--
+NOTE TO SELF: If you want to change it back, follow these steps:
+1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
+2. Remove <details>, <summary>, and <strong> tags (including closing tags)
+3. Add "####" in front of section title
+4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+-->
+
 <blockquote>
 <details>
 <summary><strong>📚 Walkthrough navigation (click to expand) </strong></summary>
 
-- [1) Reconnaissance Activity & Service Enumeration Analysis](#-1-reconnaissance-activity--service-enumeration-analysis)
+- [1) Reconnaissance Activity & Service Enumeration Analysis](#1-reconnaissance-activity--service-enumeration-analysis)
   - [1.1) Reviewing FortiGate Firewall Traffic](#-11-reviewing-fortigate-firewall-traffic)
   - [1.2) Validating Attacker's Target Ports](#-12-validating-attackers-target-ports)
   - [1.3) Identifying Listening Services and Initial Access Vector](#-13-identifying-listening-services-and-initial-access-vector)
   - [1.4) MITRE ATT&CK Mapping](#-14-mitre-attck-mapping)
-- [2) Initial Access Identification & Confirmation](#-2-initial-access-identification--confirmation)
+- [2) Initial Access Identification & Confirmation](#2-initial-access-identification--confirmation)
   - [2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)](#-21-finding-evidence-for-initial-access-via-valid-accounts-t1078)
   - [2.2) MITRE ATT&CK Mapping](#-22-mitre-attck-mapping)
-- [3) Account Access & Credential Activity](#-3-account-access--credential-activity)
+- [3) Account Access & Credential Activity](#3-account-access--credential-activity)
   - [3.1) Identifying the Account Accessed by the Attacker](#-31-identifying-the-account-accessed-by-the-attacker)
   - [3.2) Identifying the MITRE ATT&CK Credential Access Technique](#-32-identifying-the-mitre-attck-credential-access-technique)
   - [3.3) Identifying the Account Created by the Attacker](#-33-identifying-the-account-created-by-the-attacker)
@@ -130,33 +140,39 @@ The following timeline summarizes key attacker actions in chronological order ba
   - [3.8) Identifying the MITRE ATT&CK Detection ID](#-38-identifying-the-mitre-attck-detection-id)
   - [3.9) Summary of Account Activity](#-39-summary-of-account-activity)
   - [3.10) MITRE ATT&CK Mapping](#-310-mitre-attck-mapping)
-- [4) File Extraction & Malware Artifact Analysis](#-4-file-extraction--malware-artifact-analysis)
+- [4) File Extraction & Malware Artifact Analysis](#4-file-extraction--malware-artifact-analysis)
   - [4.1) Identifying the Extracted Compressed File](#-41-identifying-the-extracted-compressed-file)
   - [4.2) Correlating Activity Before the Extraction (Contextual Evidence)](#-42-correlating-activity-before-the-extraction-contextual-evidence)
   - [4.3) Identifying the MITRE ATT&CK Collection Technique](#-43-identifying-the-mitre-attck-collection-technique)
   - [4.4) Identifying the Collection Sub-Technique](#-44-identifying-the-collection-sub-technique)
   - [4.5) Identifying Files Created from the Extraction](#-45-identifying-files-created-from-the-extraction)
   - [4.6) Identifying the File Path of Created Files](#-46-identifying-the-file-path-of-created-files)
-- [5) Malware & File Artifact Analysis](#-5-malware--file-artifact-analysis)
+- [5) Malware & File Artifact Analysis](#5-malware--file-artifact-analysis)
   - [5.1) Identifying the Created .sys File](#-51-identifying-the-created-sys-file)
   - [5.2) Confirming the Registry Value Creation Timestamp](#-52-confirming-the-registry-value-creation-timestamp)
   - [5.3) Confirming Registry Values Created by the Malware](#-53-confirming-registry-values-created-by-the-malware)
-- [6) Persistence Technique Identification](#-6-persistence-technique-identification)
+- [6) Persistence Technique Identification](#6-persistence-technique-identification)
   - [6.1) Identifying the Persistence Technique](#-61-identifying-the-persistence-technique)
   - [6.2) Identifying the Persistence Sub-Technique](#-62-identifying-the-persistence-sub-technique)
-- [7) Malware Attribution](#-7-malware-attribution)
+- [7) Malware Attribution](#7-malware-attribution)
   - [7.1) Identifying the GitHub Author of the Malware](#-71-identifying-the-github-author-of-the-malware)
 
 </details>
 </blockquote>
 
-#### ▶ 1) Reconnaissance Activity & Service Enumeration Analysis 
+<details>
+<summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong></summary> </br>
 
+*Goal:* Analyze external firewall telemetry to identify targeted scanning behavior and determine which exposed services were evaluated as potential access vectors prior to compromise.
+
+<a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+
+<!--  
 - [🔷 1.1) Reviewing FortiGate Firewall Traffic](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-11-reviewing-fortigate-firewall-traffic)
 - [🔷 1.2) Validating Attacker's Target Ports](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-12-validating-attackers-target-ports)
 - [🔷 1.3) Identifying Listening Services and Initial Access Vector](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-13-identifying-listening-services-and-initial-access-vector)
 - [🔷 1.4) MITRE ATT&CK Mapping](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-14-mitre-attck-mapping)
-
+-->
 
 I began the investigation by reviewing FortiGate firewall traffic logs to determine whether the endpoint had been scanned or probed prior to compromise. At this stage, the goal was not to identify exploitation, but to assess whether an external system was attempting to enumerate exposed services on the host.
 
@@ -242,11 +258,20 @@ Active Scanning covers scenarios where an adversary probes a target from the out
 
 The firewall log evidence aligns most closely with Network Service Scanning, as the attacker focuses on a single destination host and probes a range of common service ports associated with file transfer, web services, and remote administration. Although T1046 (Network Service Discovery) correctly describes what the attacker is doing at a technical level (identifying available services), T1595 (Active Scanning) correctly describes when and where the activity occurs within the attack lifecycle. Because MITRE ATT&CK distinguishes techniques based on attacker position and phase, Active Scanning (T1595) is the appropriate reconnaissance classification for this activity.
 
+</details>
 
-#### ▶ 2) Initial Access Identification & Confirmation 
+<details>
+<summary><strong>▶ 2) Initial Access Identification & Confirmation</strong></summary></br>
 
+*Goal:* Validate how the attacker achieved the first foothold by correlating exposed services with authentication and access telemetry.
+
+
+<a id="2-initial-access-identification--confirmation"></a>
+
+<!--
 - [🔷 2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-21-finding-evidence-for-initial-access-via-valid-accounts-t1078)
 - [🔷 2.2) MITRE ATT&CK Mapping](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-22-mitre-attck-mapping)
+-->
 
 After identifying exposed services, the attacker leveraged a remote service to gain initial access to the system. Evidence shows no user interaction, phishing, or email-based delivery, indicating a **service-based entry point**. This strongly suggests that an externally accessible service was abused to establish an initial foothold on the host.
 
@@ -286,9 +311,16 @@ The presence of SSH functionality, combined with confirmation that port 22 was e
 
 Taken together, this evidence supports classification of the attacker’s initial access technique as Valid Accounts (T1078). While access occurred over a remote service (SSH), the defining factor is that the attacker successfully authenticated using credentials, not that the service itself was exploited.
 
+</details>
 
-#### ▶ 3): Account Access & Credential Activity
+<details>
+<summary><strong>▶ 3): Account Access & Credential Activity</strong></summary></br>
 
+*Goal:* Reconstruct brute-force authentication, account creation, privilege escalation, and account deletion to show how administrative control was established.
+
+<a id="3-account-access--credential-activity"></a>
+
+<!--
 - [🔷 3.1) Identifying the Account Accessed by the Attacker](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-31-identifying-the-account-accessed-by-the-attacker)
 - [🔷 3.2) Identifying the MITRE ATT&CK Credential Access Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-32-identifying-the-mitre-attck-credential-access-technique)
 - [🔷 3.3) Identifying the Account Created by the Attacker](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-33-identifying-the-account-created-by-the-attacker)
@@ -299,7 +331,8 @@ Taken together, this evidence supports classification of the attacker’s initia
 - [🔷 3.8) Identifying the MITRE ATT&CK Detection ID](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-38-identifying-the-mitre-attck-detection-id)
 - [🔷 3.9) Summary of Account Activity](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-39-summary-of-account-activity)
 - [🔷 3.10) MITRE ATT&CK Mapping](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-310-mitre-attck-mapping)
-  
+--> 
+
 After identifying that port 22 (SSH) was both probed externally and listening locally, I pivoted from “what services are exposed?” to “which credentials were actually used to gain access?” At this stage, my objective was to reconstruct how the attacker authenticated, which account they accessed, and when that first successful access occurred.
 
 While the Windows Security log (Event ID 4624) records successful logons, it can be extremely noisy and does not always clearly show service-specific authentication context (especially for SSH on Windows). Because SSH was the suspected access vector, the most authoritative source for confirming SSH authentication attempts is the: Event Viewer → Applications and Services Logs → OpenSSH → Operational.
@@ -487,14 +520,24 @@ Persistence:
 Impact:
 - Account Access Removal (T1531) – Deletion of a user account to disrupt access or reduce visibility
 
+</details>
 
-#### ▶ 4): File Extraction & Malware Artifact Analysis
+
+<details>
+<summary><strong>▶ 4): File Extraction & Malware Artifact Analysis</strong></summary></br>
+
+*Goal:* Identify when malicious archives were extracted and how malware payloads were staged on the host using Sysmon process and file creation evidence.
+
+<a id="4-file-extraction--malware-artifact-analysis"></a>
+
+<!--
 - [🔷 4.1) Identifying the Extracted Compressed File](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-41-identifying-the-extracted-compressed-file)
 - [🔷 4.2) Correlating Activity Before the Extraction (Contextual Evidence)](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-42-correlating-activity-before-the-extraction-contextual-evidence)
 - [🔷 4.3) Identifying the MITRE ATT&CK Collection Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-43-identifying-the-mitre-attck-collection-technique)
 - [🔷 4.4) Identifying the Collection Sub-Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-44-identifying-the-collection-sub-technique)
 - [🔷 4.5) Identifying Files Created from the Extraction](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-45-identifying-files-created-from-the-extraction)
 - [🔷 4.6) Identifying the File Path of Created Files](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-46-identifying-the-file-path-of-created-files)
+-->
 
 After confirming initial access, privilege escalation, and account manipulation activity, I shifted focus to identifying if there were any malware-related file artifacts created during the compromise window. The goal of this step was to determine whether any compressed archives or executables were introduced to the system following the attacker’s successful authentication and privilege escalation.
 
@@ -667,11 +710,20 @@ Because both extracted files were created within the same directory, this confir
   <em>Figure 17 - Additional payload staged in the same directory</em>
 </p>
 
+</details>
 
-#### ▶ 5) Malware & File Artifact Analysis
+<details>
+<summary><strong>▶ 5) Malware & File Artifact Analysis</strong></summary></br>
+
+*Goal:* Analyze malware components written to disk, including masquerading executables and driver files, to understand execution flow and supporting artifacts.
+
+<a id="5-malware--file-artifact-analysis"></a>
+
+<!--
 - [🔷 5.1) Identifying the Created .sys File](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-51-identifying-the-created-sys-file)
 - [🔷 5.2) Confirming the Registry Value Creation Timestamp](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-52-confirming-the-registry-value-creation-timestamp)
 - [🔷 5.3) Confirming Registry Values Created by the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-53-confirming-registry-values-created-by-the-malware)
+-->
 
 After identifying the malware files, I investigated whether the malware modified the system to support execution or persistence. 
 
@@ -755,11 +807,19 @@ Because these two registry values were:
 
 they represent the two registry values created by the malware.
 
+</details>
 
-#### ▶ 6) Persistence Technique Identification
+<details>
+<summary><strong>▶ 6) Persistence Technique Identification</strong></summary></br>
 
+*Goal:* Identify registry-based persistence mechanisms used to ensure malware execution across system restarts and user logons.
+
+<a id="#6-persistence-technique-identification"></a>
+
+<!--
 - [🔷 6.1) Identifying the Persistence Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-61-identifying-the-persistence-technique)
 - [🔷 6.2) Identifying the Persistence Sub-Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-62-identifying-the-persistence-sub-technique)
+-->
 
 After confirming registry modification, I assessed how the malware ensured it would execute again after reboot or logon.
 
@@ -789,9 +849,18 @@ These registry entries function as autorun keys, instructing Windows to execute 
 
 MITRE ATT&CK (Q23): Registry Run Keys / Startup Folder (T1547.001)
 
+</details>
 
-#### ▶ 7) Malware Attribution 
+<details>
+<summary><strong>▶ 7) Malware Attribution</strong></summary></br>
+
+*Goal:* Attribute the observed malware to public tooling by correlating filenames, execution behavior, and persistence techniques with OSINT sources.
+
+<a id="7-malware-attribution"></a>
+
+<!--
 - [🔷 7.1) Identifying the GitHub Author of the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-71-identifying-the-github-author-of-the-malware)
+-->
 
 The final step of the investigation focused on attribution.
 
@@ -811,6 +880,8 @@ This led to the discovery of a public GitHub repository containing a Windows key
 The repository was authored by the GitHub user: ajayrandhawa
 
 This step demonstrates how OSINT can be used to complement technical forensic analysis by enabling malware attribution and improving understanding of attacker tooling beyond what is observable on the compromised system alone.
+
+</details>
 
 ---
 
