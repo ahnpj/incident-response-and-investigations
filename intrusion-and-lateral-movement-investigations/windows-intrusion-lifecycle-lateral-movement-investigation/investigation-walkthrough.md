@@ -192,7 +192,7 @@ From a defender perspective, this pattern indicates that the attacker is mapping
   <img src="images/windows-host-malware-compromise-investigation-01.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 1- Firewall evidence of reconnaissance activity</em>
+  <em>Figure 1 - Firewall evidence of reconnaissance activity</em>
 </p>
 
 This activity aligns with common attacker behavior used to identify exposed services before exploitation. From a defender perspective, this suggests the attacker was identifying exposed services that could allow remote access.
@@ -219,7 +219,7 @@ This command enumerates all active network connections and listening ports on th
   <img src="images/windows-host-malware-compromise-investigation-02.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 2- PowerShell enumeration of listening services using netstat</em>
+  <em>Figure 2 - PowerShell enumeration of listening services using netstat</em>
 </p>
 
 Reviewing the output revealed several listening services, including ports 80 (HTTP), 443 (HTTPS), 445 (SMB), 3389 (RDP), and notably 22 (SSH). While some of these services are commonly present on Windows systems, SSH listening on port 22 is not enabled by default on Windows, making it stand out as a deliberate configuration and a likely access vector.
@@ -254,7 +254,7 @@ After identifying exposed services, the attacker leveraged a remote service to g
   <img src="images/windows-host-malware-compromise-investigation-03.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 3- PowerShell validation of SSH-related services on the endpoint</em>
+  <em>Figure 3 - PowerShell validation of SSH-related services on the endpoint</em>
 </p>
 
 No user interaction was required, indicating a service-based entry point rather than phishing or social engineering. 
@@ -330,7 +330,7 @@ This sequence indicates the attacker repeatedly attempted to authenticate as the
   <img src="images/windows-host-malware-compromise-investigation-04.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 4</em>
+  <em>Figure 4 - Successful SSH login to the Administrator account following failed attempts</em>
 </p>
 
 <p align="left">
@@ -352,7 +352,7 @@ In the OpenSSH/Operational log, the first successful login event for the adminis
   <img src="images/windows-host-malware-compromise-investigation-06.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 6</em>
+  <em>Figure 6 - First confirmed successful SSH login timestamp</em>
 </p>
 
 ##### 🔷 3.2) Identifying the MITRE ATT&CK Credential Access Technique
@@ -382,7 +382,7 @@ Because this account was created immediately following authenticated attacker ac
   <img src="images/windows-host-malware-compromise-investigation-07.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 7</em>
+  <em>Figure 7 - New local user account created post-access</em>
 </p>
 
 
@@ -419,7 +419,7 @@ The timestamp associated with this event represents the moment the attacker adde
   <img src="images/windows-host-malware-compromise-investigation-08.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 8</em>
+  <em>Figure 8 - Attacker-created account added to the Administrators group</em>
 </p>
 
 The attacker added the account to the admin group on 11/18/2022 at 5:15:33 PM.
@@ -439,7 +439,7 @@ Deleting a separate account after establishing persistent administrative access 
   <img src="images/windows-host-malware-compromise-investigation-09.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 9</em>
+  <em>Figure 9 - Local user account deleted during compromise</em>
 </p>
 
 
@@ -536,7 +536,7 @@ This execution occurred at 11/18/2022 5:22:40 PM, shortly after the attacker com
   <img src="images/windows-host-malware-compromise-investigation-10.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 10</em>
+  <em>Figure 10 - Extraction of "keylogger.rar" using 7-Zip</em>
 </p>
 
 ##### 🔷 4.2) Correlating Activity Before the Extraction (Contextual Evidence)
@@ -549,7 +549,7 @@ Events immediately preceding this extraction support earlier findings in the inv
   <img src="images/windows-host-malware-compromise-investigation-11.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 11</em>
+  <em>Figure 11 - SSH session handling activity during intrusion window</em>
 </p>
 
 - Account manipulation via net.exe: Example observed command: `net user sysadmin SYSADMIN123 /ADD`. This correlates directly with:
@@ -560,7 +560,7 @@ Events immediately preceding this extraction support earlier findings in the inv
   <img src="images/windows-host-malware-compromise-investigation-12.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 12</em>
+  <em>Figure 12 - Account creation activity via "net.exe"</em>
 </p>
 
 - Account cleanup activity: A later Sysmon event confirms account deletion: `net user DRB /DELETE`. This aligns with Event ID 4726 and indicates attacker cleanup behavior.
@@ -569,7 +569,7 @@ Events immediately preceding this extraction support earlier findings in the inv
   <img src="images/windows-host-malware-compromise-investigation-13.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 13</em>
+  <em>Figure 13 - Account deletion activity via "net.exe"</em>
 </p>
 
 This sequencing reinforces that `keylogger.rar` was extracted only after the attacker had full administrative control, making it part of deliberate post-exploitation activity rather than benign user behavior.
@@ -618,14 +618,14 @@ Both files were created by 7z.exe, confirming they originated from the archive e
   <img src="images/windows-host-malware-compromise-investigation-14.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 14</em>
+  <em>Figure 14 - Malicious executable created after archive extraction</em>
 </p>
 
 <p align="left">
   <img src="images/windows-host-malware-compromise-investigation-15.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 15</em>
+  <em>Figure 15 - Second executable dropped, masquerading as a system process</em>
 </p>
 
 <blockquote>
@@ -661,14 +661,14 @@ Because both extracted files were created within the same directory, this confir
   <img src="images/windows-host-malware-compromise-investigation-16.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 16</em>
+  <em>Figure 16 - Payload written to a user-writable roaming directory</em>
 </p>
 
 <p align="left">
   <img src="images/windows-host-malware-compromise-investigation-17.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 17</em>
+  <em>Figure 17 - Additional payload staged in the same directory</em>
 </p>
 
 
@@ -695,7 +695,7 @@ By correlating file creation timestamps and locations across consecutive Sysmon 
   <img src="images/windows-host-malware-compromise-investigation-18.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 18</em>
+  <em>Figure 18 - Suspicious ".sys" file created outside standard system paths</em>
 </p>
 
 MITRE ATT&CK:
@@ -733,7 +733,7 @@ At 11/18/2022 5:24:21 PM, Sysmon logged a registry value creation under the Wind
   <img src="images/windows-host-malware-compromise-investigation-19.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 19</em>
+  <em>Figure 19 - Autorun registry value created for persistence</em>
 </p>
 
 Shortly after (at 11/18/2022 5:25:43 PM), another Sysmon Event ID 13 entry appears showing a second registry value creation:
@@ -747,7 +747,7 @@ Shortly after (at 11/18/2022 5:25:43 PM), another Sysmon Event ID 13 entry appea
   <img src="images/windows-host-malware-compromise-investigation-20.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 20</em>
+  <em>Figure 20 - Second autorun registry value created</em>
 </p>
 
 These names stand out because they masquerade as legitimate Windows components, which is a common malware technique to avoid suspicion. Both registry values point to executables stored in the WPDNSE directory under the user’s roaming profile, which had already been identified as the malware drop location in previous steps.
