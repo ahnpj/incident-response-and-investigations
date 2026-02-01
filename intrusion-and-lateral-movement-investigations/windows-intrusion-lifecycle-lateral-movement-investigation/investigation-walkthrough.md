@@ -161,9 +161,9 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 </blockquote>
 
 <details>
-<summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong></summary>
- — establishing how the host was discovered and which exposed services were evaluated first
-</summary> </br>
+<summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong><br>
+ → establishing how the host was discovered and which exposed services were evaluated first
+</summary>
 
 *Goal:* Analyze external firewall telemetry to identify targeted scanning behavior and determine which exposed services were evaluated as potential access vectors prior to compromise.
 
@@ -263,8 +263,8 @@ The firewall log evidence aligns most closely with Network Service Scanning, as 
 </details>
 
 <details>
-<summary><strong>▶ 2) Initial Access Identification & Confirmation</strong>
-— validating the initial access vector by correlating service exposure with authentication activity
+<summary><strong>▶ 2) Initial Access Identification & Confirmation</strong><br>
+→ validating the initial access vector by correlating service exposure with authentication activity
 </summary></br>
 
 *Goal:* Validate how the attacker achieved the first foothold by correlating exposed services with authentication and access telemetry.
@@ -318,8 +318,8 @@ Taken together, this evidence supports classification of the attacker’s initia
 </details>
 
 <details>
-<summary><strong>▶ 3) Account Access & Credential Activity</strong>
-— reconstructing credential abuse, account manipulation, and privilege escalation after access
+<summary><strong>▶ 3) Account Access & Credential Activity</strong><br>
+→ reconstructing credential abuse, account manipulation, and privilege escalation after access
 </summary></br>
 
 *Goal:* Reconstruct brute-force authentication, account creation, privilege escalation, and account deletion to show how administrative control was established.
@@ -530,8 +530,8 @@ Impact:
 
 
 <details>
-<summary><strong>▶ 4) File Extraction & Malware Artifact Analysis</strong>
-— tracing when malicious archives were extracted and payloads staged after administrative control
+<summary><strong>▶ 4) File Extraction & Malware Artifact Analysis</strong><br>
+→ tracing when malicious archives were extracted and payloads staged after administrative control
 </summary></br>
 
 *Goal:* Identify when malicious archives were extracted and how malware payloads were staged on the host using Sysmon process and file creation evidence.
@@ -721,8 +721,8 @@ Because both extracted files were created within the same directory, this confir
 </details>
 
 <details>
-<summary><strong>▶ 5) Malware & File Artifact Analysis</strong>
-— examining malware components to understand execution flow and supporting artifacts
+<summary><strong>▶ 5) Malware & File Artifact Analysis</strong><br>
+→ examining malware components to understand execution flow and supporting artifacts
 </summary></br>
 
 *Goal:* Analyze malware components written to disk, including masquerading executables and driver files, to understand execution flow and supporting artifacts.
@@ -820,8 +820,8 @@ they represent the two registry values created by the malware.
 </details>
 
 <details>
-<summary><strong>▶ 6) Persistence Technique Identification</strong>
-— determining how registry-based persistence was established to survive reboots and logons
+<summary><strong>▶ 6) Persistence Technique Identification</strong><br>
+→ determining how registry-based persistence was established to survive reboots and logons
 </summary></br>
 
 *Goal:* Identify registry-based persistence mechanisms used to ensure malware execution across system restarts and user logons.
@@ -864,8 +864,8 @@ MITRE ATT&CK (Q23): Registry Run Keys / Startup Folder (T1547.001)
 </details>
 
 <details>
-<summary><strong>▶ 7) Malware Attribution</strong>
-— correlating observed artifacts with public tooling to identify the malware source
+<summary><strong>▶ 7) Malware Attribution</strong><br>
+→ correlating observed artifacts with public tooling to identify the malware source
 </summary></br>
 
 *Goal:* Attribute the observed malware to public tooling by correlating filenames, execution behavior, and persistence techniques with OSINT sources.
