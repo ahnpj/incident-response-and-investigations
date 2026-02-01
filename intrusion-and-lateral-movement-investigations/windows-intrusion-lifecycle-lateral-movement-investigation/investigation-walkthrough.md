@@ -250,23 +250,13 @@ The firewall log evidence aligns most closely with Network Service Scanning, as 
 
 After identifying exposed services, the attacker leveraged a remote service to gain initial access to the system. Evidence shows no user interaction, phishing, or email-based delivery, indicating a **service-based entry point**. This strongly suggests that an externally accessible service was abused to establish an initial foothold on the host.
 
-<p align="left">
-  <img src="images/windows-host-malware-compromise-investigation-03.png" 
-       style="border: 2px solid #444; border-radius: 6px;" 
-       width="800"><br>
-  <em>Figure 3 - PowerShell validation of SSH-related services on the endpoint</em>
-</p>
-
 No user interaction was required, indicating a service-based entry point rather than phishing or social engineering. 
 
 ##### 🔷 2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)
 
 To determine how the attacker achieved initial access, I investigated whether access occurred through user interaction (e.g., phishing or user-executed malware) or through authenticated use of an exposed service. Due to restrictions in the lab environment, direct access to the Windows Security event log (e.g., Event ID 4624) was not available, preventing direct validation of the authentication event itself.
 
-<blockquote>
-IMPORTANT: 
 Although direct authentication logs were unavailable in the lab environment, multiple indicators support credential-based initial access. External reconnaissance targeted port 22, local enumeration confirmed that the port was listening, and SSH-related components were present on the system. While this evidence does not conclusively prove SSH was used, it establishes a plausible credential-based access path. Subsequent attacker behavior, including account creation, privilege escalation, and account deletion, further supports the conclusion that access was achieved using valid credentials rather than exploitation or user interaction. Accordingly, the attacker’s initial access is best classified as Valid Accounts (T1078).
-</blockquote>
 
 <blockquote>
 Note on Additional Validation:
@@ -280,6 +270,13 @@ Get-Service | Where-Object {$_.Name -like "*ssh*"}
 ```
 
 This command retrieves all registered Windows services and filters the results to those with names containing “ssh”. The output confirms whether SSH components are present on the host, which helps validate the availability of SSH-based remote access. When combined with earlier evidence showing that port 22 was externally probed and actively listening, this supports the conclusion that the attacker authenticated to the system using valid credentials rather than exploiting a vulnerability or relying on user interaction.
+
+<p align="left">
+  <img src="images/windows-host-malware-compromise-investigation-03.png" 
+       style="border: 2px solid #444; border-radius: 6px;" 
+       width="800"><br>
+  <em>Figure 3 - PowerShell validation of SSH-related services on the endpoint</em>
+</p>
 
 
 ##### 🔷 2.2) MITRE ATT&CK Mapping
@@ -337,7 +334,7 @@ This sequence indicates the attacker repeatedly attempted to authenticate as the
   <img src="images/windows-host-malware-compromise-investigation-05.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 5</em>
+  <em>Figure 5 - Successful SSH login to the Administrator account following failed attempts</em>
 </p>
 
 <blockquote>
@@ -374,9 +371,9 @@ After confirming that the attacker successfully authenticated as the administrat
 
 Within Event Viewer → Windows Logs → Security, I filtered for Event ID 4720, which is generated whenever a new user account is created on a Windows system. I then reviewed the timestamps associated with these events and compared them to the timestamp of the first confirmed successful SSH login (Accepted password for administrator).
 
-Only one account creation event (Event ID 4720) occurred after the attacker gained access to the administrator account. The event details identify the newly created account as: "sysadmin".
+Only one account creation event (Event ID 4720) occurred after the attacker gained access to the administrator account. The event details identify the newly created account as: `sysadmin`.
 
-Because this account was created immediately following authenticated attacker access, and no other account creation events occurred in this timeframe, I determined that "sysadmin" was the account created by the attacker.
+Because this account was created immediately following authenticated attacker access, and no other account creation events occurred in this timeframe, I determined that `sysadmin` was the account created by the attacker.
 
 <p align="left">
   <img src="images/windows-host-malware-compromise-investigation-07.png" 
@@ -529,7 +526,7 @@ Image: C:\Program Files\7-Zip\7z.exe
 CommandLine: 7z e keylogger.rar
 ```
 
-This execution occurred at 11/18/2022 5:22:40 PM, shortly after the attacker completed privilege escalation and account manipulation actions. The use of 7z.exe with the e (extract) flag confirms that a compressed archive was extracted.
+This execution occurred at 11/18/2022 5:22:40 PM, shortly after the attacker completed privilege escalation and account manipulation actions. The use of `7z.exe` with the e (extract) flag confirms that a compressed archive was extracted.
 
 
 <p align="left">
@@ -637,23 +634,22 @@ rundll32.exe (Run DLL as application): A command-line utility used to run functi
 </blockquote>
 
 <blockquote>
-Note on rundll32.exe Usage
-The use of rundll32.exe in this investigation does not inherently indicate DLL injection or DLL hijacking. Instead, it represents living-off-the-land execution, where a legitimate Windows utility is abused to execute malicious code stored in a DLL. DLL injection involves forcing a DLL into the address space of another running process, while DLL hijacking relies on placing a malicious DLL in a location where a legitimate application will load it unintentionally. In this case, rundll32.exe is explicitly invoked to execute a DLL function, which aligns more closely with proxy execution using trusted binaries rather than injection or hijacking. I recognized this distinction based on concepts learned during my CompTIA Security+ studies, where rundll32 is highlighted as a common tool abused by threat actors to evade detection by leveraging legitimate system binaries.
+The use of "rundll32.exe" in this investigation does not inherently indicate DLL injection or DLL hijacking. Instead, it represents living-off-the-land execution, where a legitimate Windows utility is abused to execute malicious code stored in a DLL. DLL injection involves forcing a DLL into the address space of another running process, while DLL hijacking relies on placing a malicious DLL in a location where a legitimate application will load it unintentionally. In this case, "rundll32.exe" is explicitly invoked to execute a DLL function, which aligns more closely with proxy execution using trusted binaries rather than injection or hijacking. I recognized this distinction based on concepts learned during my CompTIA Security+ studies, where rundll32 is highlighted as a common tool abused by threat actors to evade detection by leveraging legitimate system binaries.
 </blockquote>
 
 ##### 🔷 4.6) Identifying the File Path of Created Files
 
 After identifying `rundll33.exe` and `svchost.exe` as the two files created from the archive extraction in the previous step, I next needed to determine where these files were written on disk. I continued reviewing subsequent Sysmon Event ID 11 (FileCreate) events to determine what actions occurred immediately afterward.
 
-Focusing on events after 11/18/2022 5:22:50 PM (the last file that was extracted), I observed additional file creation activity occurring in the same directory (`C:\Users\Administrator\AppData\Roaming\WPDNSE`). Reviewing events in sequence allowed me to confirm that the extracted executables were not isolated artifacts but part of a broader chain of attacker-driven activity following successful extraction and execution.
+Focusing on events after `11/18/2022 5:22:50 PM` (the last file that was extracted), I observed additional file creation activity occurring in the same directory (`C:\Users\Administrator\AppData\Roaming\WPDNSE`). Reviewing events in sequence allowed me to confirm that the extracted executables were not isolated artifacts but part of a broader chain of attacker-driven activity following successful extraction and execution.
 
 Initially, the `C:\Program Files\7-Zip\` directory appeared relevant because the Sysmon events showed `7z.exe` executing from that location. However, this path only represents the location of the extraction utility, not the destination of the extracted files themselves. Instead, I focused on Sysmon Event ID 11 (FileCreate) and examined the `TargetFilename` field, which records the full path of newly created files.
 
 By correlating the timestamps of these events with earlier findings—such as initial account access, privilege escalation, and account deletion—I was able to place the file activity firmly within the active compromise window rather than normal system behavior. By correlating the timestamps of these events with earlier findings—such as initial account access, privilege escalation, and account deletion—I was able to place the file activity firmly within the active compromise window rather than normal system behavior.
 
 Reviewing the FileCreate events immediately following the archive extraction activity revealed that both executables were written to the same directory under the Administrator profile. Specifically, the `TargetFilename` field showed:
-- `C:\Users\Administrator\AppData\Roaming\WPDNSE\svchost.exe` at 11/18/2022 5:24:21 PM
-- `C:\Users\Administrator\AppData\Roaming\WPDNSE\rundll33.exe` at 11/18/2022 5:25:27 PM
+- `C:\Users\Administrator\AppData\Roaming\WPDNSE\svchost.exe` at `11/18/2022 5:24:21 PM`
+- `C:\Users\Administrator\AppData\Roaming\WPDNSE\rundll33.exe` at `11/18/2022 5:25:27 PM`
 
 Because both extracted files were created within the same directory, this confirms that the archive contents were dropped into the `WPDNSE` folder under the user’s roaming `AppData` path.
 
