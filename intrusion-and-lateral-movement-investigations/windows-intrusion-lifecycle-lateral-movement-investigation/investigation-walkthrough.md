@@ -138,14 +138,14 @@ The following timeline summarizes key attacker actions in chronological order ba
   - [4.5) Identifying Files Created from the Extraction](#-45-identifying-files-created-from-the-extraction)
   - [4.6) Identifying the File Path of Created Files](#-46-identifying-the-file-path-of-created-files)
 - [5) Malware & File Artifact Analysis](#-5-malware--file-artifact-analysis)
-  - [5.1) Identifying the Created .sys File](#-51-identifying-the-created-sys-file-q19)
-  - [5.2) Confirming the Registry Value Creation Timestamp](#-52-confirming-the-registry-value-creation-timestamp-q20)
-  - [5.3) Confirming Registry Values Created by the Malware](#-53-confirming-registry-values-created-by-the-malware-q21)
+  - [5.1) Identifying the Created .sys File](#-51-identifying-the-created-sys-file)
+  - [5.2) Confirming the Registry Value Creation Timestamp](#-52-confirming-the-registry-value-creation-timestamp)
+  - [5.3) Confirming Registry Values Created by the Malware](#-53-confirming-registry-values-created-by-the-malware)
 - [6) Persistence Technique Identification](#-6-persistence-technique-identification)
-  - [6.1) Identifying the Persistence Technique](#-61-identifying-the-persistence-technique-q22)
-  - [6.2) Identifying the Persistence Sub-Technique](#-62-identifying-the-persistence-sub-technique-q23)
+  - [6.1) Identifying the Persistence Technique](#-61-identifying-the-persistence-technique)
+  - [6.2) Identifying the Persistence Sub-Technique](#-62-identifying-the-persistence-sub-technique)
 - [7) Malware Attribution](#-7-malware-attribution)
-  - [7.1) Identifying the GitHub Author of the Malware](#-71-identifying-the-github-author-of-the-malware-q24)
+  - [7.1) Identifying the GitHub Author of the Malware](#-71-identifying-the-github-author-of-the-malware)
 
 </details>
 </blockquote>
@@ -669,9 +669,9 @@ Because both extracted files were created within the same directory, this confir
 
 
 #### ▶ 5) Malware & File Artifact Analysis
-- [🔷 5.1) Identifying the Created .sys File](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-51-identifying-the-created-sys-file-q19)
-- [🔷 5.2) Confirming the Registry Value Creation Timestamp](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-52-confirming-the-registry-value-creation-timestamp-q20)
-- [🔷 5.3) Confirming Registry Values Created by the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-53-confirming-registry-values-created-by-the-malware-q21)
+- [🔷 5.1) Identifying the Created .sys File](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-51-identifying-the-created-sys-file)
+- [🔷 5.2) Confirming the Registry Value Creation Timestamp](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-52-confirming-the-registry-value-creation-timestamp)
+- [🔷 5.3) Confirming Registry Values Created by the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-53-confirming-registry-values-created-by-the-malware)
 
 After identifying the malware files, I investigated whether the malware modified the system to support execution or persistence. 
 
@@ -758,8 +758,8 @@ they represent the two registry values created by the malware.
 
 #### ▶ 6) Persistence Technique Identification
 
-- [🔷 6.1) Identifying the Persistence Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-61-identifying-the-persistence-technique-q22)
-- [🔷 6.2) Identifying the Persistence Sub-Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-62-identifying-the-persistence-sub-technique-q23)
+- [🔷 6.1) Identifying the Persistence Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-61-identifying-the-persistence-technique)
+- [🔷 6.2) Identifying the Persistence Sub-Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-62-identifying-the-persistence-sub-technique)
 
 After confirming registry modification, I assessed how the malware ensured it would execute again after reboot or logon.
 
@@ -791,7 +791,7 @@ MITRE ATT&CK (Q23): Registry Run Keys / Startup Folder (T1547.001)
 
 
 #### ▶ 7) Malware Attribution 
-- [🔷 7.1) Identifying the GitHub Author of the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-71-identifying-the-github-author-of-the-malware-q24)
+- [🔷 7.1) Identifying the GitHub Author of the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-71-identifying-the-github-author-of-the-malware)
 
 The final step of the investigation focused on attribution.
 
