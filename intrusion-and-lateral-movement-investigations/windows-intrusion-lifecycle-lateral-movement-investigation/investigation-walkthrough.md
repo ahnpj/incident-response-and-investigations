@@ -993,8 +993,8 @@ This section provides a high-level  summary of observed ATT&CK tactics and techn
 - **Why this applies (primary technique):** The OpenSSH Operational log shows:
   - Multiple Failed password for administrator from 192.168.1.33
   - Followed by Accepted password for administrator
-- The attacker did not bypass authentication, exploit a vulnerability, or reuse a known credential silently. They attempted multiple logins until one succeeded.
-- Why sub-techniques were not used: There was no evidence of password spraying across multiple accounts or credential stuffing using leaked credentials. The activity was focused on a single account.
+  - The attacker did not bypass authentication, exploit a vulnerability, or reuse a known credential silently. They attempted multiple logins until one succeeded.
+- **Why sub-techniques were not used:** There was no evidence of password spraying across multiple accounts or credential stuffing using leaked credentials. The activity was focused on a single account.
 
 (2) Valid Accounts (T1078)
 
