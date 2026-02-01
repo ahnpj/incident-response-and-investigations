@@ -968,37 +968,39 @@ This section summarizes high-level detection and hardening opportunities observe
 
 ### MITRE ATT&CK Mapping
 
+This section provides a high-level  summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`
+
 #### ▶ Reconnaissance
 
 (1) Active Scanning (T1595)
-Referenced in: Step 1 – Reconnaissance Activity Analysis
 
-- Why this applies: Firewall logs showed a single external source IP repeatedly sending TCP SYN packets to multiple common service ports (21, 22, 80, 443, 3389, 445) on the same destination host. No sessions were established and no data was exchanged, indicating external probing rather than legitimate communication. This behavior matches pre-compromise scanning to identify exposed services and potential access vectors.
-- Why this is not T1046: Network Service Discovery (T1046) applies to post-compromise internal discovery. Because the activity occurred before access and from outside the host, MITRE classifies it as Active Scanning (T1595).
+- **Referenced in:** Step 1 – Reconnaissance Activity Analysis
+- **Why this applies:** Firewall logs showed a single external source IP repeatedly sending TCP SYN packets to multiple common service ports (21, 22, 80, 443, 3389, 445) on the same destination host. No sessions were established and no data was exchanged, indicating external probing rather than legitimate communication. This behavior matches pre-compromise scanning to identify exposed services and potential access vectors.
+- **Why this is not T1046:** Network Service Discovery (T1046) applies to post-compromise internal discovery. Because the activity occurred before access and from outside the host, MITRE classifies it as Active Scanning (T1595).
 
-**Initial Access**
+#### ▶ Initial Access
 
-(2) External Remote Services (T1133)
-Referenced in: Step 2 – Initial Access Identification
+(1) External Remote Services (T1133)
 
-- Why this applies: The attacker gained access by authenticating to an externally exposed service (OpenSSH on port 22). SSH is a remote service that provides interactive access when reachable from outside the host.
+- **Referenced in:** Step 2 – Initial Access Identification
+- **Why this applies:** The attacker gained access by authenticating to an externally exposed service (OpenSSH on port 22). SSH is a remote service that provides interactive access when reachable from outside the host.
 
 #### ▶ Credential Access
 
 (1) Brute Force (T1110)
-Referenced in: Step 3 – Account Access & Credential Activity
 
-- Why this applies (primary technique): The OpenSSH Operational log shows:
+- **Referenced in:** Step 3 – Account Access & Credential Activity
+- **Why this applies (primary technique):** The OpenSSH Operational log shows:
   - Multiple Failed password for administrator from 192.168.1.33
   - Followed by Accepted password for administrator
 - The attacker did not bypass authentication, exploit a vulnerability, or reuse a known credential silently. They attempted multiple logins until one succeeded.
 - Why sub-techniques were not used: There was no evidence of password spraying across multiple accounts or credential stuffing using leaked credentials. The activity was focused on a single account.
 
 (2) Valid Accounts (T1078)
-Referenced in: Step 3 – Account Access & Credential Activity
 
-- Why this also applies: Once the brute-force attempt succeeded, the attacker authenticated using a legitimate built-in account (Administrator). From that point forward, all actions were performed under valid account context.
-- Why this is secondary (not primary): T1078 explains what the attacker used after access, not how access was gained. The initial compromise mechanism was brute force, but the attacker subsequently operated as a valid user.
+- **Referenced in:** Step 3 – Account Access & Credential Activity
+- **Why this also applies:** Once the brute-force attempt succeeded, the attacker authenticated using a legitimate built-in account (Administrator). From that point forward, all actions were performed under valid account context.
+- **Why this is secondary (not primary):** T1078 explains what the attacker used after access, not how access was gained. The initial compromise mechanism was brute force, but the attacker subsequently operated as a valid user.
 
 Including both techniques reflects the full sequence accurately:
 - T1110 → how access was achieved
@@ -1007,19 +1009,19 @@ Including both techniques reflects the full sequence accurately:
 #### ▶ Persistence
 
 (1) Create Account (T1136)
-Referenced in: Step 3 – Account Creation Analysis
 
-- Why this applies: After gaining administrative access, the attacker created a new local user account (sysadmin). Creating additional accounts is a common persistence technique used to retain access even if the original compromised credentials are discovered or reset.
+- **Referenced in:** Step 3 – Account Creation Analysis
+- **Why this applies:** After gaining administrative access, the attacker created a new local user account (sysadmin). Creating additional accounts is a common persistence technique used to retain access even if the original compromised credentials are discovered or reset.
 
 (2) Boot or Logon Autostart Execution (T1547)
-Referenced in: Step 4 – Persistence Mechanism Analysis
 
-- Why this applies: Registry analysis showed malware-created values designed to execute on system startup or user logon. These autorun locations allow code execution without user interaction. This is a classic persistence mechanism used to survive reboots.
+- **Referenced in:** Step 4 – Persistence Mechanism Analysis
+- **Why this applies:** Registry analysis showed malware-created values designed to execute on system startup or user logon. These autorun locations allow code execution without user interaction. This is a classic persistence mechanism used to survive reboots.
 
 (3) Registry Run Keys / Startup Folder (T1547.001)
-Referenced in: Step 6 – Registry Modification Analysis
 
-- Why this applies: The specific persistence mechanism involved Run/RunOnce-style registry keys, which are a defined sub-technique under T1547.
+- **Referenced in:** Step 6 – Registry Modification Analysis
+- **Why this applies:** The specific persistence mechanism involved Run/RunOnce-style registry keys, which are a defined sub-technique under T1547.
 
 This sub-technique is appropriate because:
 - The registry values were created by the malware
@@ -1029,46 +1031,46 @@ This sub-technique is appropriate because:
 #### ▶ Collection
 
 (1) Input Capture (T1056)
-Referenced in: Step 4 – File Extraction & Malware Artifact Analysis
 
-- Why this applies: The attacker extracted a compressed archive named keylogger.rar, clearly indicating the intent to capture user input. Keyloggers are designed to record keystrokes and collect sensitive data such as credentials and commands.
+- **Referenced in:** Step 4 – File Extraction & Malware Artifact Analysis
+- **Why this applies:** The attacker extracted a compressed archive named keylogger.rar, clearly indicating the intent to capture user input. Keyloggers are designed to record keystrokes and collect sensitive data such as credentials and commands.
 
 (2) Input Capture (T1056)
-Referenced in: Step 4 – File Extraction & Malware Artifact Analysis
 
-- Why this applies: The attacker extracted a compressed archive named keylogger.rar, clearly indicating the intent to capture user input. Keyloggers are designed to record keystrokes and collect sensitive data such as credentials and commands.
+- **Referenced in:** Step 4 – File Extraction & Malware Artifact Analysis
+- **Why this applies:** The attacker extracted a compressed archive named keylogger.rar, clearly indicating the intent to capture user input. Keyloggers are designed to record keystrokes and collect sensitive data such as credentials and commands.
 
 (3) Data from Local System (T1005)
-Referenced in: Step 5 – Malware & File Artifact Analysis
 
-- Why this applies: The extracted archive created multiple files locally, including executables and supporting components. These actions demonstrate access to and staging of data on the local system. Even though large-scale exfiltration was not observed, the technique covers local data access and staging, which is sufficient per MITRE.
+- **Referenced in:** Step 5 – Malware & File Artifact Analysis
+- **Why this applies:** The extracted archive created multiple files locally, including executables and supporting components. These actions demonstrate access to and staging of data on the local system. Even though large-scale exfiltration was not observed, the technique covers local data access and staging, which is sufficient per MITRE.
 
 #### ▶ Defense Evasion / Cleanup
 
 (1) Rootkit (T1014)
-Referenced in: Step 5 – Malware & File Artifact Analysis
 
-- Why this applies: The malware created a .sys file (atapi.sys) in a non-standard, user-writable directory. While the filename matches a legitimate Windows driver, its location and timing strongly indicate masquerading behavior intended to evade detection.
+- **Referenced in:** Step 5 – Malware & File Artifact Analysis
+- **Why this applies:** The malware created a .sys file (atapi.sys) in a non-standard, user-writable directory. While the filename matches a legitimate Windows driver, its location and timing strongly indicate masquerading behavior intended to evade detection.
 
 (2) Indicator Removal on Host (T1070)
-Referenced in: Step 3 – Account Deletion Analysis
 
-- Why this applies: Event ID 4726 shows that a user account was deleted shortly after privilege escalation. Removing accounts is a common cleanup technique to reduce forensic visibility and complicate investigation. Even though the attacker deleted an account they had previously used, this still constitutes host-based artifact removal.
+- **Referenced in:** Step 3 – Account Deletion Analysis
+- **Why this applies:** Event ID 4726 shows that a user account was deleted shortly after privilege escalation. Removing accounts is a common cleanup technique to reduce forensic visibility and complicate investigation. Even though the attacker deleted an account they had previously used, this still constitutes host-based artifact removal.
 
 (3) Account Access Removal (T1531)
-Referenced in: Step 3 – Account Deletion Analysis
 
-- Why this applies: The attacker deleted a user account (DRB) after establishing persistent administrative access. Removing accounts disrupts legitimate access and reduces forensic visibility, which constitutes an impact on system availability and access.
-
-**Why Certain Techniques Were NOT Used**
-
-- Credential Dumping (T1003): No LSASS access, memory dumping, or credential extraction artifacts observed.
-- Exploitation for Privilege Escalation (T1068): Privileges were gained through group membership changes, not exploits.
-- Inhibit System Recovery (T1490): No evidence of shadow copy deletion, recovery disabling, or backup tampering.
+- **Referenced in:** Step 3 – Account Deletion Analysis
+- **Why this applies:** The attacker deleted a user account (DRB) after establishing persistent administrative access. Removing accounts disrupts legitimate access and reduces forensic visibility, which constitutes an impact on system availability and access.
+- **Why Certain Techniques Were NOT Used:**
+  - Credential Dumping (T1003): No LSASS access, memory dumping, or credential extraction artifacts observed.
+  - Exploitation for Privilege Escalation (T1068): Privileges were gained through group membership changes, not exploits.
+  - Inhibit System Recovery (T1490): No evidence of shadow copy deletion, recovery disabling, or backup tampering.
 
 ---
 
 ### MITRE ATT&CK Mapping (Table View)
+
+This section provides a high-level table summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -1084,7 +1086,5 @@ Referenced in: Step 3 – Account Deletion Analysis
 | Defense Evasion | **Rootkit (T1014)** | A driver file (`atapi.sys`) was written to a non-standard, user-writable directory, masquerading as a legitimate Windows component to evade detection. |
 | Defense Evasion | **Indicator Removal on Host (T1070)** | A local user account was deleted following privilege escalation, reducing forensic visibility and complicating investigation. |
 | Impact | **Account Access Removal (T1531)** | Deletion of a legitimate user account (`DRB`) disrupted normal access and reduced defender visibility after persistence was established. |
-
-**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
