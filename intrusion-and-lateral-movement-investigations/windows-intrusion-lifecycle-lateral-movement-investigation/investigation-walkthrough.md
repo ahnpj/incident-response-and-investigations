@@ -107,16 +107,6 @@ The following timeline summarizes key attacker actions in chronological order ba
 
 ### Investigation Walkthrough
 
-This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
-
-<!--
-NOTE TO SELF: If you want to change it back, follow these steps:
-1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
-2. Remove <details>, <summary>, and <strong> tags (including closing tags)
-3. Add "####" in front of section title
-4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
--->
-
 <blockquote>
 <details>
 <summary><strong>📚 Walkthrough navigation (click to expand) </strong></summary>
@@ -159,6 +149,18 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 
 </details>
 </blockquote>
+
+This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
+
+**Note:** Each section is collapsible. Click the ▶ arrow to expand and view the detailed steps.
+
+<!--
+NOTE TO SELF: If you want to change it back, follow these steps:
+1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
+2. Remove <details>, <summary>, and <strong> tags (including closing tags)
+3. Add "####" in front of section title
+4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+-->
 
 <details>
 <summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong><br>
