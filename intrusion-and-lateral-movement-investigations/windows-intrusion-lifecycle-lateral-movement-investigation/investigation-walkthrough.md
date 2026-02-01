@@ -314,7 +314,7 @@ Taken together, this evidence supports classification of the attacker’s initia
 </details>
 
 <details>
-<summary><strong>▶ 3): Account Access & Credential Activity</strong></summary></br>
+<summary><strong>▶ 3) Account Access & Credential Activity</strong></summary></br>
 
 *Goal:* Reconstruct brute-force authentication, account creation, privilege escalation, and account deletion to show how administrative control was established.
 
@@ -524,7 +524,7 @@ Impact:
 
 
 <details>
-<summary><strong>▶ 4): File Extraction & Malware Artifact Analysis</strong></summary></br>
+<summary><strong>▶ 4) File Extraction & Malware Artifact Analysis</strong></summary></br>
 
 *Goal:* Identify when malicious archives were extracted and how malware payloads were staged on the host using Sysmon process and file creation evidence.
 
