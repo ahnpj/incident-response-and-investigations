@@ -161,7 +161,7 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 </blockquote>
 
 <details>
-<summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong>
+<summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong></summary>
  — establishing how the host was discovered and which exposed services were evaluated first
 </summary> </br>
 
