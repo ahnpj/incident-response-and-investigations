@@ -12,6 +12,14 @@ This investigation reconstructs a Business Email Compromise incident involving t
 
 ---
 
+### Scenario Context
+
+A suspected Business Email Compromise (BEC) incident was identified after multiple pension withdrawals were processed and approved using an executive’s authority, despite the transfers ultimately benefiting external bank accounts. The organization suspected account compromise (not endpoint malware) because the activity appeared “legitimate” from a workflow perspective—approvals were issued from the executive mailbox and aligned with normal finance communication patterns.
+
+The investigation was triggered by the detection of fraudulent pension-related transactions and focused on determining how the executive mailbox was abused to enable and conceal the fraud. Email artifacts, Azure AD sign-in and audit telemetry, and Exchange mailbox configuration changes were analyzed to confirm credential-based access and identify concealment mechanisms—specifically malicious inbox rules and folder manipulation used to suppress or redirect financial correspondence (e.g., withdrawal-related messages) long enough for unauthorized approvals to occur.
+
+---
+
 ### Incident Scope
 
 This investigation analyzes a simulated **Business Email Compromise (BEC)** incident involving unauthorized yet seemingly legitimate financial transactions originating from a company pension fund account.
@@ -697,6 +705,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
