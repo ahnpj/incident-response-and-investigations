@@ -13,6 +13,12 @@ Begin with `investigation-walkthrough.md` inside an investigation folder to see 
 > Investigations are grouped here when **host-level compromise and persistence mechanisms are the primary investigation focus**, not solely based on how the attacker initially gained access. Even if phishing, exploitation, or lateral movement precedes the activity, cases are categorized here when **endpoint telemetry and local artifacts drive detection, validation, and scoping**.
 -->
 
+Investigations in this category typically focus on:
+
+- **Malware execution and suspicious process behavior**, including binaries launched from abnormal locations or using suspicious command-line arguments.
+- **Persistence mechanisms**, such as registry autorun keys, scheduled tasks, service abuse, or unauthorized account creation used to maintain long-term access.
+- **Post-exploitation host activity**, where attackers leverage built-in system tools (Living-off-the-Land techniques) to blend into normal administrative behavior.
+
 Although initial access may occur elsewhere, cases are organized here when the **core investigation relies on endpoint logs and host artifacts to confirm compromise and persistence**.
 
 ---
@@ -59,4 +65,5 @@ Together, these files separate **host investigation workflow**, **artifact valid
 ### Ongoing Development
 
 Future investigations may expand into additional persistence techniques, credential dumping, or memory-based attacks. New cases will continue to reflect how endpoint compromise and post-exploitation behavior are investigated in operational SOC environments.
+
 
