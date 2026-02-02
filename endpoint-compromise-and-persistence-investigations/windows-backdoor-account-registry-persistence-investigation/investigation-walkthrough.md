@@ -131,7 +131,7 @@ This query returns a single row with a count field, providing the total number o
   <img src="images/splunk-backdoor-and-registry-investigation-01.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 1</em>
+  <em>Figure 1 - Initial dataset sizing showing total event volume in the "main" index</em>
 </p>
 
 As an alternative approach, the index could be queried directly using `index=main`, and the event count could then be referenced from the [Events] tab by viewing the count displayed next to the `Events` label.
@@ -140,7 +140,7 @@ As an alternative approach, the index could be queried directly using `index=mai
   <img src="images/splunk-backdoor-and-registry-investigation-02.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 2</em>
+  <em>Figure 2 - Alternate view of event count from the Splunk Events tab confirming data ingestion</em>
 </p>
 
 #### ▶ 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
@@ -160,7 +160,7 @@ index=main ("net user" OR "net user /add")
   <img src="images/splunk-backdoor-and-registry-investigation-03.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 3</em>
+  <em>Figure 3 - Search results highlighting command-line activity related to local account creation using "net user"</em>
 </p>
 
 ##### 🔷 2.1) Raw Event Review — Unauthorized Local Account Creation
@@ -190,7 +190,7 @@ index=main EventID=4720
   <img src="images/splunk-backdoor-and-registry-investigation-04.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 4</em>
+  <em>Figure 4 - Windows Security account management evidence confirming local user creation (Event ID 4720) and identifying the backdoor user "A1berto"</em>
 </p>
 
 Reviewing these events confirmed the creation of a new user account and clarified the username introduced as the backdoor. On one of the infected hosts, the adversary successfully created a backdoor user named `A1berto`.
@@ -209,7 +209,7 @@ index=main Hostname="Micheal.Beaven" EventID=12 A1berto
   <img src="images/splunk-backdoor-and-registry-investigation-05.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 5</em>
+  <em>Figure 5 - Sysmon registry telemetry showing the SAM hive artifact for the new account: "HKLM\SAM\SAM\Domains\Account\Users\Names\A1berto"</em>
 </p>
 
 <blockquote> 
@@ -239,7 +239,7 @@ During review of the `User` field patterns in the field sidebar, the legitimate 
   <img src="images/splunk-backdoor-and-registry-investigation-06.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 6</em>
+  <em>Figure 6 - Username comparison showing look-alike naming ("Alberto" vs "A1berto"), supporting masquerading or impersonation intent</em>
 </p>
 
 #### ▶ 5) Remote Execution Confirmation (WMIC-Based Account Creation)
@@ -266,7 +266,7 @@ Because it is native to Windows environments, it can blend into legitimate admin
   <img src="images/splunk-backdoor-and-registry-investigation-07.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 7</em>
+  <em>Figure 7 - Process creation evidence showing remote account creation via WMIC using "WMIC.exe … process call create"</em>
 </p>
 
 
@@ -284,7 +284,7 @@ index=main A1berto
   <img src="images/splunk-backdoor-and-registry-investigation-08.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 8</em>
+  <em>Figure 8 - Pivot showing events associated with the backdoor user "A1berto" to assess account usage</em>
 </p>
 
 Events tied to the username were reviewed and the `Category` field was examined to understand what types of activity were associated with that identity. If the account had been used for login activity, indicators would typically appear under categories such as `Logon/Logoff` or `Account Management`. Instead, there were no category indicators consistent with authentication activity.
@@ -293,7 +293,7 @@ Events tied to the username were reviewed and the `Category` field was examined 
   <img src="images/splunk-backdoor-and-registry-investigation-09.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 9</em>
+  <em>Figure 9 - Event category review showing absence of logon-related activity for the backdoor account</em>
 </p>
 
 To validate this conclusion using explicit Windows logon event IDs, the `EventID` field was examined for the presence of `4624` (successful logon) and `4625` (failed logon). Neither event ID appeared for the backdoor username. This absence confirmed what the `Category` field suggested: the account was created successfully but was not used for any actual login attempt during the captured timeframe. This pattern supported the interpretation that the account was staged for future access or retained as a fallback.
@@ -302,7 +302,7 @@ To validate this conclusion using explicit Windows logon event IDs, the `EventID
   <img src="images/splunk-backdoor-and-registry-investigation-10.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 10</em>
+  <em>Figure 10 - Event ID review confirming no successful or failed logons (4624 / 4625) for "A1berto"</em>
 </p>
 
 
@@ -320,7 +320,7 @@ index=main PowerShell
   <img src="images/splunk-backdoor-and-registry-investigation-11.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 11</em>
+  <em>Figure 11 - PowerShell-related event search identifying suspicious script execution activity</em>
 </p>
 
 The `Hostname` field was reviewed to identify which system generated the PowerShell telemetry. Only a single hostname consistently appeared in the results: **James.browne**. This indicated the suspicious PowerShell activity originated entirely from that machine.
@@ -329,7 +329,7 @@ The `Hostname` field was reviewed to identify which system generated the PowerSh
   <img src="images/splunk-backdoor-and-registry-investigation-12.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 12</em>
+  <em>Figure 12 - Host attribution showing all suspicious PowerShell activity originating from "James.browne"</em>
 </p>
 
 
@@ -345,7 +345,7 @@ index=main EventID=4103
   <img src="images/splunk-backdoor-and-registry-investigation-13.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 13</em>
+  <em>Figure 13 - PowerShell engine telemetry (Event ID 4103) showing volume of encoded execution events</em>
 </p>
 
 Splunk returned 79 events, all associated with the encoded payload activity. This volume suggested repeated execution or a script that generated multiple engine events while unpacking or processing instructions. Quantifying these events provided context for how visible the activity would be in environments with robust PowerShell logging enabled.
@@ -363,7 +363,7 @@ index=main PowerShell
   <img src="images/splunk-backdoor-and-registry-investigation-14.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 14</em>
+  <em>Figure 14 - Encoded PowerShell execution evidence highlighting use of the "-enc" flag and obfuscated payload</em>
 </p>
 
 Within the PowerShell events for **James.browne**, the `HostApplication` field contained a long character sequence immediately following the `-enc` flag. The `-enc` flag is used when PowerShell executes a Base64-encoded command, and the presence of a large encoded blob strongly indicated intentional obfuscation. These events also exposed pipeline context and parameter values, where multiple paths were visible in the Details section, including `/admin/get.php`, `/news.php`, and `/login/process.php`.
@@ -382,7 +382,7 @@ During decoding, the first Base64 layer surfaced several possible PHP file paths
   <img src="images/splunk-backdoor-and-registry-investigation-15.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 15</em>
+  <em>Figure 15 - CyberChef decoding of the first Base64 layer revealing embedded script logic and candidate PHP paths</em>
 </p>
 
 To complete decoding, the second Base64 blob was copied, the input was cleared, and the same recipe was applied again. This produced the fully decoded PowerShell payload and exposed the outbound web request.
@@ -391,7 +391,7 @@ To complete decoding, the second Base64 blob was copied, the input was cleared, 
   <img src="images/splunk-backdoor-and-registry-investigation-16.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 16</em>
+  <em>Figure 16 - CyberChef decoding of the second Base64 layer revealing the final outbound request destination</em>
 </p>
 
 Decoding revealed a plain-text destination pointing to `http://10.10.10.5`. The fully reconstructed destination URL was:
@@ -406,7 +406,7 @@ Before documenting the URL, it was defanged to prevent accidental clicks or dire
   <img src="images/splunk-backdoor-and-registry-investigation-17.png?raw=true&v=2" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 17</em>
+  <em>Figure 17 - Defanged outbound URL extracted from the decoded PowerShell payload</em>
 </p>
 
 
@@ -566,6 +566,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 
 
 ---
+
 
 
 
