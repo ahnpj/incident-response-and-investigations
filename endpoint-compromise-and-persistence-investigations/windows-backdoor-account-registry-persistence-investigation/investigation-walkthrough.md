@@ -3,6 +3,12 @@
 ### Executive Summary
 This investigation analyzed a suspected Windows host compromise using Splunk telemetry to determine whether an adversary established persistence through local account creation and registry activity. Evidence showed a backdoor user account was created using built-in Windows utilities, registry artifacts were written under the SAM hive consistent with the new account, and follow-on activity included encoded PowerShell execution that revealed outbound communication to a specific web resource. Security, Sysmon/registry, and PowerShell logs were correlated to reconstruct attacker behavior and document artifacts relevant to detection and response.
 
+> 👉 For a **description of the situation being investigated and what triggered this analysis**, see the **[Scenario Context](#scenario-context)** section below.
+
+> 👉 For a **mapping of observed behavior to MITRE ATT&CK techniques**, see the **[MITRE ATT&CK](#mitre-attck-mapping)** section below
+
+> 👉 For a **detailed, step-by-step walkthrough of how this investigation was conducted — complete with screenshots**, see the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
+
 ---
 
 ### Incident Scope
@@ -539,6 +545,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
