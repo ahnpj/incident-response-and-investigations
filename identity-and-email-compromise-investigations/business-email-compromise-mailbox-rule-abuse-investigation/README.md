@@ -14,7 +14,7 @@ This investigation analyzes a Business Email Compromise (BEC) incident in which 
 The analysis focuses on reconstructing attacker behavior using Microsoft Entra ID (Azure AD) authentication telemetry and Exchange Online mailbox audit logs to identify how access was obtained, how financial correspondence was concealed, and how legitimate business processes were abused to enable fraud.
 
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -119,5 +119,6 @@ This investigation demonstrates how identity and mailbox audit telemetry can rev
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate structured analytical thinking, evidence correlation across cloud telemetry sources, and professional incident documentation aligned with real operational workflows.
+
 
 
