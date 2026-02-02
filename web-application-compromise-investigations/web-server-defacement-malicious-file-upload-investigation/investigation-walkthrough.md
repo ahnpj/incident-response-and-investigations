@@ -3,9 +3,23 @@
 
 ### Executive Summary
 
-This investigation analyzes a multi-stage web server compromise that culminated in the public defacement of the domain `imreallynotbatman.com`, hosted by Wayne Enterprises. Using correlated network, web, IDS, and host telemetry within Splunk, the attack chain was reconstructed from external reconnaissance through exploitation, malware installation, command-and-control activity, and final actions on objectives.
+This investigation analyzes a multi-stage web server compromise that culminated in the public defacement of the domain `imreallynotbatman.com`, hosted by the fictional organization Wayne Enterprises. Using correlated network, web application, IDS, and host telemetry within Splunk, the attack chain was reconstructed from initial external reconnaissance through exploitation, malware deployment, command-and-control activity, and final actions on objectives.
 
-The domain `imreallynotbatman.com` was defaced in a simulated breach of Wayne Enterprises. I examined the environment and collected relevant logs to track attacker actions across the Lockheed Martin Cyber Kill Chain.
+Analysis confirmed that the attacker conducted automated vulnerability scanning against a Joomla-based web application, successfully brute-forced administrative credentials, uploaded and executed a malicious payload, and modified web content to load a defacement image from attacker-controlled infrastructure. The investigation demonstrates how disparate telemetry sources can be correlated to reconstruct a complete intrusion lifecycle and support detection, response, and reporting decisions.
+
+> 👉 For a **description of the situation being investigated and what triggered this analysis**, see the **[Scenario Context](#scenario-context)** section below.
+
+> 👉 For a **mapping of observed behavior to MITRE ATT&CK techniques**, see the **[MITRE ATT&CK](#mitre-attck-mapping)** section below
+
+> 👉 For a **detailed, step-by-step walkthrough of how this investigation was conducted — complete with screenshots**, see the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
+
+---
+
+### Scenario Context
+
+The domain `imreallynotbatman.com` was defaced as part of a simulated security incident involving a breach of Wayne Enterprises’ web infrastructure. The environment was examined and relevant logs were collected to track attacker behavior across each stage of the Lockheed Martin Cyber Kill Chain.
+
+The scenario centers on a compromised web server exhibiting signs of reconnaissance activity, authentication abuse, malicious file upload and execution, outbound communication, and visible impact in the form of website defacement. The purpose of the investigation is to establish context for the incident, define what constitutes a security event versus a confirmed incident, and provide a structured foundation for reconstructing attacker actions using Splunk-based analysis across multiple log sources.
 
 <p align="center">
   <img src="images/splunk-web-defacement-investigation-01.png?raw=true&v=2" 
@@ -17,11 +31,12 @@ The domain `imreallynotbatman.com` was defaced in a simulated breach of Wayne En
 
 This part established the context of the investigation and defined what constitutes a **security incident**. 
 
-I conducted a full end-to-end investigation of a simulated cyber incident using Splunk as my primary analysis tool. The scenario involved a web server defacement attack against `imreallynotbatman.com`, hosted by the fictional company Wayne Enterprises. My objectives were to trace the adversary’s actions through each stage of the **Lockheed Martin Cyber Kill Chain**, identify the attacker’s tactics, techniques, and procedures (TTPs), and correlate activity across multiple data sources such as HTTP logs, IDS alerts, and Sysmon telemetry. 
 
-Throughout the investigation, I performed detailed Splunk queries to uncover reconnaissance behavior, brute-force authentication attempts, malware installation, command and control (C2) communication, and the final defacement of the target system. Each query was analyzed line-by-line to understand what it revealed about the attacker’s behavior and how it maps to MITRE ATT&CK techniques. The overall objective was to strengthen my ability to think like a SOC analyst — connecting raw log data to broader threat frameworks, applying NIST SP 800-61 principles, and producing an actionable, evidence-based incident report. This investigation emphasized not only technical proficiency with Splunk but also structured analytical thinking, documentation, and professional reporting skills critical to cybersecurity operations.
+> I conducted a full end-to-end investigation of a simulated cyber incident using Splunk as my primary analysis tool. The scenario involved a web server defacement attack against `imreallynotbatman.com`, hosted by the fictional company Wayne Enterprises. My objectives were to trace the adversary’s actions through each stage of the **Lockheed Martin Cyber Kill Chain**, identify the attacker’s tactics, techniques, and procedures (TTPs), and correlate activity across multiple data sources such as HTTP logs, IDS alerts, and Sysmon telemetry. 
 
-Evidence confirms that the attacker performed automated vulnerability scanning against a Joomla-based web application, successfully brute-forced administrative credentials, uploaded and executed a malicious payload, and modified web content to retrieve a defacement image from attacker-controlled infrastructure. The investigation demonstrates how disparate log sources can be correlated to narrate a complete intrusion lifecycle and support detection and response decisions.
+> Throughout the investigation, I performed detailed Splunk queries to uncover reconnaissance behavior, brute-force authentication attempts, malware installation, command and control (C2) communication, and the final defacement of the target system. Each query was analyzed line-by-line to understand what it revealed about the attacker’s behavior and how it maps to MITRE ATT&CK techniques. The overall objective was to strengthen my ability to think like a SOC analyst — connecting raw log data to broader threat frameworks, applying NIST SP 800-61 principles, and producing an actionable, evidence-based incident report. This investigation emphasized not only technical proficiency with Splunk but also structured analytical thinking, documentation, and professional reporting skills critical to cybersecurity operations.
+
+> Evidence confirms that the attacker performed automated vulnerability scanning against a Joomla-based web application, successfully brute-forced administrative credentials, uploaded and executed a malicious payload, and modified web content to retrieve a defacement image from attacker-controlled infrastructure. The investigation demonstrates how disparate log sources can be correlated to narrate a complete intrusion lifecycle and support detection and response decisions.
 
 ---
 
@@ -1337,6 +1352,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
