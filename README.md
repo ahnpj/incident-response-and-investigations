@@ -24,7 +24,7 @@ At the top level of this repository, you’ll see folders organized by **primary
 Inside each category, every subfolder is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
 
 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how the analyst identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -207,6 +207,7 @@ Where relevant, investigations may reference related workflows to demonstrate ho
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
+
 
 
 
