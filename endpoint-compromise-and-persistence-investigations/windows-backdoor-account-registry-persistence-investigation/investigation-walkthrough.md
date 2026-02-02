@@ -335,7 +335,7 @@ Because it is native to Windows environments, it can blend into legitimate admin
 
 <details>
 <summary><strong>▶ 6) Backdoor Account Usage Review (Logon Attempt Validation)</strong><br>
- → Checking whether the backdoor account was used for authentication during the captured timeframe
+ → checking whether the backdoor account was used for authentication during the captured timeframe
 </summary><br>
 
 *Goal:* Validate presence/absence of logon activity (4624/4625) associated with the backdoor user and interpret intent (staged vs active).
@@ -664,6 +664,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 
 
 ---
+
 
 
 
