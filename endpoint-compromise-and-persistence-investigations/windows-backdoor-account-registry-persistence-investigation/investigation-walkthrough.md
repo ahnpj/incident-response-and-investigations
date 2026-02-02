@@ -117,7 +117,27 @@ The following timeline summarizes the sequence of notable events and investigati
 </details>
 </blockquote>
 
-#### ▶ 1) Dataset Familiarization (Event Count in `main`)
+This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
+
+**Note:** Each section is collapsible. Click the ▶ arrow to expand and view the detailed steps.
+
+<!--
+NOTE TO SELF: If you want to change it back, follow these steps:
+1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
+2. Remove <details>, <summary>, and <strong> tags (including closing tags)
+3. Add "####" in front of section title
+4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+-->
+
+<details>
+<summary><strong>▶ 1) Dataset Familiarization (Event Count in `main`)</strong><br>
+ → establishing dataset scope and confirm log availability in `index=main`.
+</summary><br>
+
+*Goal:* Confirm ingestion is working and estimate investigation scale before pivoting into suspicious activity.
+
+<a id="-1-dataset-familiarization-event-count-in-main"></a>
+
 The investigation began by establishing the overall dataset size in the `main` index to set expectations for scope and query performance.
 
 ```spl
@@ -143,10 +163,22 @@ As an alternative approach, the index could be queried directly using `index=mai
   <em>Figure 2 - Alternate view of event count from the Splunk Events tab confirming data ingestion</em>
 </p>
 
-#### ▶ 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)
+</details>
 
+
+<details>
+<summary><strong>▶ 2) Backdoor Account Creation Evidence (Command-Line and Account Management Telemetry)</strong><br>
+ → identifying and validating suspicious local account creation using command-line + Security telemetry
+</summary><br>
+
+*Goal:* Determine whether a new backdoor user was created, capture the exact creation command, and confirm it with account management events.
+
+<a id="-2-backdoor-account-creation-evidence-command-line-and-account-management-telemetry"></a>
+
+<!--
 - [🔷 2.1) Raw Event Review — Unauthorized Local Account Creation](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-21-raw-event-review--unauthorized-local-account-creation)
 - [🔷 2.2) Account Management Validation — Local User Creation Confirmed](https://github.com/ahnpj/incident-response-and-investigations/blob/main/endpoint-compromise-and-persistence-investigations/windows-backdoor-account-registry-persistence-investigation/investigation-walkthrough.md#-22-account-management-validation--local-user-creation-confirmed)
+-->
 
 With dataset scale established, analysis shifted toward identifying whether a new local user account was created. Because adversaries frequently use built-in commands such as `net user` for account creation, searches focused on command-line indicators and process execution telemetry.
 
@@ -195,7 +227,17 @@ index=main EventID=4720
 
 Reviewing these events confirmed the creation of a new user account and clarified the username introduced as the backdoor. On one of the infected hosts, the adversary successfully created a backdoor user named `A1berto`.
 
-#### ▶ 3) Registry Artifact Correlation (Persistence-Related Account Metadata)
+</details>
+
+
+<details>
+<summary><strong>▶ 3) Registry Artifact Correlation (Persistence-Related Account Metadata)</strong><br>
+ → Finding the exact registry key Windows created for the new backdoor account
+</summary><br>
+  
+*Goal:* Confirm persistence-related registry evidence by locating the SAM hive path tied to A1berto (from `TargetObject`) and recording the full key for reporting/hunting.
+
+<a id="-3-registry-artifact-correlation-persistence-related-account-metadata"></a>
 
 After confirming suspicious account creation, analysis pivoted to registry activity to determine whether persistence-related artifacts were present on the system. When new local accounts are introduced during intrusions, registry activity is often a high-signal area because Windows writes account and profile metadata and attackers may tamper with related keys.
 
@@ -222,8 +264,17 @@ Within returned registry event details, the relevant path stood out. Windows mai
 
 This registry key confirmed that Windows registered the newly created account, and the timing aligned with the earlier command-line evidence. In these registry events, the `TargetObject` field is the key field because it contains the full registry key or value path that was created, modified, or deleted. Without `TargetObject`, the event would indicate a registry change occurred but would not identify which key was impacted, which is why `TargetObject` was required to extract the persistence-relevant artifact.
 
+</details>
 
-#### ▶ 4) Impersonation Intent (Look-Alike Username Identification)
+
+<details>
+<summary><strong>▶ 4) Impersonation Intent (Look-Alike Username Identification)</strong><br>
+ → comparing the backdoor username against legitimate users to spot impersonation
+</summary><br>
+
+*Goal:* Determine which real user the attacker was attempting to mimic by identifying look-alike naming patterns.
+
+<a id="-4-impersonation-intent-look-alike-username-identification"></a>
 
 Once account creation and registry artifacts were established, analysis focused on identifying which legitimate identity the adversary attempted to mimic. Adversaries often select usernames that blend into normal naming patterns to reduce detection.
 
@@ -242,7 +293,17 @@ During review of the `User` field patterns in the field sidebar, the legitimate 
   <em>Figure 6 - Username comparison showing look-alike naming ("Alberto" vs "A1berto"), supporting masquerading or impersonation intent</em>
 </p>
 
-#### ▶ 5) Remote Execution Confirmation (WMIC-Based Account Creation)
+</details>
+
+
+<details>
+<summary><strong>▶ 5) Remote Execution Confirmation (WMIC-Based Account Creation)</strong><br>
+ → verifying how the backdoor account was created on the host
+</summary><br>
+
+*Goal:* Confirm the account was created remotely using WMIC and document the exact command used.
+
+<a id="-5-remote-execution-confirmation-wmic-based-account-creation"></a>
 
 The next pivot focused on how the backdoor account was created. Process creation telemetry (`Event ID 4688`) was used to identify tooling and command construction indicating remote execution.
 
@@ -269,8 +330,17 @@ Because it is native to Windows environments, it can blend into legitimate admin
   <em>Figure 7 - Process creation evidence showing remote account creation via WMIC using "WMIC.exe … process call create"</em>
 </p>
 
+</details>
 
-#### ▶ 6) Backdoor Account Usage Review (Logon Attempt Validation)
+
+<details>
+<summary><strong>▶ 6) Backdoor Account Usage Review (Logon Attempt Validation)</strong><br>
+ → Checking whether the backdoor account was used for authentication during the captured timeframe
+</summary><br>
+
+*Goal:* Validate presence/absence of logon activity (4624/4625) associated with the backdoor user and interpret intent (staged vs active).
+
+<a id="-6-backdoor-account-usage-review-logon-attempt-validation"></a>
 
 After confirming remote account creation, the investigation evaluated whether the backdoor account was used for authentication attempts during the timeframe captured in the dataset.
 
@@ -305,8 +375,17 @@ To validate this conclusion using explicit Windows logon event IDs, the `EventID
   <em>Figure 10 - Event ID review confirming no successful or failed logons (4624 / 4625) for "A1berto"</em>
 </p>
 
+</details>
 
-#### ▶ 7) Suspicious PowerShell Origin Identification (Host Attribution)
+
+<details>
+<summary><strong>▶ 7) Suspicious PowerShell Origin Identification (Host Attribution)</strong><br>
+ → identifying which host generated the suspicious PowerShell activity
+</summary><br>
+  
+*Goal:* Identify which endpoint is responsible for suspicious PowerShell activity to focus follow-on decoding and containment pivots.
+
+<a id="-7-suspicious-powershell-origin-identification-host-attribution"></a>
 
 The investigation then pivoted to PowerShell activity to determine follow-on behavior. Encoded PowerShell is frequently used to download payloads, execute scripts in memory, or conceal command intent, making PowerShell telemetry a high-value source.
 
@@ -332,8 +411,16 @@ The `Hostname` field was reviewed to identify which system generated the PowerSh
   <em>Figure 12 - Host attribution showing all suspicious PowerShell activity originating from "James.browne"</em>
 </p>
 
+</details>
 
-#### ▶ 8) Malicious PowerShell Volume Measurement (Event ID 4103)
+<details>
+<summary><strong>▶ 8) Malicious PowerShell Volume Measurement (Event ID 4103)</strong><br>
+ → measuring PowerShell engine activity to see execution frequency and investigation significance.
+</summary><br>
+
+*Goal:* Count relevant 4103 events to understand how repetitive/visible the activity is and support severity assessment.
+
+<a id="-8-malicious-powershell-volume-measurement-event-id-4103"></a>
 
 With the affected host identified, analysis measured the extent of suspicious PowerShell execution. The focus was placed on `Event ID 4103`, which logs PowerShell engine activity.
 
@@ -350,8 +437,18 @@ index=main EventID=4103
 
 Splunk returned 79 events, all associated with the encoded payload activity. This volume suggested repeated execution or a script that generated multiple engine events while unpacking or processing instructions. Quantifying these events provided context for how visible the activity would be in environments with robust PowerShell logging enabled.
 
+</details>
 
-#### ▶ 9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)
+
+<details>
+<summary><strong>▶ 9) Encoded PowerShell Decoding and URL Extraction (CyberChef + Defang)</strong><br>
+ → decoding the PowerShell payload to reveal the outbound destination.
+</summary><br>
+
+*Goal:* Extract and defang the full URL from the `-enc` payload contacted by the encoded PowerShell command, and determine the resolved endpoint.
+
+<a id="-9-encoded-powershell-decoding-and-url-extraction-cyberchef--defang"></a>
+
 
 After establishing **James.browne** as the host generating suspicious PowerShell telemetry, analysis focused on determining the outbound destination contacted by the encoded command. PowerShell events were reviewed with attention to pipeline execution details (for example, events in the PowerShell channel such as `EventID 800` that can surface execution parameters and context).
 
@@ -409,6 +506,7 @@ Before documenting the URL, it was defanged to prevent accidental clicks or dire
   <em>Figure 17 - Defanged outbound URL extracted from the decoded PowerShell payload</em>
 </p>
 
+</details>
 
 ---
 
@@ -566,6 +664,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 
 
 ---
+
 
 
 
