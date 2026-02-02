@@ -678,20 +678,30 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during mailbox audit, authentication, and message trace analysis. Mappings are based on directly observed activity and artifacts within scope and reflect confirmed behaviors associated with the business email compromise.
 
-- **Initial Access — Phishing (T1566):**  
-  Email communication impersonating a trusted third party was used to initiate contact with the victim and establish trust, as observed in the email content preceding unauthorized mailbox activity.
+#### ▶ Initial Access
 
-- **Credential Access — Valid Accounts (T1078):**  
-  Compromised credentials were successfully used to authenticate to the victim’s cloud email account, confirmed through successful login events following suspicious authentication activity.
+(1) Phishing (T1566)
+- Email communication impersonating a trusted third party was used to initiate contact with the victim and establish trust, as observed in the email content preceding unauthorized mailbox activity.
 
-- **Persistence — Mailbox Manipulation Rules (T1114.003):**  
-  Malicious inbox rules were created to automatically move or delete specific emails, including messages containing finance- and withdrawal-related keywords, allowing continued control over mailbox behavior.
+#### ▶ Credential Access
 
-- **Defense Evasion — Hide Artifacts (T1564):**  
-  Mailbox rules and message handling logic were used to conceal attacker activity by preventing security- and finance-related emails from appearing in the inbox, reducing the likelihood of user detection.
+(1) Valid Accounts (T1078)
+- Compromised credentials were successfully used to authenticate to the victim’s cloud email account, confirmed through successful login events following suspicious authentication activity.
 
-- **Impact — Financial Fraud (T1657):**  
-  Unauthorized financial activity was enabled through manipulation of email communications, resulting in attempted or successful transactions that appeared legitimate to downstream approval workflows.
+#### ▶ Persistence
+
+(1) Mailbox Manipulation Rules (T1114.003)
+- Malicious inbox rules were created to automatically move or delete specific emails, including messages containing finance- and withdrawal-related keywords, allowing continued control over mailbox behavior.
+
+#### ▶ Defense Evasion
+
+(1) Hide Artifacts (T1564) 
+- Mailbox rules and message handling logic were used to conceal attacker activity by preventing security- and finance-related emails from appearing in the inbox, reducing the likelihood of user detection.
+
+#### ▶ Impact
+
+(1) Financial Fraud (T1657) 
+- Unauthorized financial activity was enabled through manipulation of email communications, resulting in attempted or successful transactions that appeared legitimate to downstream approval workflows.
 
 ---
 
@@ -710,6 +720,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
