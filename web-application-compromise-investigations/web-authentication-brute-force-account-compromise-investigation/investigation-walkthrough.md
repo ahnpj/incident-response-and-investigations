@@ -16,17 +16,9 @@ Analysis confirmed that the activity involved automated authentication abuse, ac
 
 ### Scenario Context
 
-A potential web application account compromise was suspected after the application’s authentication telemetry showed an abnormal spike in failed login attempts over a short time window. The volume, timing, and consistency of these failures suggested automated credential abuse rather than normal user error (for example, scripted brute-force or password spraying).
+A suspected web application account compromise was identified after authentication telemetry showed an unusually high volume of failed login attempts occurring in rapid succession. The failures originated from a single external IP address and reused the same User-Agent string across attempts, indicating automated credential abuse rather than normal user behavior. The activity targeted multiple usernames, including both non-existent accounts (suggesting account enumeration) and real accounts, before transitioning into a confirmed successful login.
 
-The investigation was triggered by this elevated failure activity and focused on answering whether the attacker:
-
-- Identified valid usernames through repeated login attempts (account enumeration),
-- Successfully authenticated to at least one real account,
-- Reused compromised credentials from additional infrastructure, and
-- Benefited from insecure credential handling within the application’s own logs.
-
-Because only application-layer authentication logs were available (JSON + HTTP metadata) and no host or network forensics were in scope, the investigation centered on correlating login outcomes, usernames, User-Agent strings, targeted endpoints, and source IP behavior to reconstruct the full authentication-abuse sequence leading to confirmed account compromise.
-
+The investigation was triggered by this elevated failure pattern and focused on reconstructing the full attack sequence using only application-layer authentication logs and HTTP request metadata. The goal was to determine whether credentials were successfully obtained and reused from a secondary source, identify the authentication endpoint being abused, and validate whether insecure credential handling in the logs (reversible “hashed_password” values) contributed to the compromise and enabled follow-on access.
 
 ---
 
@@ -613,6 +605,7 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
