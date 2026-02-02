@@ -13,14 +13,8 @@ This investigation analyzes abuse of a trusted Windows service that resulted in 
 
 The analysis focuses on reconstructing attacker behavior using correlated host-based telemetry and network traffic, with emphasis on how legitimate Windows services can be abused to deliver payloads, execute code, and establish command-and-control channels.
 
-The investigation demonstrates how an analyst:
-- Identifies service abuse through SMB and file system telemetry
-- Distinguishes malicious driver files from legitimate Windows components
-- Confirms execution of attacker-supplied code through trusted services
-- Correlates host execution with network-level command-and-control activity
-
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -33,6 +27,12 @@ Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mappi
 
 > 👉 **Use this repository as case-based learning**  
 These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+
+The investigation demonstrates how an analyst:
+- Identifies service abuse through SMB and file system telemetry
+- Distinguishes malicious driver files from legitimate Windows components
+- Confirms execution of attacker-supplied code through trusted services
+- Correlates host execution with network-level command-and-control activity
 
 ---
 
@@ -121,5 +121,6 @@ This investigation demonstrates how defenders can detect exploitation of native 
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate structured host and network analysis, service abuse detection, and professional incident documentation aligned with operational security workflows.
+
 
 
