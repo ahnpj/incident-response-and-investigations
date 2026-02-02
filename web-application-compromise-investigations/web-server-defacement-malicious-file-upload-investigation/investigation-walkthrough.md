@@ -26,7 +26,7 @@ The scenario centers on a compromised web server exhibiting signs of reconnaissa
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="600"><br>
-  <em>Figure 1</em>
+  <em>Figure 1 - Server Defacement</em>
 </p>
 
 This part established the context of the investigation and defined what constitutes a **security incident**. 
@@ -96,18 +96,11 @@ In Splunk’s Search & Reporting app I confirmed the index=botsv1 dataset with `
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
+  <em>Confirmation that the BOTSv1 dataset is loaded and available for investigation</em>
 
 ##### 🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)
 
 My goal here is to quickly confirm  whether the target is reachable from the AttackBox (verifies network connectivity and that the VM is up).
-
-<p align="left">
-  <img src="images/splunk-web-defacement-investigation-02.png?raw=true&v=2" 
-       alt="SIEM alert" 
-       style="border: 2px solid #444; border-radius: 6px;" 
-       width="500"><br>
-  <em>Figure 2</em>
-</p>
 
 ```bash
 ping -c 3 10.201.17.82
@@ -116,18 +109,18 @@ ping -c 3 10.201.17.82
 - `-c 3` — Limits the ping to 3 ICMP packets so the test is quick and concise.
 - `10.201.17.82` — Target IP assigned to the analysis VM.
 
+<p align="left">
+  <img src="images/splunk-web-defacement-investigation-02.png?raw=true&v=2" 
+       alt="SIEM alert" 
+       style="border: 2px solid #444; border-radius: 6px;" 
+       width="500"><br>
+  <em>Figure 2 - AttackBox ping test confirming the target host is reachable</em>
+</p>
+
 
 ##### 🔷 Discovering Open Ports via Nmap (Attackbox Linux Bash terminal)
 
 I also wanted to  enumerate which ports are open and which services are listening so I know where to focus further testing (web, SSH, custom services, etc.).
-
-<p align="left">
-  <img src="images/splunk-web-defacement-investigation-03.png?raw=true&v=2" 
-       alt="SIEM alert" 
-       style="border: 2px solid #444; border-radius: 6px;" 
-       width="500"><br>
-  <em>Figure 3</em>
-</p>
 
 ```bash
 nmap -sS -sV -p- 10.201.17.82
@@ -138,18 +131,18 @@ nmap -sS -sV -p- 10.201.17.82
 - `-p-` — Scan every TCP port (1–65535). Useful if you want a full port sweep rather than just common ports.
 - `10.201.17.82` — The target IP.
 
+<p align="left">
+  <img src="images/splunk-web-defacement-investigation-03.png?raw=true&v=2" 
+       alt="SIEM alert" 
+       style="border: 2px solid #444; border-radius: 6px;" 
+       width="500"><br>
+  <em>Figure 3 - Nmap scan identifying open ports and exposed services on the web server</em>
+</p>
+
 
 ##### 🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)
 
 My goal here is to try verifying that the web server is present, inspect response headers (server, cookies, redirects, status codes), and quickly retrieve pages for manual review or to inform later automated testing.
-
-<p align="left">
-  <img src="images/splunk-web-defacement-investigation-04.png?raw=true&v=2" 
-       alt="SIEM alert" 
-       style="border: 2px solid #444; border-radius: 6px;" 
-       width="500"><br>
-  <em>Figure 4</em>
-</p>
 
 ```bash
 curl -I http://10.201.17.82
@@ -160,18 +153,18 @@ curl http://10.201.17.82/index.php
 - `http://10.201.17.82` — The target’s web root. If a web service listens on a nonstandard port, include `:port` (for example `http://10.201.17.82:8000`).
 - `http://10.201.17.82/index.php` — Example path to fetch a specific page or endpoint to see content or responses.
 
+<p align="left">
+  <img src="images/splunk-web-defacement-investigation-04.png?raw=true&v=2" 
+       alt="SIEM alert" 
+       style="border: 2px solid #444; border-radius: 6px;" 
+       width="500"><br>
+  <em>Figure 4 - Curl request validating HTTP service responsiveness and headers</em>
+</p>
+
 
 ##### 🔷 Testing Specific TCP Ports via netcat (AttackBox Linux Bash terminal)
 
 I wanted quick verification of whether a specific port is accepting TCP connections (faster than a full nmap when you want to check individual services).
-
-<p align="left">
-  <img src="images/splunk-web-defacement-investigation-05.png?raw=true&v=2" 
-       alt="SIEM alert" 
-       style="border: 2px solid #444; border-radius: 6px;" 
-       width="500"><br>
-  <em>Figure 5</em>
-</p>
 
 ```bash
 nc -vz 10.201.17.82 80
@@ -181,6 +174,14 @@ nc -vz 10.201.17.82 22
 - `-v` — Verbose output to show connection attempts and results.
 - `-z` — Zero-I/O mode: used for scanning/listening without sending data (useful for quick port checks).
 - `10.201.17.82 80` — Target IP and port to test (80 = HTTP).
+
+<p align="left">
+  <img src="images/splunk-web-defacement-investigation-05.png?raw=true&v=2" 
+       alt="SIEM alert" 
+       style="border: 2px solid #444; border-radius: 6px;" 
+       width="500"><br>
+  <em>Figure 5 - Netcat checks confirming TCP connectivity to HTTP and SSH ports</em>
+</p>
 
 ##### 🔷 Practical Checklist I Used
 - Deploy the target VM and copy the target IP. 
@@ -299,7 +300,7 @@ imreallynotbatman.com
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 6</em>
+  <em>Figure 6 - Initial Splunk search returning events related to the target domain</em>
 </p>
 
 This returned several sourcetypes, including `suricata`, `stream:http`, `fortigate_utm`, and `iis`. 
@@ -309,7 +310,7 @@ This returned several sourcetypes, including `suricata`, `stream:http`, `fortiga
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 7</em>
+  <em>Figure 7 - Overview of relevant sourcetypes associated with the target domain</em>
 </p>
 
 
@@ -322,7 +323,7 @@ I first limited my query to `HTTP` traffic using `sourcetype=stream:http` to foc
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 8</em>
+  <em>Figure 8 - HTTP traffic showing primary source IPs communicating with the web server</em>
 </p>
 
 ```spl
@@ -339,7 +340,7 @@ From this search, I identified two IPs (`40.80.148.42` and `23.22.63.114`)
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 9</em>
+  <em>Figure 9 - Identification of the primary attacker IP generating the majority of HTTP requests</em>
 </p>
 
 ##### 🔷 1.3) Reconnaissance Phase Step 3
@@ -359,7 +360,7 @@ sourcetype:suricata
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 10: This query will show the logs from the suricata log source that are from the source IP 40.80.248.42</em>
+  <em>Figure 10: Suricata IDS results confirming reconnaissance and vulnerability scanning activity</em>
 </p>
 
 After using the Suricata IDS logs, and then filtering events generated by the source IP `40.80.148.42`, I found 46 distinct alert signatures under the `alert.signature` field. These included exploit attempts (active recon) such as Cross-Site Scripting, SQL Injection, XXE, and Shellshock (CVE-2014-6271). Most likely to test or exploit vulnerabilities. 
@@ -371,7 +372,7 @@ The large number of repeated detections and variety of triggered signatures conf
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 11</em>
+  <em>Figure 11 - Multiple IDS signatures triggered by the attacker during active scanning</em>
 </p>
 
 While reviewing Suricata events for source IP `40.80.148.42`, one of the first alerts observed was “SURICATA HTTP Host header invalid.” This alert typically appears when an HTTP request contains a malformed or empty Host header, which is something normal browsers rarely do. 
@@ -383,7 +384,7 @@ HTTP requests with empty headers are common with automated vulnerability scanner
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 12</em>
+  <em>Figure 12 - Malformed HTTP header alert indicating automated reconnaissance behavior</em>
 </p>
 
 Because this activity doesn’t exploit a specific vulnerability but instead maps and tests the server’s behavior, it’s a strong indicator of active reconnaissance.
@@ -441,7 +442,7 @@ This query was used to identify which client IPs accessed the domain name, and t
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 13</em>
+  <em>Figure 13 - Source IP frequency analysis highlighting dominant attacker traffic</em>
 </p>
 
 ```spl
@@ -471,7 +472,7 @@ dest_ip="192.168.250.70"
   <img src="images/splunk-web-defacement-investigation-14.png?raw=true&v=2" width="45%">
   <img src="images/splunk-web-defacement-investigation-15.png?raw=true&v=2" width="45%">
   <br>
-  <sub>Figure 14 (left) & Figure 15 (right)</sub>
+  <sub>Figure 14 (left) & Figure 15 (right) - Inbound HTTP traffic targeting the web server destination IP + HTTP method distribution showing heavy use of POST requests</sub>
 </p>
 
 _<b>Third query</b>_ 
@@ -494,7 +495,7 @@ http_method=POST
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 16</em>
+  <em>Figure 16 - POST request attribution confirming attacker IPs submitting form data</em>
 </p>
 
 
@@ -535,7 +536,7 @@ uri="/joomla/administrator/index.php"
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 17</em>
+  <em>Figure 17 - Access attempts to the Joomla administrative login endpoint</em>
 </p>
 
 _<b>Second query</b>_
@@ -562,7 +563,7 @@ uri="/joomla/administrator/index.php"
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 18</em>
+  <em>Figure 18 - Captured form data showing repeated credential submission attempts</em>
 </p>
 
 <blockquote>
@@ -606,7 +607,7 @@ I filtered HTTP POST traffic to `dest_ip=192.168.250.70` and the Joomla admin UR
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 19</em>
+  <em>Figure 19 - Extracted username and password values from authentication attempts</em>
 </p>
 
 
@@ -655,7 +656,7 @@ form_data=*username*passwd*
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 20</em>
+  <em>Figure 20 - Password extraction results revealing brute force credential attempts</em>
 </p>
 
 _<b>Second query</b>_ 
@@ -695,7 +696,7 @@ form_data=*username*passwd*
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 21</em>
+  <em>Figure 21 - User agent analysis distinguishing automated scripts from browser access</em>
 </p>
 
 This result clearly shows a continuous brute-force attack attempt from an IP `23.22.63.114` using what appears to be a python script. 1 login attempt from IP `40.80.148.42` using the Mozilla browser. The successful credentials were `admin : batman`, originating from `40.80.148.42`.
@@ -768,7 +769,7 @@ dest_ip="192.168.250.70" *.exe
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 22</em>
+  <em>Figure 22 - HTTP file upload activity identifying suspicious executable transfers</em>
 </p>
 
 I examined the `part_filename{}` field in Splunk to identify any files transferred over the network during the activity. The results displayed two filenames: `3791.exe` and `agent.php`, which appear to be executable files in HTTP traffic that were either downloaded or executed on the web server.
@@ -800,7 +801,7 @@ dest_ip="192.168.250.70"
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 23</em>
+  <em>Figure 23 - Attribution of malicious executable upload to the attacker IP</em>
 </p>
 
 I checked the `c_ip` (client IP address) field to see which host on the network requested or downloaded `3791.exe`. This allowed me to trace the origin of the activity within the environment. They were uploaded by the attacker IP `40.80.148.42`.
@@ -844,7 +845,7 @@ index=botsv1
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 24</em>
+  <em>Figure 24 - Cross sourcetype visibility confirming host interaction with the uploaded file</em>
 </p>
 
 
@@ -876,7 +877,7 @@ This query will look for the process creation logs containing the term `3791.exe
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 25</em>
+  <em>Figure 25 - Sysmon process creation event confirming execution of the malicious binary</em>
 </p>
 
 I examined the `CommandLine` field to verify how `3791.exe` was executed on the host system. This field shows the exact command used to launch a process. Checking it provided clear evidence that the executable was actually run, which is crucial for understanding attacker behavior and intent.
@@ -888,7 +889,7 @@ When examining the `CommandLine` field for `3791.exe`, I clicked the entry itsel
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 26</em>
+  <em>Figure 26 - Command line and hash evidence validating successful malware execution</em>
 </p>
 
 
@@ -905,7 +906,7 @@ To gather additional intelligence, I submitted the retrieved hash value of the e
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 27</em>
+  <em>Figure 27 - VirusTotal enrichment results confirming malicious file classification</em>
 </p>
 
 I learned how to validate malware execution through cross‑referencing network and endpoint data sources in Splunk. Sysmon Event ID 1 is a reliable indicator for process creation and should almost always be monitored in production environments using detection rules aligned with **MITRE ATT&CK T1059 (Command and Scripting Interpreter)**. This phase also illustrates **Security+ Domain 2.2 (Analyze Indicators of Malware)** and connected to the *Eradication** phase of the NIST Incident Response Lifecycle.
@@ -946,7 +947,7 @@ This query looks at inbound network traffic going to the web server 192.168.250.
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 28</em>
+  <em>Figure 28 - Inbound IDS traffic review showing no direct external defacement delivery</em>
 </p>
 
 This was unusual as the logs did not show any external IP communicating with the server.
@@ -974,7 +975,7 @@ This query revealed outbound requests to `prankglassinebracket.jumpingcrab
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 29</em>
+  <em>Figure 29 - Outbound server initiated connection retrieving the defacement image</em>
 </p>
 
 What was interesting about this output is that web servers don't usually originate traffic. The browser or client would originate the traffic as the source and the server would be the destination. I noticed immediately that the web server initiated large traffic to `40.80.148.42`, `22.23.63.114`, and `192.168.250.40`. 
@@ -997,7 +998,7 @@ dest_ip=23.22.63.114
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 30</em>
+  <em>Figure 30 - Outbound communication to attacker infrastructure confirming defacement source</em>
 </p>
 
 <blockquote>
@@ -1025,7 +1026,7 @@ dest_ip="192.168.250.70"
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 31</em>
+  <em>Figure 31 - Correlation of defacement image retrieval from attacker controlled domain</em>
 </p>
 
 <blockquote>
@@ -1050,7 +1051,7 @@ sourcetype=fortigate_utm
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 32</em>
+  <em>Figure 32 - Firewall logs confirming outbound traffic permitted from the compromised server</em>
 </p>
 
 
@@ -1112,7 +1113,7 @@ Immediately I noticed I could see the source IP (`src_ip`), the destination IP (
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 33</em>
+  <em>Figure 33 - Fortigate logs linking defacement artifact to command and control infrastructure</em>
 </p>
 
 
@@ -1137,7 +1138,7 @@ I identified the suspicious domain as the C2 server, which seems to where the at
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 34</em>
+  <em>Figure 34 - HTTP telemetry confirming sustained communication with attacker infrastructure</em>
 </p>
 
 ##### 🔷 Command and Control (C2) Phase Findings & Analysis 
@@ -1362,6 +1363,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
