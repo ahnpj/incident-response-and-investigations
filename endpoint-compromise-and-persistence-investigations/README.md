@@ -2,14 +2,16 @@
 
 This folder contains investigations where the **primary detection surface and evidence source is host-level telemetry from Windows endpoints**. These cases simulate how SOC analysts identify, validate, and scope suspicious activity occurring directly on compromised systems using endpoint logs and local artifacts.
 
+> 👉 **Each folder represents one complete investigation**  
+Every subfolder here is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
+
+> 👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+
+<!--
 > **Note on categorization:**  
 > Investigations are grouped here when **host-level compromise and persistence mechanisms are the primary investigation focus**, not solely based on how the attacker initially gained access. Even if phishing, exploitation, or lateral movement precedes the activity, cases are categorized here when **endpoint telemetry and local artifacts drive detection, validation, and scoping**.
-
-Investigations in this category typically focus on:
-
-- **Malware execution and abnormal process behavior**, including suspicious binaries, unusual execution paths, and anomalous command-line activity  
-- **Persistence mechanisms**, such as registry autoruns, scheduled tasks, service abuse, or unauthorized account creation used to maintain access  
-- **Post-exploitation host activity**, including Living-off-the-Land techniques where built-in system tools are abused to blend into normal administrative behavior  
+-->
 
 Although initial access may occur elsewhere, cases are organized here when the **core investigation relies on endpoint logs and host artifacts to confirm compromise and persistence**.
 
@@ -57,3 +59,4 @@ Together, these files separate **host investigation workflow**, **artifact valid
 ### Ongoing Development
 
 Future investigations may expand into additional persistence techniques, credential dumping, or memory-based attacks. New cases will continue to reflect how endpoint compromise and post-exploitation behavior are investigated in operational SOC environments.
+
