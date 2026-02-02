@@ -25,8 +25,8 @@ For deeper technical detail, review the `detection-artifact-report.md`, supporti
 > 👉 **See defensive takeaways**  
 Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mapping.md` to understand how observed attacker behavior maps to MITRE ATT&CK and where detection or control improvements were identified.
 
-> 👉 **Use this repository as case-based learning**  
-These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+> 👉 **See what each investigation file contains in full detail**  
+For a complete breakdown of every standard file in an investigation folder, explaining the contents, intent, and role of each document in the overall case, see the **[Repository Structure & Supporting Documents](#repository-structure--supporting-documents)** section below
 
 ---
 
@@ -117,5 +117,6 @@ Systematic correlation across identity, registry, and execution telemetry suppor
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical post-compromise analysis, cross-source log correlation, and professional incident documentation aligned with real operational workflows.
+
 
 
