@@ -155,7 +155,7 @@ The concentration of failed authentication attempts originating from a single so
   <img src="images/web-authentication-alert-investigation-01.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 1</em>
+  <em>Figure 1 - Failed authentication events attributed to a single external source IP</em>
 </p>
 
 ##### 🔷 1.2) MITRE ATT&CK Technique Reference — Finding 1
@@ -200,7 +200,7 @@ When correlated with the high volume of failed login attempts and the short inte
   <img src="images/web-authentication-alert-investigation-02.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 2</em>
+  <em>Figure 2 - Identical "User-Agent" value observed across repeated login attempts</em>
 </p>
 
 ##### 🔷 2.1) MITRE ATT&CK Technique Reference — Finding 2
@@ -263,6 +263,8 @@ The repeated targeting of these non-existent accounts, combined with the automat
   <img src="images/web-authentication-alert-investigation-03g.png" width="48%" />
   <img src="images/web-authentication-alert-investigation-03h.png" width="48%" />
   <img src="images/web-authentication-alert-investigation-03i.png" width="48%" />
+  <em>Figure 3 - Authentication failures targeting non existent usernames indicating enumeration
+</em>
 </div>
 
 ##### 🔷 3.2) MITRE ATT&CK Mapping — Finding 3
@@ -296,6 +298,7 @@ These accounts represent high-value targets commonly associated with administrat
   <img src="images/web-authentication-alert-investigation-04a.png" width="48%" />
   <img src="images/web-authentication-alert-investigation-04b.png" width="48%" />
   <img src="images/web-authentication-alert-investigation-04c.png" width="48%" />
+  <em>Figure 4 - Repeated authentication attempts against valid application user accounts</em>
 </div>
 
 Unlike the previously identified non-existent accounts, these usernames were associated with authentication failures that matched the application’s response behavior for existing users, and at least one of these accounts later exhibited successful authentication activity.
@@ -336,7 +339,7 @@ All events occurred within a narrow time window and shared identical client meta
   <img src="images/web-authentication-alert-investigation-05.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 5</em>
+  <em>Figure 5 - Successful authentication event following repeated failed login attempts</em>
 </p>
 
 #### ▶ 6) Secondary Login Source
@@ -365,7 +368,7 @@ The change in source IP following successful authentication represents a post-co
   <img src="images/web-authentication-alert-investigation-06.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 6</em>
+  <em>Figure 6 - Credential reuse observed from a secondary source IP</em>
 </p>
 
 ##### 🔷 6.2) MITRE ATT&CK Mapping — Finding 6
@@ -406,7 +409,7 @@ The concentration of activity against `/api/login` also establishes this endpoin
   <img src="images/web-authentication-alert-investigation-07.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 7</em>
+  <em>Figure 7 - Consistent authentication activity targeting the "/api/login" endpoint</em>
 </p>
 
 
@@ -453,7 +456,7 @@ Recovered Password: `webadmin1234`
   <img src="images/web-authentication-alert-investigation-08.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 8</em>
+  <em>Figure 8 - Reversible credential value decoded from "hashed_password" field</em>
 </p>
 
 This finding explains how repeated failed attempts transitioned into a successful authentication and why the compromised credentials could subsequently be reused from a secondary source IP. Logging recoverable credential material effectively eliminates the security guarantees provided by authentication controls.
@@ -612,6 +615,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
