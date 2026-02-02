@@ -13,15 +13,8 @@ This investigation analyzes abuse of a web application’s authentication mechan
 
 The analysis focuses on reconstructing attacker behavior using application-layer authentication logs and HTTP request metadata to identify how accounts were enumerated, how credentials were abused, and how insecure credential handling within application logs contributed to successful compromise.
 
-The investigation demonstrates how an analyst:
-- Identifies automated authentication abuse using source IP and request frequency
-- Differentiates enumeration activity from targeted credential attacks
-- Confirms account compromise using authentication success patterns
-- Detects credential reuse from secondary sources
-- Identifies insecure logging practices that expose sensitive credentials
-
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -34,6 +27,13 @@ Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mappi
 
 > 👉 **Use this repository as case-based learning**  
 These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+
+The investigation demonstrates how an analyst:
+- Identifies automated authentication abuse using source IP and request frequency
+- Differentiates enumeration activity from targeted credential attacks
+- Confirms account compromise using authentication success patterns
+- Detects credential reuse from secondary sources
+- Identifies insecure logging practices that expose sensitive credentials
 
 ---
 
@@ -123,6 +123,7 @@ This investigation demonstrates how defenders can detect automated authenticatio
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates structured analysis of application authentication telemetry, identification of credential abuse patterns, and professional incident documentation aligned with operational security workflows.
+
 
 
 
