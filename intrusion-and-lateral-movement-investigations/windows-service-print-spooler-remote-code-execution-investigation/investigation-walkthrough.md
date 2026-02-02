@@ -124,9 +124,9 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 <details>
 <summary><strong>▶ 1) Initial Triage: Attacker Infrastructure Discovery</strong><br>
 → establishing which external infrastructure the compromised host communicated with during the attack
-</summary>
+</summary><br>
 
-*Goal:* Establish the attacker-controlled domain and infrastructure by analyzing authentication and SMB-related security telemetry to distinguish malicious external interaction from legitimate domain activity.<br>
+*Goal:* Establish the attacker-controlled domain and infrastructure by analyzing authentication and SMB-related security telemetry to distinguish malicious external interaction from legitimate domain activity.
 
 <a id="1-initial-triage-attacker-infrastructure-discovery"></a>
 
@@ -201,9 +201,9 @@ Identifying this domain is critical for detection efforts. Fully qualified domai
 <details>
 <summary><strong>▶ 2) Initial Access: Payload Delivery via Print Spooler Abuse</strong><br>
 → identifying how the malicious payload was delivered through trusted Print Spooler functionality
-</summary>
+</summary><br>
 
-*Goal:* Identify the attacker-supplied payload delivered via Print Spooler abuse by reviewing file creation telemetry and differentiating malicious driver files from legitimate Windows printer components.</br>
+*Goal:* Identify the attacker-supplied payload delivered via Print Spooler abuse by reviewing file creation telemetry and differentiating malicious driver files from legitimate Windows printer components.
 
 <a id="2-initial-access-payload-delivery-via-print-spooler-abuse"></a>
 
@@ -249,9 +249,9 @@ Taken together, this activity suggests that the attacker abused the Print Spoole
 <details>
 <summary><strong>▶ 3) Payload Staging: File System Impact and Driver Placement</strong><br>
 → determining where the attacker staged the malicious payload on disk and why that location matters
-</summary>
+</summary><br>
 
-*Goal:* Determine how and where the malicious printer driver was staged on the file system by analyzing Print Spooler driver directories and understanding their role in trusted driver installation workflows.</br>
+*Goal:* Determine how and where the malicious printer driver was staged on the file system by analyzing Print Spooler driver directories and understanding their role in trusted driver installation workflows.
 
 <a id="3-payload-staging-file-system-impact-and-driver-placement"></a>
 
@@ -279,9 +279,9 @@ Artifact Identified: Printer driver staging path used for malicious payload plac
 <details>
 <summary><strong>▶ 4) Payload Execution and Reverse Shell Establishment</strong><br>
 → confirming execution of the staged payload and identifying resulting outbound attacker communication
-</summary>
+</summary><br>
 
-*Goal:* Confirm successful code execution and reverse shell establishment by correlating host-based process telemetry with network traffic showing outbound connections to attacker-controlled infrastructure.</br>
+*Goal:* Confirm successful code execution and reverse shell establishment by correlating host-based process telemetry with network traffic showing outbound connections to attacker-controlled infrastructure.
 
 <a id="4-payload-execution-and-reverse-shell-establishment"></a>
 
@@ -351,9 +351,9 @@ Artifact Identified: Attacker command-and-control endpoint (`10.0.2.5:443`)
 <details>
 <summary><strong>▶ 5) SMB-Based Print Spooler Service Interaction</strong><br>
 → validating how the Print Spooler service was accessed remotely as part of exploitation
-</summary>
+</summary><br>
 
-*Goal:* Validate remote interaction with the Print Spooler service by analyzing SMB file share access events to confirm exploitation of the spoolss interface rather than normal domain activity.</br>
+*Goal:* Validate remote interaction with the Print Spooler service by analyzing SMB file share access events to confirm exploitation of the spoolss interface rather than normal domain activity.
 
 <a id="5-smb-based-print-spooler-service-interaction"></a>
 
@@ -414,9 +414,9 @@ During review of Security Event ID 5145, two log entries were identified that me
 <details>
 <summary><strong>▶ 6) Exploit Side Effects: Error Handling and Abnormal Process Behavior</strong>
 → identifying secondary process behavior caused by destabilization of the exploited service
-</summary>
+</summary><br>
 
-*Goal:* Identify abnormal process behavior resulting from Print Spooler abuse by analyzing error-handling and parent–child process relationships indicative of service instability during exploitation.</br>
+*Goal:* Identify abnormal process behavior resulting from Print Spooler abuse by analyzing error-handling and parent–child process relationships indicative of service instability during exploitation.
 
 <a id="6-exploit-side-effects-error-handling-and-abnormal-process-behavior"></a>
 
@@ -466,9 +466,9 @@ Identifying that `WerFault.exe` was launched by `spoolsv.exe` provides additiona
 <details>
 <summary><strong>▶ 7) Reconstructing the Exploitation Execution Chain</strong><br>
 → reconstructing the full execution sequence from service abuse to interactive attacker control
-</summary>
+</summary><br>
 
-*Goal:* Reconstruct the attacker’s execution chain by correlating service execution, error-handling processes, and interactive command execution to understand how exploitation progressed end to end.</br>
+*Goal:* Reconstruct the attacker’s execution chain by correlating service execution, error-handling processes, and interactive command execution to understand how exploitation progressed end to end.
 
 <a id="7-reconstructing-the-exploitation-execution-chain"></a>
 
@@ -498,9 +498,9 @@ Unlike earlier system-generated processes, this command represents interactive a
 <details>
 <summary><strong>▶ 8) Post-Exploitation Privilege Validation</strong><br>
 → validating the final privilege level achieved by the attacker after exploitation
-</summary>
+</summary><br>
 
-*Goal:* Validate the attacker’s post-exploitation privilege level by analyzing interactive command output and confirming execution under the SYSTEM security context.</br>
+*Goal:* Validate the attacker’s post-exploitation privilege level by analyzing interactive command output and confirming execution under the SYSTEM security context.
 
 <a id="8-post-exploitation-privilege-validation"></a>
 
@@ -648,6 +648,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
