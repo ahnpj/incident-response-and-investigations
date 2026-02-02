@@ -2,8 +2,11 @@
 
 This folder contains investigations where the **primary objective is to reconstruct attacker progression across multiple systems and network paths**. These cases simulate how SOC analysts trace intrusions beyond initial compromise to determine scope, affected systems, and attacker objectives using cross-host and network telemetry.
 
-> **Note on categorization:**  
-> Investigations are grouped here when the investigation centers on **multi-stage intrusion behavior and cross-host correlation**, not simply validating compromise on a single system. While endpoint and identity telemetry are often used, cases are categorized here when the core analytical challenge is **understanding how the attacker moved through the environment**.
+> 👉 **Each folder represents one complete investigation**  
+Every subfolder here is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
+
+> 👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 Investigations in this category typically focus on:
 
@@ -53,5 +56,6 @@ Together, these documents support **multi-system investigation workflows** and e
 ### Ongoing Development
 
 Future investigations may expand into Active Directory attacks, pass-the-hash techniques, Kerberos abuse, or internal reconnaissance activity. New cases will continue to focus on tracing attacker movement and validating full intrusion scope using cross-domain telemetry.
+
 
 
