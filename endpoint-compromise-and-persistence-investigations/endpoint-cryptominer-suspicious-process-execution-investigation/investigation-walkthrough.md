@@ -180,11 +180,15 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during SIEM alert review and process execution analysis. Mappings are based on directly observed activity and artifacts within scope.
 
-- **Execution — User Execution (T1204):**  
-  A suspicious executable (`cudominer.exe`) was launched under a user context, as observed in process creation telemetry that triggered the SIEM alert.
+#### ▶ Execution
 
-- **Impact — Resource Hijacking (T1496):**  
-  The executed process exhibited behavior consistent with cryptocurrency mining, indicating unauthorized consumption of system resources for attacker benefit.
+(1) User Execution (T1204)
+- A suspicious executable (`cudominer.exe`) was launched under a user context, as observed in process creation telemetry that triggered the SIEM alert.
+
+#### ▶ Impact
+
+(1) Resource Hijacking (T1496)
+- The executed process exhibited behavior consistent with cryptocurrency mining, indicating unauthorized consumption of system resources for attacker benefit.
 
 ---
 
@@ -198,6 +202,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
 
