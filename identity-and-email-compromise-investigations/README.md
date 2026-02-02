@@ -2,8 +2,11 @@
 
 This folder contains investigations where the **primary security failure involves unauthorized access to identities or misuse of email and messaging services**. These cases simulate how SOC analysts investigate account compromise, mailbox manipulation, and socially engineered financial or data-exfiltration workflows using identity and messaging telemetry.
 
-> **Note on categorization:**  
-> Investigations are grouped here when **identity platforms and messaging services are the primary attack surface and investigation focus**, not strictly based on every tool or telemetry source involved. While supporting evidence may include endpoint or network artifacts, cases are categorized here when **unauthorized access to accounts or mailbox functionality is the central security failure being investigated**.
+> 👉 **Each folder represents one complete investigation**  
+Every subfolder here is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
+
+> 👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 Investigations in this category typically focus on:
 
@@ -49,4 +52,5 @@ Together, these documents separate **identity compromise validation**, **mailbox
 ### Ongoing Development
 
 Future investigations may expand into OAuth consent abuse, token theft, session hijacking, or collaboration-platform phishing campaigns. New cases will continue to reflect how identity and messaging-based threats are investigated in operational SOC environments.
+
 
