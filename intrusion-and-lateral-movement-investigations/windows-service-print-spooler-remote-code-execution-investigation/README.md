@@ -25,8 +25,8 @@ For deeper technical detail, review the `detection-artifact-report.md`, supporti
 > 👉 **See defensive takeaways**  
 Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mapping.md` to understand how observed attacker behavior maps to MITRE ATT&CK and where detection or control improvements were identified.
 
-👉 **See what each investigation file contains in full detail**  
-For a complete breakdown of every standard file in an investigation folder, explaining the contents, intent, and role of each document in the overall case, see the **[Repository Structure & Supporting Documents]()** section below
+> 👉 **See what each investigation file contains in full detail**  
+For a complete breakdown of every standard file in an investigation folder, explaining the contents, intent, and role of each document in the overall case, see the **[Repository Structure & Supporting Documents](#repository-structure--supporting-documents)** section below
 
 The investigation demonstrates how an analyst:
 - Identifies service abuse through SMB and file system telemetry
@@ -121,6 +121,7 @@ This investigation demonstrates how defenders can detect exploitation of native 
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate structured host and network analysis, service abuse detection, and professional incident documentation aligned with operational security workflows.
+
 
 
 
