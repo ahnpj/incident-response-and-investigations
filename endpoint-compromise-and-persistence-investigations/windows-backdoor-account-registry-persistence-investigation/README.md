@@ -11,9 +11,22 @@
 
 This investigation analyzes a Windows host compromise involving unauthorized local account creation, registry modifications tied to account persistence, and follow-on encoded PowerShell execution with outbound communication.
 
-The objective is to reconstruct attacker behavior using correlated Windows Security, Sysmon registry, and PowerShell telemetry to determine how the backdoor account was created, whether impersonation was attempted, and how post-compromise activity was executed.
+The objective is to reconstruct attacker behavior using correlated Windows Security, Sysmon registry, and PowerShell telemetry to determine how the backdoor account was created, whether impersonation was attempted, and how post-compromise activity was executed. The analysis validates account creation and privilege changes, confirms registry-based persistence mechanisms, and reconstructs encoded scripting activity to identify outbound communication associated with attacker-controlled infrastructure.
 
-The analysis validates account creation and privilege changes, confirms registry-based persistence mechanisms, and reconstructs encoded scripting activity to identify outbound communication associated with attacker-controlled infrastructure.
+> 👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+
+> 👉 **Review findings and conclusions**  
+Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
+
+> 👉 **Dig into evidence and detections**  
+For deeper technical detail, review the `detection-artifact-report.md`, supporting screenshots, and extracted artifacts to see exactly how conclusions were supported by telemetry.
+
+> 👉 **See defensive takeaways**  
+Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mapping.md` to understand how observed attacker behavior maps to MITRE ATT&CK and where detection or control improvements were identified.
+
+> 👉 **Use this repository as case-based learning**  
+These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
 
 ---
 
@@ -104,4 +117,5 @@ Systematic correlation across identity, registry, and execution telemetry suppor
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical post-compromise analysis, cross-source log correlation, and professional incident documentation aligned with real operational workflows.
+
 
