@@ -146,7 +146,27 @@ Based on correlated authentication and mailbox activity, the incident was classi
 </details>
 </blockquote>
 
-#### ▶ 1) Initial Access Analysis: Email Artifact Review
+This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
+
+**Note:** Each section is collapsible. Click the ▶ arrow to expand and view the detailed steps.
+
+<!--
+NOTE TO SELF: If you want to change it back, follow these steps:
+1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
+2. Remove <details>, <summary>, and <strong> tags (including closing tags)
+3. Add "####" in front of section title
+4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+-->
+
+<details>
+<summary><strong>▶ 1) Initial Access Analysis: Email Artifact Review</strong><br>
+ → identifying the initial attacker contact and entry point using preserved email evidence.
+</summary><br>
+
+*Goal:* Determine how the attacker first engaged the victim and establish the earliest observable point of compromise.
+
+<a id="-1-initial-access-analysis-email-artifact-review"></a>
+
 
 To identify the initial access vector in this Business Email Compromise investigation, analysis began with a review of the email artifacts provided as part of the evidence set. In BEC incidents, phishing and social engineering are the primary mechanisms used to establish trust and initiate fraudulent activity, making email content the most reliable source for understanding how the incident began.
 
@@ -158,7 +178,16 @@ Why Email Artifacts Were Reviewed First
 Although Azure Active Directory audit logs were provided as part of the evidence set, those logs primarily capture post-authentication activity, such as sign-ins, mailbox configuration changes, and administrative operations. They do not reliably record the original sender information, message headers, or SMTP metadata required to identify the source of a phishing email. As a result, the investigation began by reviewing the email artifacts, which represent what the user actually received and interacted with prior to account compromise. Business Email Compromise attacks almost always begin with phishing. Identifying the sender address allows the investigation to establish a clear initial access point and define the earliest point in the attack timeline.
 </blockquote>
 
-#### ▶ 2) Determining Investigation Approach
+</details>
+
+<details>
+<summary><strong>▶ 2) Determining Investigation Approach</strong><br>
+ → defining the methodology and tooling used to analyze email artifacts and isolate initial access.
+</summary><br>
+
+*Goal:* Establish a structured, evidence-driven approach for identifying the phishing origin without relying on post-authentication logs.
+
+<a id="-2-determining-investigation-approach"></a>
 
 The provided email artifacts were reviewed using Thunderbird, a desktop email client commonly used in forensic investigations to analyze preserved email messages in a controlled, offline manner. Thunderbird functions as a log viewing and analysis platform, allowing inspection of message content, timestamps, and full headers without altering the underlying evidence.
 
@@ -171,7 +200,16 @@ To identify the initial malicious contact, the following approach was taken:
 
 This approach ensured that analysis was based on the original email evidence rather than inferred or secondary data sources.
 
-#### ▶ 3) Identifying the Initial Phishing Email
+</details>
+
+<details>
+<summary><strong>▶ 3) Identifying the Initial Phishing Email</strong><br>
+ → separating initial phishing contact from follow-on correspondence within the email dataset.
+</summary><br>
+
+*Goal:* Identify which email represents the attacker’s first malicious interaction rather than a continuation of an existing thread.
+
+<a id="-3-identifying-the-initial-phishing-email"></a>
 
 Each email was assessed to determine whether it represented an initial external contact or part of an ongoing conversation. Emails prefixed with “Re:” were treated as follow-on correspondence rather than the initial access vector.
 
@@ -184,8 +222,21 @@ The email titled “PensionApproval” was identified as part of an existing rep
   <em>Figure 1 - Follow on pension approval email identified as part of a reply chain and not the initial phishing contact</em>
 </p>
 
-#### ▶ 4) Extracting Sender Information from Message Headers (Artifact Identified)
+</details>
+
+
+<details>
+<summary><strong>▶ 4) Extracting Sender Information from Message Headers (Artifact Identified)</strong><br>
+ → extracting authoritative sender identity and origin details from full email headers.
+</summary><br>
+  
+*Goal:* Confirm the external sender used to initiate the attack and establish trust under the guise of a legitimate third party.
+
+<a id="-4-extracting-sender-information-from-message-headers-artifact-identified"></a>
+
+<!--
 - [🔷 4.1) Why This Is Relevant to Initial Access](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-41-why-this-is-relevant-to-initial-access)
+-->
 
 Full message headers were reviewed within Thunderbird to identify the sender associated with the financial approval communication. Header analysis revealed the following details:
 
@@ -204,9 +255,20 @@ Identifying the external sender and understanding the context of the financial c
 
 With the initial access context established through email analysis, the investigation can now transition to identity telemetry to examine authenticated activity performed after the compromise.
 
-#### ▶ 5) Compromise Classification: Determining the Type of Attack
+</details>
 
+<details>
+<summary><strong>▶ 5) Compromise Classification: Determining the Type of Attack</strong><br>
+ → classifying the incident based on observed attacker behavior and available evidence.
+</summary><br>
+
+<a id="-5-compromise-classification-determining-the-type-of-attack"></a>
+
+*Goal:* Determine whether the activity represents Business Email Compromise rather than malware-based or exploit-driven intrusion.
+
+<!--
 - [🔷 5.1) Why Incident Classification Is Important](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#why-incident-classification-is-important)
+-->
 
 Based on the evidence reviewed to this point, the incident was classified as Business Email Compromise (BEC).
 
@@ -220,10 +282,22 @@ Early and accurate incident classification ensures that investigative and respon
 
 Establishing the correct incident type provides a structured foundation for the remainder of the investigation and reduces the risk of misdirected analysis or missed evidence.
 
-#### ▶ 6) Post-Compromise Activity: Authentication Source via Azure Sign-In Logs
+</details>
 
+
+<details>
+<summary><strong>▶ 6) Post-Compromise Activity: Authentication Source via Azure Sign-In Logs</strong><br>
+ → identifying how and from where the compromised mailbox was accessed after initial contact.
+</summary><br>
+
+<a id="-6-post-compromise-activity-authentication-source-via-azure-sign-in-logs"></a>
+
+*Goal:* Validate credential-based access by reviewing authentication telemetry tied to the victim’s account.
+
+<!--
 - [🔷 6.1) Why Authentication Logs Were Reviewed](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#why-authentication-logs-were-reviewed)
 - [🔷 6.2) Investigation Approach](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#investigation-approach)
+-->
 
 With the incident classified as Business Email Compromise, the investigation shifted focus to identifying how the compromised account was accessed after initial contact. In BEC incidents, attackers rely on valid credentials to authenticate to cloud services, making identity telemetry the most reliable source for reconstructing post-compromise activity.
 
@@ -263,10 +337,22 @@ This approach ensured that only successful login events for the compromised acco
 
 Each matching `UserLoggedIn` event was then reviewed individually. For every event, the embedded audit data was examined to locate the `ClientIP` field, which records the source IP address associated with that authentication session. Because the export does not expose IP addresses as a standalone column, this step required manually inspecting the JSON payload within each event.
 
+</details>
 
-#### ▶ 7) Identifying Threat Actor IP Addresses
+
+<details>
+<summary><strong></strong>▶ 7) Identifying Threat Actor IP Addresses</strong><br>
+ → isolating attacker-controlled authentication sources from benign or service-related activity.
+</summary><br>
+
+*Goal:* Identify the external IP addresses used by the threat actor to access the compromised mailbox while excluding non-malicious sources.
+
+<a id="-7-identifying-threat-actor-ip-addresses"></a>
+
+<!--
 - [🔷 7.1) Excluded IP Addresses (Non-Threat Actor)](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-71-excluded-ip-addresses-non-threat-actor)
 - [🔷 7.2) Why this step matters](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-72-why-this-step-matters)
+-->
 
 Review of Becky’s `UserLoggedIn` events revealed multiple IP addresses appearing across different audit records. However, not all IPs present in the audit data represent attacker-controlled infrastructure. In Azure audit logs, IP fields may also appear in events related to Exchange service activity, compliance scanning, or post-authentication mailbox operations.
 
@@ -307,12 +393,23 @@ While several IP addresses appear within `UserLoggedIn` events for the compromis
 - In Business Email Compromise investigations, authentication activity is often the most concrete technical artifact available for attributing attacker behavior. Identifying the IP addresses used to log into the compromised account allows subsequent mailbox manipulation, persistence mechanisms, and financial actions to be correlated back to attacker-controlled sessions.
 - Establishing attacker authentication sources also provides valuable indicators for scoping impact, validating transaction timelines, and supporting future detection and response efforts. With the authentication infrastructure identified, the investigation proceeded to assess the financial impact of the compromise.
 
+</details>
 
-#### ▶ 8) Financial Impact: Identifying the Destination Bank
 
+<details>
+<summary><strong>▶ 8) Financial Impact: Identifying the Destination Bank</strong><br>
+ → determining where fraudulent funds were directed using transaction-related email evidence.
+</summary><br>
+
+<a id="-8-financial-impact-identifying-the-destination-bank"></a>
+
+*Goal:* Identify the receiving financial institution associated with unauthorized pension withdrawals.
+
+<!--
 - [🔷 8.1) Why Email Evidence Was Reviewed for Financial Attribution](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-81-why-email-evidence-was-reviewed-for-financial-attribution)
 - [🔷 8.2) Investigation Methodology](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-82-investigation-methodology)
 - [🔷 8.3) Identifying the Destination Bank](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-83-identifying-the-destination-bank)
+-->
 
 With authenticated access to the compromised mailbox confirmed, the investigation next focused on identifying the financial institution to which fraudulent transactions were directed. In Business Email Compromise incidents, attackers often leverage legitimate business processes and trusted third parties to redirect funds, making transaction-related communications a critical source of evidence.
 
@@ -358,12 +455,24 @@ Accurately identifying the legal entity is critical in financial fraud investiga
   <em>Figure 4 - Email evidence showing destination bank details including SWIFT BIC and account number for the fraudulent withdrawal</em>
 </p>
 
+</details>
 
-#### ▶ 9) Mailbox Manipulation: Inbox Folder Creation
+
+<details>
+<summary><strong>▶ 9) Mailbox Manipulation: Inbox Folder Creation</strong><br>
+ → identifying mailbox configuration changes used to conceal fraudulent communications.
+</summary><br>
+
+<a id="-9-mailbox-manipulation-inbox-folder-creation"></a>
+
+*Goal:* Determine whether the attacker created or used inbox folders to hide financial emails after gaining access.
+
+<!--
 - [🔷 9.1) Why this step matters](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-91-why-this-step-matters)
 - [🔷 9.2) Investigation Approach](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-92-investigation-approach)
 - [🔷 9.3) Identifying The Folder Created](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-93-identifying-the-folder-created)
 - [🔷 9.4) Why These Findings Matter](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-94-why-these-findings-matter)
+-->
 
 Following confirmation of unauthorized authentication activity, the investigation examined mailbox configuration changes to identify attempts by the threat actor to conceal fraudulent communications. In Business Email Compromise incidents, attackers frequently manipulate mailbox structure to hide financial emails, approval requests, or replies that could expose the fraud.
 
@@ -509,13 +618,23 @@ The PowerShell output confirmed that the first inbox rule created for the compro
 
 The creation of a custom inbox folder combined with inbox rule abuse demonstrates deliberate mailbox manipulation intended to conceal fraudulent activity. By automatically moving or deleting emails related to financial transactions, the attacker reduced the likelihood that the victim or other stakeholders would notice unauthorized pension withdrawals. This behavior confirms post-compromise persistence and aligns with common concealment techniques observed in Business Email Compromise incidents.
 
----
+</details>
 
-#### ▶ 10) Identifying the Inbox Rule Keyword
 
+<details>
+<summary><strong>▶ 10) Identifying the Inbox Rule Keyword</strong><br>
+ → analyzing inbox rule conditions to understand how financial emails were selectively suppressed.
+</summary><br>
+
+<a id="-10-identifying-the-inbox-rule-keyword"></a>
+
+*Goal:* Identify the keyword logic used by the attacker to intercept withdrawal-related correspondence and confirm concealment intent.
+
+<!--
 - [🔷 10.1) How the Rule Configuration Was Interpreted](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-101-how-the-rule-configuration-was-interpreted)
 - [🔷 10.2) Why This Confirms Attackers Intent](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-102-why-this-confirms-attackers-intent)
 - [🔷 10.3) Why This Matters](https://github.com/ahnpj/incident-response-and-investigations/edit/main/identity-and-email-compromise-investigations/business-email-compromise-mailbox-rule-abuse-investigation/investigation-walkthrough.md#-102-why-this-matters)
+-->
 
 After identifying that an inbox rule was created on the compromised mailbox, the next step was to determine what the rule was designed to look for before taking action. In Business Email Compromise incidents, attackers commonly configure inbox rules to scan incoming emails for specific keywords related to financial activity and automatically hide or delete them.
 
@@ -587,6 +706,9 @@ The combination of the following demonstrates deliberate mailbox manipulation in
 ##### 🔷 10.3) Why This Matters
 
 Filtering on the word withdrawal demonstrates deliberate concealment of financial activity rather than opportunistic rule creation. This behavior confirms attacker intent to hide fraud-related communications and aligns with mailbox abuse patterns commonly observed in BEC incidents.
+
+</details>
+
 
 ---
 
@@ -720,6 +842,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
