@@ -614,30 +614,45 @@ These detections focus on service abuse and post-exploitation behavior.
 
 ### MITRE ATT&CK Mapping
 
-**Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during host-based and network telemetry analysis. Mappings are based on directly observed activity and artifacts within scope.
 
-- **Initial Access — Ingress Tool Transfer (T1105):**  
-  Malicious files were transferred to the host via SMB as part of Print Spooler abuse, confirmed through file share access events.
+#### ▶ Initial Access
 
-- **Execution — Service Execution (T1569.002):**  
-  Attacker-supplied code was executed through the Print Spooler service (`spoolsv.exe`), enabling execution without direct user interaction.
+(1) Ingress Tool Transfer (T1105) 
 
-- **Defense Evasion — Masquerading (T1036):**  
-  The malicious DLL was disguised as a legitimate printer-related component and placed in a trusted service directory.
+- Malicious files were transferred to the host via SMB as part of Print Spooler abuse, confirmed through file share access events.
 
-- **Command and Control — Application Layer Protocol: Web (T1071.001):**  
-  An outbound connection from a system-level process established a reverse shell to attacker-controlled infrastructure.
+#### ▶ Execution
 
-- **Discovery — System Owner/User Discovery (T1033):**  
-  Post-exploitation commands were executed to confirm SYSTEM-level privileges.
+(1) Service Execution (T1569.002)
+
+- Attacker-supplied code was executed through the Print Spooler service (`spoolsv.exe`), enabling execution without direct user interaction.
+
+#### ▶ Defense Evasion
+
+(1) Masquerading (T1036)  
+
+- The malicious DLL was disguised as a legitimate printer-related component and placed in a trusted service directory.
+
+#### ▶ Command and Control
+
+(1) Application Layer Protocol: Web (T1071.001)
+
+- An outbound connection from a system-level process established a reverse shell to attacker-controlled infrastructure.
+
+#### ▶ Discovery
+
+(1) System Owner/User Discovery (T1033)
+
+- Post-exploitation commands were executed to confirm SYSTEM-level privileges.
 
 ---
 
 ### MITRE ATT&CK Mapping (Table View)
 
-**Note:** This section provides a high-level summary table of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+This section provides a high-level summary table of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -648,6 +663,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
