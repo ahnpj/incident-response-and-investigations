@@ -4,6 +4,12 @@
 
 This investigation reconstructs a Business Email Compromise incident involving the abuse of a compromised executive mailbox to authorize fraudulent pension withdrawals. Analysis of email artifacts, Azure Active Directory audit logs, and mailbox configuration changes confirms credential-based account compromise rather than malware-driven intrusion. The attacker leveraged inbox rules and folder manipulation to conceal financial correspondence, enabling unauthorized transactions to be approved before detection.
 
+> 👉 For a **description of the situation being investigated and what triggered this analysis**, see the **[Scenario Context](#scenario-context)** section below.
+
+> 👉 For a **mapping of observed behavior to MITRE ATT&CK techniques**, see the **[MITRE ATT&CK](#mitre-attck-mapping)** section below
+
+> 👉 For a **detailed, step-by-step walkthrough of how this investigation was conducted — complete with screenshots**, see the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
+
 ---
 
 ### Incident Scope
@@ -691,6 +697,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
