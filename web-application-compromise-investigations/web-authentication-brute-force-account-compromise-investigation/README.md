@@ -21,7 +21,7 @@ The investigation demonstrates how an analyst:
 - Identifies insecure logging practices that expose sensitive credentials
 
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how the analyst identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -123,6 +123,7 @@ This investigation demonstrates how defenders can detect automated authenticatio
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates structured analysis of application authentication telemetry, identification of credential abuse patterns, and professional incident documentation aligned with operational security workflows.
+
 
 
 
