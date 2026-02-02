@@ -2,8 +2,11 @@
 
 This folder contains investigations where the **primary attack surface is a web application or CMS platform**. These cases simulate how SOC analysts detect and validate exploitation of application-layer vulnerabilities and authentication workflows using HTTP and application telemetry.
 
-> **Note on categorization:**  
-> Investigations are grouped here when **web requests and application behavior are the primary detection and investigation surfaces**, not simply based on downstream impact. Even when compromised accounts or host artifacts are involved, cases are categorized here when **initial access and validation rely primarily on HTTP and application logs**.
+> 👉 **Each folder represents one complete investigation**  
+Every subfolder here is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
+
+> 👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 Investigations in this category typically focus on:
 
@@ -53,3 +56,4 @@ Together, these documents demonstrate how **application-layer compromises are de
 ### Ongoing Development
 
 Future investigations may expand into API abuse, SQL injection, authentication bypass vulnerabilities, or cloud-hosted application misconfigurations. New cases will continue to reflect realistic web-based intrusion scenarios and operational investigation workflows.
+
