@@ -7,6 +7,17 @@ Rather than focusing on isolated tools or one-off techniques, these investigatio
 
 These cases emphasize evidence-based analysis, cross-log correlation, attacker behavior mapping (MITRE ATT&CK), and clear documentation of investigative reasoning and outcomes.
 
+👉 For an overview of what this repository contains and how investigations are designed to mirror real SOC workflows, see the **Incident Response and Investigations** section below.
+
+👉 For guidance on how investigations are grouped by primary attack surface and how to navigate the repository, start with the **Start Here: How to Navigate This Repository** section.
+
+👉 To understand how category folders are defined and what types of incidents belong in each, see **How This Repository Is Organized** and **Category Folders (Top-Level Directories)** below.
+
+👉 For details on how individual investigations are structured, including standard files and documentation flow, see **How Investigations Are Structured & Organized** and **Standard Files in Each Investigation Folder**.
+
+👉 To explore real, end-to-end incident scenarios, jump directly into any category under **Category Folders and Current Investigations** and open an investigation folder.
+
+
 ---
 
 ### Start Here: How to Navigate This Repository
@@ -201,6 +212,7 @@ Where relevant, investigations may reference related workflows to demonstrate ho
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
+
 
 
 
