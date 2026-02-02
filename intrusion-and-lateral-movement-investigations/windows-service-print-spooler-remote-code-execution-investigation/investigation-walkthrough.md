@@ -162,14 +162,14 @@ This difference occurs because Windows logs record different types of context de
   <img src="images/suspicious-windows-service-abuse-01.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 1</em>
+  <em>Figure 1 - Security log context showing domain information used during authentication events</em>
 </p>
 
 <p align="left">
   <img src="images/suspicious-windows-service-abuse-02.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 2</em>
+  <em>Figure 2 - Alternate Security event view showing domain representation differences (NetBIOS vs FQDN)</em>
 </p>
 
 <blockquote>
@@ -200,7 +200,7 @@ In this context:
   <img src="images/suspicious-windows-service-abuse-03.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 3</em>
+  <em>Figure 3 - SMB telemetry confirming interaction with the redteam.lab domain</em>
 </p>
 
 This confirms that the affected system was joined to the `redteam.lab` domain, which represents the attacker-controlled environment created by the red team as part of the exercise.
@@ -242,7 +242,7 @@ In contrast, `printevil.dll` does not correspond to any known Windows or standar
   <img src="images/suspicious-windows-service-abuse-04.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 4</em>
+  <em>Figure 4 - Sysmon file creation showing a non-standard DLL written by the Print Spooler service</em>
 </p>
 
 Multiple Sysmon Event ID 11 entries referencing `printevil.dll` were observed. This does not indicate multiple different payloads. Instead, it reflects the fact that the Print Spooler may access, load, or re-register the same driver multiple times during exploitation. Sysmon records each file creation or modification attempt, so repeated interaction with the same malicious driver results in multiple logged events for the same file.
@@ -319,7 +319,7 @@ Reviewing the event occurring immediately after payload execution showed that th
   <img src="images/suspicious-windows-service-abuse-05.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 5</em>
+  <em>Figure 5 - Sysmon network event showing outbound connection initiated by "rundll32.exe"</em>
 </p>
 
 The filtered event were then reviewed around the same timeframe as the creation of `printevil.dll`. During this review, an outbound TCP connection initiated by the affected host was observed shortly after the malicious DLL was written to disk. The timing of this activity is significant, as it directly follows payload staging and indicates that the malicious printer driver was executed rather than remaining dormant.
@@ -345,7 +345,7 @@ After identifying the outbound connection in Sysmon, the provided packet capture
   <img src="images/suspicious-windows-service-abuse-06.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 6</em>
+  <em>Figure 6 - Packet capture confirming outbound connection to attacker-controlled endpoint</em>
 </p>
 
 Following the TCP stream in Wireshark revealed an interactive command session between the compromised host and attacker-controlled infrastructure. The stream contained multiple command inputs and corresponding outputs, confirming that the outbound connection was not a transient network event but an active reverse shell. Notably, execution of the `whoami` command returned `NT AUTHORITY\SYSTEM`, confirming that the attacker achieved `SYSTEM-level` privileges on the host. This network-level evidence validates successful remote command execution and corroborates host-based findings.
@@ -354,7 +354,7 @@ Following the TCP stream in Wireshark revealed an interactive command session be
   <img src="images/suspicious-windows-service-abuse-07.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 7</em>
+  <em>Figure 7 - Packet capture showing interactive reverse shell command execution</em>
 </p>
 
 Artifact Identified: Attacker command-and-control endpoint (`10.0.2.5:443`)
@@ -398,7 +398,7 @@ Within these events, SMB access targeting the `spoolss` resource was observed. T
   <img src="images/suspicious-windows-service-abuse-08.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 8</em>
+  <em>Figure 8 - SMB access to the "spoolss" named pipe over IPC$, indicating Print Spooler interaction</em>
 </p>
 
 The associated ShareName was `\\*\IPC$`, which is commonly used for inter-process communication and remote service interaction over SMB. 
@@ -453,7 +453,7 @@ To determine what triggered this error-handling process, the investigation exami
   <img src="images/suspicious-windows-service-abuse-09.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 9</em>
+  <em>Figure 9 - Sysmon process event showing WerFault.exe spawned by spoolsv.exe</em>
 </p>
 
 
@@ -495,7 +495,7 @@ The Sysmon log was filtered to locate the process creation event for WerFault.ex
   <img src="images/suspicious-windows-service-abuse-10.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 10</em>
+  <em>Figure 10 - Process execution chain confirming Print Spooler–related error handling during exploitation</em>
 </p>
 
 This finding is significant because `spoolsv.exe` is the Windows Print Spooler service. Under normal operating conditions, routine printer activity and driver installation do not cause the Print Spooler to repeatedly invoke Windows Error Reporting. The appearance of `WerFault.exe` in this context indicates that the Print Spooler service encountered an unexpected error, likely as a result of loading or interacting with attacker-supplied code.
@@ -676,19 +676,6 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
