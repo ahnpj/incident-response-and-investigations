@@ -13,6 +13,21 @@ This investigation analyzes a Business Email Compromise (BEC) incident in which 
 
 The analysis focuses on reconstructing attacker behavior using Microsoft Entra ID (Azure AD) authentication telemetry and Exchange Online mailbox audit logs to identify how access was obtained, how financial correspondence was concealed, and how legitimate business processes were abused to enable fraud.
 
+> 👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+
+> 👉 **Review findings and conclusions**  
+Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
+
+> 👉 **Dig into evidence and detections**  
+For deeper technical detail, review the `detection-artifact-report.md`, supporting screenshots, and extracted artifacts to see exactly how conclusions were supported by telemetry.
+
+> 👉 **See defensive takeaways**  
+Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mapping.md` to understand how observed attacker behavior maps to MITRE ATT&CK and where detection or control improvements were identified.
+
+> 👉 **Use this repository as case-based learning**  
+These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+
 The investigation demonstrates how an analyst:
 - Identifies unauthorized mailbox access using identity telemetry
 - Detects malicious inbox rule creation and folder manipulation
@@ -104,4 +119,5 @@ This investigation demonstrates how identity and mailbox audit telemetry can rev
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate structured analytical thinking, evidence correlation across cloud telemetry sources, and professional incident documentation aligned with real operational workflows.
+
 
