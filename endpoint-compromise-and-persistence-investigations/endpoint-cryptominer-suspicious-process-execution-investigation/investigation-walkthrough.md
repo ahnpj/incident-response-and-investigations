@@ -176,6 +176,8 @@ These detections focus on early identification of unauthorized execution.
 
 ### MITRE ATT&CK Mapping
 
+This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`
+
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during SIEM alert review and process execution analysis. Mappings are based on directly observed activity and artifacts within scope.
 
 - **Execution — User Execution (T1204):**  
@@ -188,12 +190,15 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 ### MITRE ATT&CK Mapping (Table View)
 
+This section provides a high-level summary table of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 | Tactic | Technique | Description |
 |------|-----------|-------------|
 | Execution | **User Execution (T1204)** | A suspicious executable was launched under a user context, confirmed through process creation events and SIEM alert data. |
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
 
