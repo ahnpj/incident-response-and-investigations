@@ -165,7 +165,7 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 <details>
 <summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong><br>
  → establishing how the host was discovered and which exposed services were evaluated first
-</summary>
+</summary><br>
 
 *Goal:* Analyze external firewall telemetry to identify targeted scanning behavior and determine which exposed services were evaluated as potential access vectors prior to compromise.
 
