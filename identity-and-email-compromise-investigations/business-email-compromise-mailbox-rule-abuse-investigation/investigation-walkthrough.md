@@ -181,7 +181,7 @@ The email titled “PensionApproval” was identified as part of an existing rep
   <img src="images/business-email-compromise-azure-investigation-01.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 1</em>
+  <em>Figure 1 - Follow on pension approval email identified as part of a reply chain and not the initial phishing contact</em>
 </p>
 
 #### ▶ 4) Extracting Sender Information from Message Headers (Artifact Identified)
@@ -250,7 +250,7 @@ UserLoggedIn,becky.lorray@tempestasenergy.com
   <img src="images/business-email-compromise-azure-investigation-02.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 2</em>
+  <em>Figure 2 - VS Code search isolating UserLoggedIn events for becky lorray to identify successful authentication activity</em>
 </p>
 
 Although the fraudulent emails appeared to originate from sabastian@flanaganspensions.co.uk, log analysis focused on Becky Lorray’s account because Business Email Compromise attacks target the victim’s internal account, not the impersonated external sender. The attacker’s goal was to abuse Becky Lorray’s authority as Chief Financial Officer to approve and process financial transactions. Azure Active Directory audit logs only record authentication and mailbox activity for internal tenant accounts, meaning no usable log data exists for the external impersonated address.
@@ -281,7 +281,7 @@ Applying this criteria resulted in the identification of two external IP address
   <img src="images/business-email-compromise-azure-investigation-03.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 3</em>
+  <em>Figure 3 - Threat actor authentication sources identified as two external client IP addresses used to access the compromised mailbox</em>
 </p>
 
 ##### 🔷 7.1) Excluded IP Addresses (Non-Threat Actor)
@@ -355,7 +355,7 @@ Accurately identifying the legal entity is critical in financial fraud investiga
   <img src="images/business-email-compromise-azure-investigation-04.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 4</em>
+  <em>Figure 4 - Email evidence showing destination bank details including SWIFT BIC and account number for the fraudulent withdrawal</em>
 </p>
 
 
@@ -395,7 +395,7 @@ To identify inbox folder creation activity, the Azure audit log export (`azure-e
   <img src="images/business-email-compromise-azure-investigation-05.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 5</em>
+  <em>Figure 5 - VS Code search for FolderCreated operations to identify mailbox folder manipulation post compromise</em>
 </p>
 
 **(Step 2)** Scoped results to actions associated with the compromised account (becky.lorray@tempestasenergy.com). Because Business Email Compromise (BEC) relies on unauthorized access to a victim’s mailbox, all mailbox manipulation activity—including folder creation and inbox rule abuse must originate from the compromised user’s account, not the external sender used to initiate contact.
@@ -404,7 +404,7 @@ To identify inbox folder creation activity, the Azure audit log export (`azure-e
   <img src="images/business-email-compromise-azure-investigation-06.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 6</em>
+  <em>Figure 6 - Scoped audit log results to the compromised mailbox account to ensure folder creation events map to attacker activity</em>
 </p>
 
 **(Step 3)** Reviewed event timestamps to ensure the activity occurred after confirmed attacker authentication.
@@ -413,7 +413,7 @@ To identify inbox folder creation activity, the Azure audit log export (`azure-e
   <img src="images/business-email-compromise-azure-investigation-07.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 7</em>
+  <em>Figure 7 - Timestamp review confirming folder creation events occurred after confirmed attacker authentication sessions</em>
 </p>
 
 Event timestamps were reviewed to confirm that the folder creation activity occurred after successful authentication to the compromised account. The `FolderCreated` events associated with `becky.lorray@tempestasenergy.com` appear on `2025-07-01` and `2025-07-02`, which is subsequent to confirmed `UserLoggedIn` activity for the same account. This timing confirms that the mailbox modifications were performed during an active authenticated session rather than being system-generated or pre-existing configuration changes.
@@ -438,7 +438,7 @@ To identify mailbox inbox rule manipulation activity, the Azure AD audit log exp
   <img src="images/business-email-compromise-azure-investigation-08.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 8</em>
+  <em>Figure 8 - Audit log search for inbox rule related operations to identify malicious mailbox rule activity</em>
 </p>
 
 **(Step 6)** Identified the Folder Name via Inbox Rule Analysis
@@ -467,7 +467,7 @@ Inbox folder created during the compromise: `History`
   <img src="images/business-email-compromise-azure-investigation-09.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 9</em>
+  <em>Figure 9 - New InboxRule event showing MoveToFolder action referencing the destination folder History confirming concealment routing</em>
 </p>
 
 <blockquote>
@@ -500,7 +500,7 @@ Select-String -Path ".\azure-export-audit-dfir.csv" -Pattern "New-InboxRule" |
   <img src="images/business-email-compromise-azure-investigation-10.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 10</em>
+  <em>Figure 10 - PowerShell Select String parsing of the Azure audit export to extract New InboxRule events and validate rule parameters</em>
 </p>
 
 The PowerShell output confirmed that the first inbox rule created for the compromised mailbox contained a `MoveToFolder` action targeting the History folder, corroborating the findings from Visual Studio Code and confirming the attacker’s mailbox manipulation technique.
@@ -533,7 +533,7 @@ Keyword targeted by the first inbox rule: `withdrawal`
   <img src="images/business-email-compromise-azure-investigation-11.png" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="800"><br>
-  <em>Figure 11</em>
+  <em>Figure 11 - Inbox rule condition identified as BodyContainsWords targeting the keyword withdrawal confirming intent to suppress financial emails</em>
 </p>
 
 This keyword appears in the subject and body of multiple emails related to the pension transaction workflow. By filtering on the term `withdrawal`, the attacker ensured that confirmation messages, approval follow-ups, and bank-related correspondence tied to pension withdrawals would be automatically diverted or removed before reaching the victim’s inbox.
@@ -720,6 +720,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 ---
+
 
 
 
