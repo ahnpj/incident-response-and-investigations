@@ -89,30 +89,51 @@ This timeline summarizes the reconstructed sequence of attacker activity based o
 <details>
 <summary><strong>📚 Walkthrough Navigation (click to expand)</strong></summary>
 
-- [1) Initial Triage: Attacker Infrastructure Discovery](#-1-initial-triage-attacker-infrastructure-discovery)
+- [1) Initial Triage: Attacker Infrastructure Discovery](#1-initial-triage-attacker-infrastructure-discovery)
   - [1.1) Identifying Attacker-Controlled Domain Context](#-11-identifying-attacker-controlled-domain-context)
   - [1.2) Confirming Infrastructure via SMB Telemetry](#-12-confirming-infrastructure-via-smb-telemetry)
-- [2) Initial Access: Payload Delivery via Print Spooler Abuse](#-2-initial-access-payload-delivery-via-print-spooler-abuse)
+- [2) Initial Access: Payload Delivery via Print Spooler Abuse](#2-initial-access-payload-delivery-via-print-spooler-abuse)
   - [2.1) Identifying the Malicious Printer Driver Payload](#-21-identifying-the-malicious-printer-driver-payload)
-- [3) Payload Staging: File System Impact and Driver Placement](#-3-payload-staging-file-system-impact-and-driver-placement)
+- [3) Payload Staging: File System Impact and Driver Placement](#3-payload-staging-file-system-impact-and-driver-placement)
   - [3.1) Malicious Driver Staging within Print Spooler Directories](#-31-malicious-driver-staging-within-print-spooler-directories)
-- [4) Payload Execution and Reverse Shell Establishment](#-4-payload-execution-and-reverse-shell-establishment)
+- [4) Payload Execution and Reverse Shell Establishment](#4-payload-execution-and-reverse-shell-establishment)
   - [4.1) Identifying Reverse Shell Execution via Host Telemetry](#-41-identifying-reverse-shell-execution-via-host-telemetry)
   - [4.2) Validating Reverse Shell Activity via Packet Capture Analysis (Wireshark)](#-42-validating-reverse-shell-activity-via-packet-capture-analysis-wireshark)
-- [5) SMB-Based Print Spooler Service Interaction](#-5-smb-based-print-spooler-service-interaction)
+- [5) SMB-Based Print Spooler Service Interaction](#5-smb-based-print-spooler-service-interaction)
   - [5.1) Identifying How PRint Spooler Service Was Accessed](#-51-identifying-how-print-spooler-service-was-accessed)
-- [6) Exploit Side Effects: Error Handling and Abnormal Process Behavior](#-6-exploit-side-effects-error-handling-and-abnormal-process-behavior)
+- [6) Exploit Side Effects: Error Handling and Abnormal Process Behavior](#6-exploit-side-effects-error-handling-and-abnormal-process-behavior)
   - [6.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior](#-61-determing-if-print-spooler-service-abuse-caused-any-other-abnormal-behavior)
-- [7) Reconstructing the Exploitation Execution Chain](#-7-reconstructing-the-exploitation-execution-chain)
-- [8) Post-Exploitation Privilege Validation](#-8-post-exploitation-privilege-validation)
+- [7) Reconstructing the Exploitation Execution Chain](#7-reconstructing-the-exploitation-execution-chain)
+- [8) Post-Exploitation Privilege Validation](#8-post-exploitation-privilege-validation)
 
 </details>
 </blockquote>
 
+This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
 
-#### ▶ 1) Initial Triage: Attacker Infrastructure Discovery
+**Note:** Each section is collapsible. Click the ▶ arrow to expand and view the detailed steps.
+
+<!--
+NOTE TO SELF: If you want to change it back, follow these steps:
+1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
+2. Remove <details>, <summary>, and <strong> tags (including closing tags)
+3. Add "####" in front of section title
+4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+-->
+
+<details>
+<summary><strong>▶ 1) Initial Triage: Attacker Infrastructure Discovery</strong><br>
+→ establishing which external infrastructure the compromised host communicated with during the attack
+</summary>
+
+*Goal:* Establish the attacker-controlled domain and infrastructure by analyzing authentication and SMB-related security telemetry to distinguish malicious external interaction from legitimate domain activity.
+
+<a id="1-initial-triage-attacker-infrastructure-discovery"></a>
+
+<!--
 - [🔷 1.1) Identifying Attacker-Controlled Domain Context](#-11-identifying-attacker-controlled-domain-context)
 - [🔷 1.2) Confirming Infrastructure via SMB Telemetry](#-12-confirming-infrastructure-via-smb-telemetry)
+-->
 
 As part of the investigation, saved Windows Security event logs were reviewed to identify infrastructure involved in the simulated attack. Because one of the primary goals of detection engineering is to distinguish attacker-controlled resources from legitimate internal activity, the first step was to determine whether the affected system communicated with external or non-enterprise infrastructure.
 
@@ -175,9 +196,20 @@ Identifying this domain is critical for detection efforts. Fully qualified domai
 
 **Artifact Identified:** SMB-based service interaction associated with Print Spooler abuse (Security Event ID 5145)
 
-#### ▶ 2) Initial Access: Payload Delivery via Print Spooler Abuse
+</details>
 
+<details>
+<summary><strong>▶ 2) Initial Access: Payload Delivery via Print Spooler Abuse</strong><br>
+→ identifying how the malicious payload was delivered through trusted Print Spooler functionality
+</summary>
+
+*Goal:* Identify the attacker-supplied payload delivered via Print Spooler abuse by reviewing file creation telemetry and differentiating malicious driver files from legitimate Windows printer components.
+
+<a id="2-initial-access-payload-delivery-via-print-spooler-abuse"></a>
+
+<!--
 - [🔷 2.1) Identifying the Malicious Printer Driver Payload](#-21-identifying-the-malicious-printer-driver-payload)
+-->
 
 With attacker-controlled infrastructure identified, the investigation next focuses on how the exploit was delivered to the host. This phase examines evidence of Print Spooler abuse and identifies the malicious payload introduced through the trusted printer driver mechanism.
 
@@ -212,10 +244,20 @@ Taken together, this activity suggests that the attacker abused the Print Spoole
 - Attacker-supplied printer driver (`printevil.dll`)
 - File creation event showing malicious DLL written by `spoolsv.exe` (Sysmon Event ID 11)
 
+</details>
 
-#### ▶ 3) Payload Staging: File System Impact and Driver Placement
+<details>
+<summary><strong>▶ 3) Payload Staging: File System Impact and Driver Placement</strong><br>
+→ determining where the attacker staged the malicious payload on disk and why that location matters
+</summary>
 
+*Goal:* Determine how and where the malicious printer driver was staged on the file system by analyzing Print Spooler driver directories and understanding their role in trusted driver installation workflows.
+
+<a id="3-payload-staging-file-system-impact-and-driver-placement"></a>
+
+<!--
 - [🔷 3.1) Malicious Driver Staging within Print Spooler Directories](#-31-malicious-driver-staging-within-print-spooler-directories)
+-->
 
 Once execution-related network activity was observed, file system artifacts were reviewed to understand where and how the malicious payload was written to disk. This section documents the staging location used by the attacker and explains its significance within the Print Spooler driver workflow.
 
@@ -231,10 +273,22 @@ The presence of the non-standard DLL, `printevil.dll`, in the `spool\drivers\x64
 
 Artifact Identified: Printer driver staging path used for malicious payload placement (`C:\Windows\System32\spool\drivers\x64\3\New\printevil.dll`)
 
+</details>
 
-#### ▶ 4) Payload Execution and Reverse Shell Establishment
+
+<details>
+<summary><strong>▶ 4) Payload Execution and Reverse Shell Establishment</strong><br>
+→ confirming execution of the staged payload and identifying resulting outbound attacker communication
+</summary>
+
+*Goal:* Confirm successful code execution and reverse shell establishment by correlating host-based process telemetry with network traffic showing outbound connections to attacker-controlled infrastructure.
+
+<a id="4-payload-execution-and-reverse-shell-establishment"></a>
+
+<!--
 - [🔷 4.1) Identifying Reverse Shell Execution via Host Telemetry](#-41-identifying-reverse-shell-execution-via-host-telemetry)
 - [🔷 4.2) Validating Reverse Shell Activity via Packet Capture Analysis (Wireshark)](#-42-validating-reverse-shell-activity-via-packet-capture-analysis-wireshark)
+-->
 
 After confirming payload delivery, the investigation shifts to determining whether the malicious code was executed and resulted in external communication. This section analyzes host and network telemetry to identify outbound connections consistent with reverse shell behavior.
 
@@ -292,9 +346,20 @@ Following the TCP stream in Wireshark revealed an interactive command session be
 
 Artifact Identified: Attacker command-and-control endpoint (`10.0.2.5:443`)
 
+</details>
 
-#### ▶ 5) SMB-Based Print Spooler Service Interaction
+<details>
+<summary><strong>▶ 5) SMB-Based Print Spooler Service Interaction</strong><br>
+→ validating how the Print Spooler service was accessed remotely as part of exploitation
+</summary>
+
+*Goal:* Validate remote interaction with the Print Spooler service by analyzing SMB file share access events to confirm exploitation of the spoolss interface rather than normal domain activity.
+
+<a id="5-smb-based-print-spooler-service-interaction"></a>
+
+<!--
 - [🔷 5.1) Identifying How PRint Spooler Service Was Accessed](#-51-identifying-how-print-spooler-service-was-accessed)
+-->
 
 After confirming that the exploit resulted in an outbound reverse shell, the investigation shifted to understanding how the Print Spooler service was accessed at the network level. Because Windows printing relies on SMB for remote printer and driver operations, SMB-related Security events are a key source of evidence when investigating Print Spooler abuse.
 
@@ -343,9 +408,21 @@ Taken together, these details confirm that the Print Spooler service was accesse
 During review of Security Event ID 5145, two log entries were identified that met all required conditions: "SubjectUserName" = "printuser", "IpAddress = 10.0.2.5", and "RelativeTargetName = spoolss". The presence of multiple matching events indicates repeated or sustained interaction with the Print Spooler named pipe rather than a single, isolated access attempt. This behavior is consistent with exploitation activity, where multiple requests are made as part of service interaction, payload delivery, or command execution, and does not represent multiple distinct attacks.
 </blockquote>
 
+</details>
 
-#### ▶ 6) Exploit Side Effects: Error Handling and Abnormal Process Behavior
+
+<details>
+<summary><strong>▶ 6) Exploit Side Effects: Error Handling and Abnormal Process Behavior</strong>
+→ identifying secondary process behavior caused by destabilization of the exploited service
+</summary>
+
+*Goal:* Identify abnormal process behavior resulting from Print Spooler abuse by analyzing error-handling and parent–child process relationships indicative of service instability during exploitation.
+
+<a id="6-exploit-side-effects-error-handling-and-abnormal-process-behavior"></a>
+
+<!--
 - [🔷 6.1) Determing If Print Spooler Service Abuse Caused Any Other Abnormal Behavior](#-61-determing-if-print-spooler-service-abuse-caused-any-other-abnormal-behavior)
+-->
 
 After confirming successful exploitation and reverse shell activity, the investigation shifted back to host-based process telemetry to understand whether the abuse of the Print Spooler service caused any secondary or abnormal process behavior. Exploits often destabilize services, which can trigger built-in Windows error-handling mechanisms, providing additional evidence of malicious activity.
 
@@ -383,8 +460,17 @@ Windows processes are always launched from executable files, which use the `.exe
 
 Identifying that `WerFault.exe` was launched by `spoolsv.exe` provides additional confirmation that a trusted Windows service was abused, the abuse caused abnormal execution behavior, and exploitation progressed far enough to destabilize the service. From a detection standpoint, unexpected parent–child relationships involving trusted services and error-handling binaries can serve as valuable indicators of exploitation activity.
 
+</details>
 
-#### ▶ 7) Reconstructing the Exploitation Execution Chain
+
+<details>
+<summary><strong>▶ 7) Reconstructing the Exploitation Execution Chain</strong><br>
+→ reconstructing the full execution sequence from service abuse to interactive attacker control
+</summary>
+
+*Goal:* Reconstruct the attacker’s execution chain by correlating service execution, error-handling processes, and interactive command execution to understand how exploitation progressed end to end.
+
+<a id="7-reconstructing-the-exploitation-execution-chain"></a>
 
 To better understand why WerFault.exe executed, the investigation remained within the Sysmon Operational logs and focused on process creation events (Event ID 1). Sysmon was used for this step because it records detailed execution metadata, including parent process relationships and command-line context, which are necessary for reconstructing execution flow after exploitation.
 
@@ -407,8 +493,16 @@ Following establishment of the reverse shell, Sysmon process creation events rev
 Unlike earlier system-generated processes, this command represents interactive attacker activity, as "whoami" is a user-invoked utility rather than an automated system process. The command output confirmed execution under the "NT AUTHORITY\SYSTEM" context, indicating full system-level compromise.
 </blockquote>
 
+</details>
 
-#### ▶ 8) Post-Exploitation Privilege Validation
+<details>
+<summary><strong>▶ 8) Post-Exploitation Privilege Validation</strong><br>
+→ validating the final privilege level achieved by the attacker after exploitation
+</summary>
+
+*Goal:* Validate the attacker’s post-exploitation privilege level by analyzing interactive command output and confirming execution under the SYSTEM security context.
+
+<a id="8-post-exploitation-privilege-validation"></a>
 
 After confirming successful exploitation and service abuse, the final step of the investigation focused on determining the level of access gained by the attacker. Establishing the execution context is critical for assessing impact and severity.
 
@@ -417,6 +511,8 @@ Network-level analysis of the reverse shell session showed that the attacker iss
 The output of this command indicated execution as NT AUTHORITY\SYSTEM, confirming that the attacker achieved SYSTEM-level privileges on the host. This represents the highest level of access on a Windows system and indicates a complete compromise.
 
 From an investigative standpoint, this validation confirms that the attack progressed beyond initial code execution and resulted in full administrative control. This information is critical for both incident response and detection engineering, as it demonstrates the potential impact of Print Spooler abuse if left undetected.
+
+</details>
 
 ---
 
@@ -552,6 +648,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
