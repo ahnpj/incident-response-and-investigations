@@ -126,7 +126,7 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 → establishing which external infrastructure the compromised host communicated with during the attack
 </summary>
 
-*Goal:* Establish the attacker-controlled domain and infrastructure by analyzing authentication and SMB-related security telemetry to distinguish malicious external interaction from legitimate domain activity.
+*Goal:* Establish the attacker-controlled domain and infrastructure by analyzing authentication and SMB-related security telemetry to distinguish malicious external interaction from legitimate domain activity.<br>
 
 <a id="1-initial-triage-attacker-infrastructure-discovery"></a>
 
@@ -203,7 +203,7 @@ Identifying this domain is critical for detection efforts. Fully qualified domai
 → identifying how the malicious payload was delivered through trusted Print Spooler functionality
 </summary>
 
-*Goal:* Identify the attacker-supplied payload delivered via Print Spooler abuse by reviewing file creation telemetry and differentiating malicious driver files from legitimate Windows printer components.
+*Goal:* Identify the attacker-supplied payload delivered via Print Spooler abuse by reviewing file creation telemetry and differentiating malicious driver files from legitimate Windows printer components.</br>
 
 <a id="2-initial-access-payload-delivery-via-print-spooler-abuse"></a>
 
@@ -251,7 +251,7 @@ Taken together, this activity suggests that the attacker abused the Print Spoole
 → determining where the attacker staged the malicious payload on disk and why that location matters
 </summary>
 
-*Goal:* Determine how and where the malicious printer driver was staged on the file system by analyzing Print Spooler driver directories and understanding their role in trusted driver installation workflows.
+*Goal:* Determine how and where the malicious printer driver was staged on the file system by analyzing Print Spooler driver directories and understanding their role in trusted driver installation workflows.</br>
 
 <a id="3-payload-staging-file-system-impact-and-driver-placement"></a>
 
@@ -281,7 +281,7 @@ Artifact Identified: Printer driver staging path used for malicious payload plac
 → confirming execution of the staged payload and identifying resulting outbound attacker communication
 </summary>
 
-*Goal:* Confirm successful code execution and reverse shell establishment by correlating host-based process telemetry with network traffic showing outbound connections to attacker-controlled infrastructure.
+*Goal:* Confirm successful code execution and reverse shell establishment by correlating host-based process telemetry with network traffic showing outbound connections to attacker-controlled infrastructure.</br>
 
 <a id="4-payload-execution-and-reverse-shell-establishment"></a>
 
@@ -353,7 +353,7 @@ Artifact Identified: Attacker command-and-control endpoint (`10.0.2.5:443`)
 → validating how the Print Spooler service was accessed remotely as part of exploitation
 </summary>
 
-*Goal:* Validate remote interaction with the Print Spooler service by analyzing SMB file share access events to confirm exploitation of the spoolss interface rather than normal domain activity.
+*Goal:* Validate remote interaction with the Print Spooler service by analyzing SMB file share access events to confirm exploitation of the spoolss interface rather than normal domain activity.</br>
 
 <a id="5-smb-based-print-spooler-service-interaction"></a>
 
@@ -416,7 +416,7 @@ During review of Security Event ID 5145, two log entries were identified that me
 → identifying secondary process behavior caused by destabilization of the exploited service
 </summary>
 
-*Goal:* Identify abnormal process behavior resulting from Print Spooler abuse by analyzing error-handling and parent–child process relationships indicative of service instability during exploitation.
+*Goal:* Identify abnormal process behavior resulting from Print Spooler abuse by analyzing error-handling and parent–child process relationships indicative of service instability during exploitation.</br>
 
 <a id="6-exploit-side-effects-error-handling-and-abnormal-process-behavior"></a>
 
@@ -468,7 +468,7 @@ Identifying that `WerFault.exe` was launched by `spoolsv.exe` provides additiona
 → reconstructing the full execution sequence from service abuse to interactive attacker control
 </summary>
 
-*Goal:* Reconstruct the attacker’s execution chain by correlating service execution, error-handling processes, and interactive command execution to understand how exploitation progressed end to end.
+*Goal:* Reconstruct the attacker’s execution chain by correlating service execution, error-handling processes, and interactive command execution to understand how exploitation progressed end to end.</br>
 
 <a id="7-reconstructing-the-exploitation-execution-chain"></a>
 
@@ -500,7 +500,7 @@ Unlike earlier system-generated processes, this command represents interactive a
 → validating the final privilege level achieved by the attacker after exploitation
 </summary>
 
-*Goal:* Validate the attacker’s post-exploitation privilege level by analyzing interactive command output and confirming execution under the SYSTEM security context.
+*Goal:* Validate the attacker’s post-exploitation privilege level by analyzing interactive command output and confirming execution under the SYSTEM security context.</br>
 
 <a id="8-post-exploitation-privilege-validation"></a>
 
@@ -648,6 +648,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
