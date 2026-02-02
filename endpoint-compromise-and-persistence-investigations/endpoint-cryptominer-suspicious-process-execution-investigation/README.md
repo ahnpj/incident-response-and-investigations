@@ -14,7 +14,7 @@ This investigation analyzes suspicious process execution detected by a SIEM, whe
 The analysis focuses on validating the alert using correlated Windows process creation telemetry, user attribution, and execution path analysis to determine whether the detection represents a true security incident.
 
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -120,6 +120,7 @@ Even single-event alerts benefit from systematic investigation to avoid misclass
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate practical alert analysis, log correlation methodology, and professional incident documentation aligned with real operational workflows.
+
 
 
 
