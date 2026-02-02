@@ -13,15 +13,8 @@ This investigation analyzes a multi-stage web server compromise that resulted in
 
 The analysis focuses on correlating web, IDS, firewall, and host telemetry in Splunk to reconstruct attacker behavior across the full intrusion lifecycle.
 
-The investigation demonstrates how an analyst:
-- Detects reconnaissance and vulnerability scanning
-- Identifies credential brute-force attacks against web admin portals
-- Confirms payload upload and execution
-- Detects outbound command-and-control communication
-- Identifies actions taken to modify hosted content
-
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -34,6 +27,13 @@ Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mappi
 
 > 👉 **Use this repository as case-based learning**  
 These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+
+The investigation demonstrates how an analyst:
+- Detects reconnaissance and vulnerability scanning
+- Identifies credential brute-force attacks against web admin portals
+- Confirms payload upload and execution
+- Detects outbound command-and-control communication
+- Identifies actions taken to modify hosted content
 
 ---
 
@@ -124,5 +124,6 @@ This investigation demonstrates how defenders can identify early scanning behavi
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates multi-source log correlation, web attack analysis, and professional incident documentation aligned with security operations workflows.
+
 
 
