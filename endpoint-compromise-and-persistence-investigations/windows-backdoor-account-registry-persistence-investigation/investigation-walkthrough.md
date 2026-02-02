@@ -519,23 +519,35 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during Security event, registry, and PowerShell log analysis. Mappings are based on directly observed activity and artifacts within scope.
 
-- **Persistence — Create Account (Local Account) (T1136.001):**  
-  A new local user account (`A1berto`) was created via command-line execution, confirmed through account management telemetry and process creation logs.
+#### ▶ Persistence
 
-- **Defense Evasion — Masquerading (T1036):**  
-  The backdoor account name closely resembled a legitimate user (`Alberto`), indicating intent to blend into normal account activity.
+(1) Create Account (Local Account) (T1136.001) 
+- A new local user account (`A1berto`) was created via command-line execution, confirmed through account management telemetry and process creation logs.
 
-- **Execution / Lateral Movement — Windows Management Instrumentation (T1047):**  
-  Remote execution using WMIC was used to create the backdoor account, observed in process creation telemetry containing `WMIC.exe process call create`.
+#### ▶ Defense Evasion
 
-- **Persistence — Modify Registry (T1112):**  
-  Registry artifacts under the SAM hive confirmed registration of the new local account, observed via registry event telemetry.
+(1) Masquerading (T1036) 
+- The backdoor account name closely resembled a legitimate user (`Alberto`), indicating intent to blend into normal account activity.
 
-- **Execution — PowerShell (T1059.001):**  
-  Encoded PowerShell commands were executed, identified by `-enc` usage and Base64 content in PowerShell logs.
+#### ▶ Execution / Lateral Movement
 
-- **Command and Control — Application Layer Protocol: Web (T1071.001):**  
-  Outbound communication to an external web endpoint was identified after decoding the PowerShell payload.
+(1) Windows Management Instrumentation (T1047)
+- Remote execution using WMIC was used to create the backdoor account, observed in process creation telemetry containing `WMIC.exe process call create`.
+
+#### ▶ Persistence
+
+(1) Modify Registry (T1112)
+- Registry artifacts under the SAM hive confirmed registration of the new local account, observed via registry event telemetry.
+
+#### ▶ Execution
+
+(1) PowerShell (T1059.001)
+- Encoded PowerShell commands were executed, identified by `-enc` usage and Base64 content in PowerShell logs.
+
+#### ▶ Command and Control
+
+(1) Application Layer Protocol: Web (T1071.001) 
+- utbound communication to an external web endpoint was identified after decoding the PowerShell payload.
 
 ---
 
@@ -554,6 +566,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 
 
 ---
+
 
 
 
