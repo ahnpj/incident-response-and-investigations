@@ -5,6 +5,7 @@ This investigation analyzes a simulated security incident involving the abuse of
 
 The purpose of this investigation is to reconstruct the attacker’s activity using host-based and network-based telemetry and to identify observable artifacts that can support reliable detections. Findings from this analysis highlight how legitimate Windows services can be abused and which indicators are most valuable for SOC and detection engineering teams.
 
+👉 For a detailed, step-by-step walkthrough of how this investigation was conducted — complete with screenshots — refer to the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
 
 ---
 
@@ -663,6 +664,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
