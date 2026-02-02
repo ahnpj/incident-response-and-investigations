@@ -13,16 +13,8 @@ This investigation analyzes a complete intrusion lifecycle on a Windows host, be
 
 The analysis focuses on reconstructing attacker behavior using correlated firewall logs, authentication telemetry, endpoint execution events, file artifacts, and registry modifications to produce a complete timeline of compromise across multiple attack stages.
 
-The investigation demonstrates how an analyst:
-- Identifies reconnaissance through abnormal network scanning behavior
-- Confirms initial access via exposed remote services
-- Reconstructs brute-force authentication activity
-- Detects attacker-created accounts and privilege escalation
-- Identifies malware deployment and persistence mechanisms
-- Detects cleanup actions intended to reduce attacker visibility
-
 > 👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+Begin with `investigation-walkthrough.md` inside this investigation folder to see how I identified, pivoted on, and validated evidence step by step.
 
 > 👉 **Review findings and conclusions**  
 Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
@@ -35,6 +27,14 @@ Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mappi
 
 > 👉 **Use this repository as case-based learning**  
 These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+
+The investigation demonstrates how an analyst:
+- Identifies reconnaissance through abnormal network scanning behavior
+- Confirms initial access via exposed remote services
+- Reconstructs brute-force authentication activity
+- Detects attacker-created accounts and privilege escalation
+- Identifies malware deployment and persistence mechanisms
+- Detects cleanup actions intended to reduce attacker visibility
 
 ---
 
@@ -125,5 +125,6 @@ This investigation demonstrates how defenders can correlate reconnaissance to ex
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation demonstrates full lifecycle reconstruction, cross-source correlation, and professional incident documentation aligned with operational response workflows.
+
 
 
