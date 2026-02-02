@@ -1310,23 +1310,35 @@ This section outlines actionable improvements based on observed attacker behavio
 
 This section provides a high-level summary of observed MITRE ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
-- **Reconnaissance — Active Scanning (T1595):**  
-  Automated vulnerability scanning activity was detected via Suricata alerts and HTTP telemetry, including Acunetix user-agent strings and malformed request patterns targeting the web server prior to compromise.
+#### ▶ Reconnaissance
 
-- **Initial Access — Brute Force (T1110):**  
-  Multiple authentication attempts were observed against the Joomla administrative login endpoint, followed by successful authentication using valid credentials.
+Active Scanning (T1595)  
+- Automated vulnerability scanning activity was detected via Suricata alerts and HTTP telemetry, including Acunetix user-agent strings and malformed request patterns targeting the web server prior to compromise.
 
-- **Credential Access — Valid Accounts (T1078):**  
-  Administrator credentials were used to access the Joomla management interface and perform post-compromise actions, including file upload and execution.
+#### ▶ Initial Access
 
-- **Execution — User Execution (T1204):**  
-  A malicious executable (`3791.exe`) uploaded via the web application was executed on the host, confirmed through Sysmon process creation telemetry.
+Brute Force (T1110)
+- Multiple authentication attempts were observed against the Joomla administrative login endpoint, followed by successful authentication using valid credentials.
 
-- **Command and Control — Application Layer Protocol: Web (T1071.001):**  
-  The compromised server initiated outbound HTTP communication to attacker-controlled infrastructure, indicating command-and-control activity over standard web protocols.
+#### ▶ Credential Access
 
-- **Impact — Defacement (T1491):**  
-  Website content was altered to retrieve and display an attacker-controlled image, resulting in public-facing defacement of the domain.
+Valid Accounts (T1078)
+- Administrator credentials were used to access the Joomla management interface and perform post-compromise actions, including file upload and execution.
+
+#### ▶ Execution
+
+User Execution (T1204)
+- A malicious executable (`3791.exe`) uploaded via the web application was executed on the host, confirmed through Sysmon process creation telemetry.
+
+#### ▶ Command and Control
+
+Application Layer Protocol: Web (T1071.001) 
+- The compromised server initiated outbound HTTP communication to attacker-controlled infrastructure, indicating command-and-control activity over standard web protocols.
+
+#### ▶ Impact
+
+Defacement (T1491)
+- Website content was altered to retrieve and display an attacker-controlled image, resulting in public-facing defacement of the domain.
 
 ---
 
@@ -1350,6 +1362,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
