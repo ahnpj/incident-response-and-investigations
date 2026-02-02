@@ -578,17 +578,25 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 
 The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during application authentication log analysis. Mappings are based on directly observed activity and artifacts within scope.
 
-- **Credential Access — Brute Force (T1110):**  
-  High-volume authentication failures from a single source IP were observed targeting multiple accounts.
+### ▶ Credential Access
 
-- **Credential Access — Password Spraying (T1110.003):**  
-  Repeated authentication attempts across many usernames using consistent client metadata indicated password spraying behavior.
+(1) Brute Force (T1110)
+- High-volume authentication failures from a single source IP were observed targeting multiple accounts.
 
-- **Credential Access — Valid Accounts (T1078):**  
-  Successful authentication occurred using compromised credentials, followed by reuse from a secondary source IP.
+### ▶ Credential Access
 
-- **Credential Access — Unsecured Credentials (T1552):**  
-  Reversible credential material was exposed in application logs, allowing recovery of plaintext passwords.
+(1) Password Spraying (T1110.003)
+- Repeated authentication attempts across many usernames using consistent client metadata indicated password spraying behavior.
+
+### ▶ Credential Access
+
+(1) Valid Accounts (T1078)
+- Successful authentication occurred using compromised credentials, followed by reuse from a secondary source IP.
+
+### ▶ Credential Access
+
+(1) Unsecured Credentials (T1552)  
+- Reversible credential material was exposed in application logs, allowing recovery of plaintext passwords.
 
 ---
 
@@ -604,6 +612,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
