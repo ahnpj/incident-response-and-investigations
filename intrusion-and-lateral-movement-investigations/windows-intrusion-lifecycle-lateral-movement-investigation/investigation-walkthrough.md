@@ -984,7 +984,7 @@ This section summarizes high-level detection and hardening opportunities observe
 
 ### MITRE ATT&CK Mapping
 
-This section provides a high-level  summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`
+This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`
 
 #### ▶ Reconnaissance
 
