@@ -5,7 +5,19 @@ This investigation analyzes a simulated security incident involving the abuse of
 
 The purpose of this investigation is to reconstruct the attacker’s activity using host-based and network-based telemetry and to identify observable artifacts that can support reliable detections. Findings from this analysis highlight how legitimate Windows services can be abused and which indicators are most valuable for SOC and detection engineering teams.
 
-👉 For a detailed, step-by-step walkthrough of how this investigation was conducted — complete with screenshots — refer to the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
+> 👉 For a description of the situation being investigated and what triggered this analysis, see the **[Scenario Context](#scenario-context)** section below.
+
+> 👉 For a detailed, step-by-step walkthrough of how this investigation was conducted — complete with screenshots — refer to the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
+
+> 👉 For a mapping of observed behavior to MITRE ATT&CK techniques, see the **[MITRE ATT&CK](#MITRE-ATT%CK-Mapping)** Mapping section below.
+
+---
+
+### Scenario Context
+
+A Windows host was flagged for suspicious activity involving the Windows Print Spooler service (`spoolsv.exe`). Early indicators suggested that printer-related functionality was being abused to access an external SMB resource and transfer attacker-controlled files onto the system, resulting in abnormal file writes within Print Spooler driver directories.
+
+Following payload delivery, additional telemetry indicated code execution through trusted Windows components and outbound communication consistent with a reverse shell session. The situation required post-incident investigation to reconstruct how the service was abused, what artifacts were created on disk, and which host and network indicators best support reliable detection going forward.
 
 ---
 
@@ -664,6 +676,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 | Discovery | **System Owner/User Discovery (T1033)** | Commands executed to confirm execution context and privileges. |
 
 ---
+
 
 
 
