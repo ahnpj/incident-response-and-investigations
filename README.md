@@ -112,7 +112,7 @@ Together, these files separate **analyst workflow**, **incident reconstruction**
 
 Each category folder may contain **multiple investigation folders**, with each investigation representing a separate incident scenario.
 
-#### Identity and Email Compromise Investigations  
+#### ▶️ Identity and Email Compromise Investigations  
 `identity-and-email-compromise-investigations/`
 
 Incidents where identity platforms or messaging services are the primary attack surface, including credential abuse, mailbox manipulation, and business email compromise (BEC). Investigations are grouped here when the **core security failure is unauthorized access to accounts or messaging workflows**.
@@ -123,7 +123,7 @@ Current investigations:
   Investigates how attackers abuse Exchange inbox rules to suppress financial communications after compromising executive credentials, including validation of unauthorized rule creation and associated identity activity.
 
 
-#### Endpoint Compromise and Persistence Investigations  
+#### ▶️ Endpoint Compromise and Persistence Investigations  
 `endpoint-compromise-and-persistence-investigations/`
 
 Host-based compromise scenarios involving malware execution, persistence mechanisms, and abuse of built-in system utilities. Cases are categorized here when **endpoint telemetry and host artifacts are central to detection and validation**.
@@ -140,7 +140,7 @@ Current investigations:
   Validates suspicious binaries and persistence techniques using file reputation, digital signatures, scheduled tasks, and registry artifacts.
 
 
-#### Intrusion and Lateral Movement Investigations  
+#### ▶️ Intrusion and Lateral Movement Investigations  
 `intrusion-and-lateral-movement-investigations/`
 
 Multi-stage intrusion scenarios involving privilege escalation, remote service exploitation, and movement between systems. Investigations are placed here when the objective is to **reconstruct attacker progression across hosts and network paths**.
@@ -154,7 +154,7 @@ Current investigations:
   Tracks attacker behavior from initial access through credential-based lateral movement using firewall, authentication, and host telemetry.
 
 
-#### Web Application Compromise Investigations  
+#### ▶️ Web Application Compromise Investigations  
 `web-application-compromise-investigations/`
 
 Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
@@ -201,6 +201,7 @@ Where relevant, investigations may reference related workflows to demonstrate ho
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
+
 
 
 
