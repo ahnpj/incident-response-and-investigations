@@ -79,7 +79,7 @@ The investigation began with a review of the SIEM dashboard to understand the na
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="600"><br>
-  <em>Figure 1: Suspicious process in SIEM dashboard</em>
+  <em>Figure 1 - SIEM alert highlighting suspicious execution of "cudominer.exe"</em>
 </p>
 
 The process name immediately stood out due to its similarity to known mining tools and its deviation from standard application naming conventions typically observed in legitimate environments.
@@ -92,7 +92,7 @@ After identifying the suspicious executable, correlated event logs were examined
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="1000"><br>
-  <em>Figure 2 – Event Log Correlation for Suspicious Process</em>
+  <em>Figure 2 – Correlated process creation evidence attributing execution to "Chris.Fort" on "HR_02"</em>
 </p>
 
 Further inspection of execution details showed that the process was launched from a temporary directory rather than a standard application path. The executable path observed was: `C:\Users\Chris.Fort\temp\cudominer.exe`
@@ -105,7 +105,7 @@ To ensure the alert fired as expected, the SIEM correlation rule responsible for
        alt="SIEM alert" 
        style="border: 2px solid #444; border-radius: 6px;" 
        width="600"><br>
-  <em>Figure 3 – SIEM Rule Used to Detect Potential CryptoMiner Activity</em>
+  <em>Figure 3 – Detection rule logic showing the keyword match that triggered the alert</em>
 </p>
 
 The execution of `cudominer.exe` satisfied the rule’s detection criteria, confirming that the alert was triggered intentionally and functioned as designed.
@@ -202,6 +202,7 @@ This section provides a high-level summary table of observed ATT&CK tactics and 
 | Impact | **Resource Hijacking (T1496)** | Unauthorized cryptocurrency mining activity resulted in sustained consumption of host resources. |
 
 **Note:** This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+
 
 
 
