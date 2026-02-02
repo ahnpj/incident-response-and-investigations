@@ -6,11 +6,11 @@ This investigation reconstructs a full malware intrusion lifecycle on a Windows 
 
 The objective of this investigation is to document attacker behavior across reconnaissance, initial access, persistence, collection, and impact phases, and to identify concrete detection and prevention opportunities aligned to MITRE ATT&CK techniques.
 
-> 👉 See the **[Scenario Context](#scenario-context)** section below for a **description of the situation being investigated and what triggered this analysis**.
+> 👉 For a **description of the situation being investigated and what triggered this analysis**, see the **[Scenario Context](#scenario-context)** section below.
 
-> 👉 See the **[MITRE ATT&CK](#mitre-attck-mapping)** section below for a **mapping of observed behavior to MITRE ATT&CK techniques**.
+> 👉 For a **mapping of observed behavior to MITRE ATT&CK techniques**, see the **[MITRE ATT&CK](#mitre-attck-mapping)** section below
 
-> 👉 See the **[Investigation Walkthrough](#investigation-walkthrough)** section below for a detailed, **step-by-step walkthrough of how this investigation was conducted — complete with screenshots**.
+> 👉 For a detailed, **step-by-step walkthrough of how this investigation was conducted — complete with screenshots**, see the **[Investigation Walkthrough](#investigation-walkthrough)** section below.
 
 ---
 
