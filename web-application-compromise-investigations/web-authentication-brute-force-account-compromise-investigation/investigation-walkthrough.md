@@ -573,11 +573,10 @@ These recommendations focus on improving visibility and early detection of simil
 ---
 
 ### MITRE ATT&CK Mapping
-The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during application authentication log analysis. Mappings are based on directly observed activity and artifacts within scope.
 
-<blockquote>
 This section provides a high-level summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
-</blockquote>
+
+The following mappings connect observed behaviors to MITRE ATT&CK techniques and cite the specific evidence identified during application authentication log analysis. Mappings are based on directly observed activity and artifacts within scope.
 
 - **Credential Access — Brute Force (T1110):**  
   High-volume authentication failures from a single source IP were observed targeting multiple accounts.
@@ -595,7 +594,7 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 
 ### MITRE ATT&CK Mapping (Table View)
 
-**Note:** This section provides a high-level table summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
+This section provides a high-level table summary of observed ATT&CK tactics and techniques. For evidence-backed mappings tied to specific artifacts, timestamps, and investigation steps, see: **`mitre-attack-mapping.md`**
 
 | Tactic | Technique | Description |
 |------|-----------|-------------|
@@ -605,6 +604,7 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
