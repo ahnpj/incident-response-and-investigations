@@ -15,6 +15,32 @@ Each investigation is written as a self-contained case file, showing how an anal
 
 ---
 
+### Start Here: How to Navigate This Repository
+
+👉 **Browse by category folders**  
+At the top level of this repository, you’ll see folders organized by **primary attack surface and investigation focus** (for example: identity, endpoint, intrusion, and web applications). Start by choosing the category that best matches the type of incident you want to explore.
+
+👉 **Each folder represents one complete investigation**  
+Inside each category, every subfolder is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
+
+👉 **Follow the investigation walkthrough first**  
+Begin with `investigation-walkthrough.md` inside an investigation folder to see how the analyst identified, pivoted on, and validated evidence step by step.
+
+👉 **Review findings and conclusions**  
+Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
+
+👉 **Dig into evidence and detections**  
+For deeper technical detail, review the `detection-artifact-report.md`, supporting screenshots, and extracted artifacts to see exactly how conclusions were supported by telemetry.
+
+👉 **See defensive takeaways**  
+Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mapping.md` to understand how observed attacker behavior maps to MITRE ATT&CK and where detection or control improvements were identified.
+
+👉 **Use this repository as case-based learning**  
+These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
+
+
+---
+
 ### How This Repository Is Organized
 
 This repository is organized into **category folders**, which are the top-level folders you see at the top when browsing the repository.  
@@ -181,6 +207,7 @@ Where relevant, investigations may reference related workflows to demonstrate ho
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
+
 
 
 
