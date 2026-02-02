@@ -14,6 +14,22 @@ Analysis confirmed that the activity involved automated authentication abuse, ac
 
 ---
 
+### Scenario Context
+
+A potential web application account compromise was suspected after the application’s authentication telemetry showed an abnormal spike in failed login attempts over a short time window. The volume, timing, and consistency of these failures suggested automated credential abuse rather than normal user error (for example, scripted brute-force or password spraying).
+
+The investigation was triggered by this elevated failure activity and focused on answering whether the attacker:
+
+- Identified valid usernames through repeated login attempts (account enumeration),
+- Successfully authenticated to at least one real account,
+- Reused compromised credentials from additional infrastructure, and
+- Benefited from insecure credential handling within the application’s own logs.
+
+Because only application-layer authentication logs were available (JSON + HTTP metadata) and no host or network forensics were in scope, the investigation centered on correlating login outcomes, usernames, User-Agent strings, targeted endpoints, and source IP behavior to reconstruct the full authentication-abuse sequence leading to confirmed account compromise.
+
+
+---
+
 ### Incident Scope
 
 The scope of this investigation is limited to post-incident analysis of web application authentication telemetry. The analysis focused exclusively on application-layer authentication logs captured in JSON format and associated HTTP request metadata.
@@ -597,6 +613,7 @@ This section provides a high-level summary of observed ATT&CK tactics and techni
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
