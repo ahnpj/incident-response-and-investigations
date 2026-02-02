@@ -11,6 +11,15 @@ This investigation analyzed a suspected Windows host compromise using Splunk tel
 
 ---
 
+### Scenario Context
+
+A suspected compromise was identified in Windows telemetry ingested into Splunk, indicating that a new local user account may have been created to establish persistent access. The activity included command-line evidence consistent with built-in account management utilities creating a backdoor user, followed by registry writes under the SAM hive that aligned with local account registration. The combination of account creation and SAM-related registry activity suggested adversary persistence rather than normal administrative provisioning.
+
+The investigation was triggered by these anomalies and expanded to determine whether the account creation was intentional attacker behavior, whether impersonation was attempted through a look-alike username, and whether follow-on actions occurred after persistence was established. Correlated Security, Sysmon/registry, and PowerShell logs were used to validate the backdoor account activity, identify remote execution via WMIC, and analyze encoded PowerShell execution that revealed outbound communication to an external web resource.
+
+
+---
+
 ### Incident Scope
 This investigation focused on reconstructing suspicious activity observed in pre-ingested Windows logs within Splunk, treating the dataset as if it were received after an alert on a Windows workstation. Scope included validating whether a backdoor local account was created, identifying associated registry artifacts, evaluating impersonation intent, and tracing related follow-up activity including remote command execution and PowerShell-based outbound communication. Analysis was limited to the available log sources (Security, Sysmon/registry, and PowerShell) contained within the dataset and did not involve direct interaction with the Windows host generating the logs.
 
@@ -545,6 +554,7 @@ The following mappings connect observed behaviors to MITRE ATT&CK techniques and
 
 
 ---
+
 
 
 
