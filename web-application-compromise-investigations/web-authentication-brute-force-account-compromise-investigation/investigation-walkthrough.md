@@ -137,14 +137,14 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
 -->
 
+<a id="-1-source-ip-responsible-for-attack-activity"></a>
+
 <details>
 <summary><strong>▶ 1) Source IP Responsible for Attack Activity</strong><br>
  → identifying which IP address generated the failed login attempts
 </summary><br>
 
 *Goal:* Identify the source IP responsible for the attack.
-
-<a id="-1-source-ip-responsible-for-attack-activity"></a>
 
 <!--
 - [🔷 1.1) Identifying The Origin Of Failed Login Attempted](#-11-identifying-the-origin-of-failed-login-attempted)
@@ -197,6 +197,8 @@ Evidence supporting this mapping includes:
 
 </details>
 
+<a id="-2-user-agent-analysis"></a>
+
 <details>
 <summary><strong>▶ 2) User-Agent Analysis</strong><br>
  → checking whether the same User-Agent was used across attempts
@@ -206,8 +208,6 @@ Evidence supporting this mapping includes:
 -->
 
 *Goal:* Determine if the activity came from automated tooling.
-
-<a id="-2-user-agent-analysis"></a>
 
 After identifying the source IP responsible for the repeated authentication failures, the next step was to analyze the User-Agent values associated with those requests. User-Agent strings provide insight into the client software initiating authentication attempts and can help differentiate between legitimate user behavior and automated tooling.
 
@@ -253,6 +253,7 @@ The uniform User-Agent behavior strengthens the conclusion that the authenticati
 
 </details>
 
+<a id="-3-non-existent-account-targeting-account-enumeration"></a>
 
 <details>
 <summary><strong>▶ 3) Non-Existent Account Targeting (Account Enumeration)</strong><br>
@@ -262,8 +263,6 @@ The uniform User-Agent behavior strengthens the conclusion that the authenticati
 - [🔷 3.1) Determining Whether Authentication Attempts Targeted Valids Accounts](#-31-determining-whether-authentication-attempts-targeted-valids-accounts)
 - [🔷 3.2) MITRE ATT&CK Mapping — Finding 3](#-32-mitre-attck-mapping--finding-3)
 -->
-
-<a id="-3-non-existent-account-targeting-account-enumeration"></a>
 
 *Goal:* Confirm whether account enumeration occurred.
 
@@ -321,6 +320,7 @@ The differentiation in authentication failure responses enabled the attacker to 
 
 </details>
 
+<a id="-4-valid-accounts-targeted"></a>
 
 <details>
 <summary><strong>▶ 4) Valid Accounts Targeted</strong><br>
@@ -330,8 +330,6 @@ The differentiation in authentication failure responses enabled the attacker to 
 - [🔷 4.1) Determining Whether Application User Accounts Were Targeted](#-41-determining-whether-application-user-accounts-were-targeted)
 - [🔷 4.2) MITRE ATT&CK Mapping — Finding 4](#-42-mitre-attck-mapping--finding-4)
 -->
-
-<a id="-4-valid-accounts-targeted"></a>
 
 *Goal:* List the valid accounts involved in the attack.
 
@@ -369,6 +367,8 @@ The targeting of multiple valid accounts aligns with MITRE ATT&CK sub-technique 
 
 </details>
 
+<a id="-5-successful-authentication-event"></a>
+
 <details>
 <summary><strong>▶ 5) Successful Authentication Event</strong><br>
  → identifying the point where unauthorized authentication succeeded
@@ -377,8 +377,6 @@ The targeting of multiple valid accounts aligns with MITRE ATT&CK sub-technique 
 <!--
 - [🔷 5.1) Determinig Whether Any Attacker Login Attempts Were Successful](#-51-determinig-whether-any-attacker-login-attempts-were-successful)
 -->
-
-<a id="-5-successful-authentication-event"></a>
 
 *Goal:* Confirm that an account was successfully compromised.
 
@@ -409,6 +407,8 @@ All events occurred within a narrow time window and shared identical client meta
 
 </details>
 
+<a id="-6-secondary-login-source"></a>
+
 <details>
 <summary><strong>▶ 6) Secondary Login Source</strong><br>
  → identifying credential reuse from a second IP address
@@ -418,8 +418,6 @@ All events occurred within a narrow time window and shared identical client meta
 - [🔷 6.1) Investigating Any Second Login Source From Attacker](#-61-investigating-any-second-login-source-from-attacker)
 - [🔷 6.2) MITRE ATT&CK Mapping — Finding 6](#-62-mitre-attck-mapping--finding-6)
 -->
-
-<a id="-6-secondary-login-source"></a>
 
 *Goal:* Determine whether stolen credentials were reused.
 
@@ -464,6 +462,8 @@ Evidence supporting this mapping includes:
 
 </details>
 
+<a id="-7-authentication-endpoint-used"></a>
+
 <details>
 <summary><strong>▶ 7) Authentication Endpoint Used</strong><br>
  → identifying the login endpoint used during the attack.
@@ -471,8 +471,6 @@ Evidence supporting this mapping includes:
 <!--
 - [🔷 7.1) Reviewing Authentication Request Events Across All Login Attempts](#-71-reviewing-authentication-request-events-across-all-login-attempts)
 -->
-
-<a id="-7-authentication-endpoint-used"></a>
 
 *Goal:* Confirm which application endpoint was targeted
 
@@ -501,6 +499,7 @@ The concentration of activity against `/api/login` also establishes this endpoin
 
 </details>
 
+<a id="-8-credential-exposure"></a>
 
 <details>
 <summary><strong>▶ 8) Credential Exposure</strong><br>
@@ -510,8 +509,6 @@ The concentration of activity against `/api/login` also establishes this endpoin
 - [🔷 8.1) Examining How Credentials Were Being Processed Within Application Logs](#-81-examining-how-credentials-were-being-processed-within-application-logs)
 - [🔷 8.2) MITRE ATT&CK Mapping — Finding 8](#-82-mitre-attck-mapping--finding-8)
 -->
-
-<a id="-8-credential-exposure"></a>
 
 *Goal:* Determine whether credentials were logged in a reversible format.
 
@@ -716,6 +713,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
