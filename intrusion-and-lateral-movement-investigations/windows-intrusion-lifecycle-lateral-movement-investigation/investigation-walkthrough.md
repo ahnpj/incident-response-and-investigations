@@ -168,14 +168,14 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
 -->
 
+<a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+
 <details>
 <summary><strong>▶ 1) Reconnaissance Activity & Service Enumeration Analysis</strong><br>
  → establishing how the host was discovered and which exposed services were evaluated first
 </summary><br>
 
-*Goal:* Analyze external firewall telemetry to identify targeted scanning behavior and determine which exposed services were evaluated as potential access vectors prior to compromise.
-
-<a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+**Goal:** Analyze external firewall telemetry to identify targeted scanning behavior and determine which exposed services were evaluated as potential access vectors prior to compromise.
 
 <!--  
 - [🔷 1.1) Reviewing FortiGate Firewall Traffic](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-11-reviewing-fortigate-firewall-traffic)
@@ -270,15 +270,14 @@ The firewall log evidence aligns most closely with Network Service Scanning, as 
 
 </details>
 
+<a id="2-initial-access-identification--confirmation"></a>
+
 <details>
 <summary><strong>▶ 2) Initial Access Identification & Confirmation</strong><br>
 → validating the initial access vector by correlating service exposure with authentication activity
 </summary></br>
 
-*Goal:* Validate how the attacker achieved the first foothold by correlating exposed services with authentication and access telemetry.
-
-
-<a id="2-initial-access-identification--confirmation"></a>
+**Goal:** Validate how the attacker achieved the first foothold by correlating exposed services with authentication and access telemetry.
 
 <!--
 - [🔷 2.1) Finding Evidence for Initial Access via Valid Accounts (T1078)](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-21-finding-evidence-for-initial-access-via-valid-accounts-t1078)
@@ -325,14 +324,14 @@ Taken together, this evidence supports classification of the attacker’s initia
 
 </details>
 
+<a id="3-account-access--credential-activity"></a>
+
 <details>
 <summary><strong>▶ 3) Account Access & Credential Activity</strong><br>
 → reconstructing credential abuse, account manipulation, and privilege escalation after access
 </summary></br>
 
-*Goal:* Reconstruct brute-force authentication, account creation, privilege escalation, and account deletion to show how administrative control was established.
-
-<a id="3-account-access--credential-activity"></a>
+**Goal:** Reconstruct brute-force authentication, account creation, privilege escalation, and account deletion to show how administrative control was established.
 
 <!--
 - [🔷 3.1) Identifying the Account Accessed by the Attacker](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-31-identifying-the-account-accessed-by-the-attacker)
@@ -536,15 +535,14 @@ Impact:
 
 </details>
 
+<a id="4-file-extraction--malware-artifact-analysis"></a>
 
 <details>
 <summary><strong>▶ 4) File Extraction & Malware Artifact Analysis</strong><br>
 → tracing when malicious archives were extracted and payloads staged after administrative control
 </summary></br>
 
-*Goal:* Identify when malicious archives were extracted and how malware payloads were staged on the host using Sysmon process and file creation evidence.
-
-<a id="4-file-extraction--malware-artifact-analysis"></a>
+**Goal:** Identify when malicious archives were extracted and how malware payloads were staged on the host using Sysmon process and file creation evidence.
 
 <!--
 - [🔷 4.1) Identifying the Extracted Compressed File](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-41-identifying-the-extracted-compressed-file)
@@ -728,14 +726,14 @@ Because both extracted files were created within the same directory, this confir
 
 </details>
 
+<a id="5-malware--file-artifact-analysis"></a>
+
 <details>
 <summary><strong>▶ 5) Malware & File Artifact Analysis</strong><br>
 → examining malware components to understand execution flow and supporting artifacts
 </summary></br>
 
-*Goal:* Analyze malware components written to disk, including masquerading executables and driver files, to understand execution flow and supporting artifacts.
-
-<a id="5-malware--file-artifact-analysis"></a>
+**Goal:** Analyze malware components written to disk, including masquerading executables and driver files, to understand execution flow and supporting artifacts.
 
 <!--
 - [🔷 5.1) Identifying the Created .sys File](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-51-identifying-the-created-sys-file)
@@ -827,14 +825,14 @@ they represent the two registry values created by the malware.
 
 </details>
 
+<a id="#6-persistence-technique-identification"></a>
+
 <details>
 <summary><strong>▶ 6) Persistence Technique Identification</strong><br>
 → determining how registry-based persistence was established to survive reboots and logons
 </summary></br>
 
-*Goal:* Identify registry-based persistence mechanisms used to ensure malware execution across system restarts and user logons.
-
-<a id="#6-persistence-technique-identification"></a>
+**Goal:** Identify registry-based persistence mechanisms used to ensure malware execution across system restarts and user logons.
 
 <!--
 - [🔷 6.1) Identifying the Persistence Technique](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-61-identifying-the-persistence-technique)
@@ -871,14 +869,14 @@ MITRE ATT&CK (Q23): Registry Run Keys / Startup Folder (T1547.001)
 
 </details>
 
+<a id="7-malware-attribution"></a>
+
 <details>
 <summary><strong>▶ 7) Malware Attribution</strong><br>
 → correlating observed artifacts with public tooling to identify the malware source
 </summary></br>
 
-*Goal:* Attribute the observed malware to public tooling by correlating filenames, execution behavior, and persistence techniques with OSINT sources.
-
-<a id="7-malware-attribution"></a>
+**Goal:** Attribute the observed malware to public tooling by correlating filenames, execution behavior, and persistence techniques with OSINT sources.
 
 <!--
 - [🔷 7.1) Identifying the GitHub Author of the Malware](https://github.com/ahnpj/incident-response-and-investigations/blob/main/intrusion-and-lateral-movement-investigations/windows-intrusion-lifecycle-lateral-movement-investigation/investigation-walkthrough.md#-71-identifying-the-github-author-of-the-malware)
