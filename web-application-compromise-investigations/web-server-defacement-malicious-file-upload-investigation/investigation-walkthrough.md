@@ -404,7 +404,7 @@ HTTP requests with empty headers are common with automated vulnerability scanner
 Because this activity doesn’t exploit a specific vulnerability but instead maps and tests the server’s behavior, it’s a strong indicator of active reconnaissance.
 
 
-##### 🔷 1.4 Reconnaissance Phase Findings & Analysis 
+##### 🔷 1.4) Reconnaissance Phase Findings & Analysis 
 
 - `40.80.148.42` accounted for over  90 % of the requests, and was consistent with automated vulnerability scanning. Active recon evidence included frequent GET requests.
 - I filtered the Suricata logs for traffic from the attacker IP `40.80.148.42` to the web server `192.168.250.70`. In the `http_referrer` field, I found multiple entries pointing to paths such as `/joomla/index.php` and `/joomla/administrator/`. These are specific to the Joomla content management system, confirming the web server was running Joomla. This field typically shows the URL of the webpage that directed the client to the current resource, so basically where each request originated from.
@@ -734,7 +734,7 @@ index=botsv1 sourcetype=stream:http dest_ip="192.168.250.70" http_method=POST fo
 - **urldecode()** converts URL-encoded characters to normal text (e.g., %40 → @, + → space), so I could read the actual username/password instead of gibberish.
 
 
-##### 🔷 Exploitation Phase Findings & Analysis
+##### 🔷 2.5) Exploitation Phase Findings & Analysis
 
 - Evidence confirmed a brute‑force attack followed by successful authentication. `23.22.63.114` performed failed attempts while `40.80.148.42` achieved login success.
 - Analysis of the `botsv1` logs shows a coordinated scanning and credential-attack against the Joomla admin endpoint (`/joomla/administrator/index.php`) on `192.168.250.70`.
@@ -768,7 +768,7 @@ Below are more details about each query and the corresponding findings.
 </blockquote>
 
 
-##### 🔷 Installation Phase Step 1
+##### 🔷 3.1) Installation Phase Step 1
 
 After confirming successful authentication from the prior phase (`40.80.148.42` achieved a successful login using `admin:batman`), I searched for evidence of file uploads to the compromised host using the first query
 
@@ -793,7 +793,7 @@ dest_ip="192.168.250.70" *.exe
 I examined the `part_filename{}` field in Splunk to identify any files transferred over the network during the activity. The results displayed two filenames: `3791.exe` and `agent.php`, which appear to be executable files in HTTP traffic that were either downloaded or executed on the web server.
 
 
-##### 🔷 Installation Phase Step 2
+##### 🔷 3.2) Installation Phase Step 2
 
 I had to confirm if any of these files came from the IP addresses that were found to be associated in objective 2
 
@@ -833,7 +833,7 @@ I reviewed the "c_ip" field to identify which host initiated the HTTP request fo
 </blockquote>
 
 
-##### 🔷 Installation Phase Step 3
+##### 🔷 3.3) Installation Phase Step 3
 
 Now, I needed to confirm whether the file, `3791.exe`, was executed. I ran the query `index=botsv1 "3791.exe"`, which returned 76 events distributed across multiple sourcetypes, with the majority (about 91%) coming from `XmlWinEventLog`, followed by a few from `WinEventLog`, `stream:http`, `fortigate_utm`, and `suricata`. 
 
@@ -867,7 +867,7 @@ index=botsv1
 </p>
 
 
-##### 🔷 Installation Phase Step 4 
+##### 🔷 3.4) Installation Phase Step 4 
 
 After confirming traces of the executable `3791.exe` were identified in multiple sources including `Sysmon`, `WinEventLog`, and `Fortigate_UTM`, I needed to determine whether the file was executed on the host. Sysmon data was examined because the majority (about 91%) of the executable's presence was coming from `XmlWinEventLog`
 
@@ -911,7 +911,7 @@ When examining the `CommandLine` field for `3791.exe`, I clicked the entry itsel
 </p>
 
 
-##### 🔷 Installation Phase Findings & Analysis 
+##### 🔷 3.5) Installation Phase Findings & Analysis 
 
 Results confirmed that `3791.exe` executed shortly after upload. This demonstrated the attacker successfully transitioned from exploitation to persistence. The malicious file likely connected to an external server to receive commands or send data.
 
@@ -943,7 +943,7 @@ I learned how to validate malware execution through cross‑referencing ne
 
 The goal of this phase was to determine how the malicious actor defaced the company’s public website, which is a clear indicator of the **Actions on Objectives** stage of the Cyber Kill Chain.
 
-##### 🔷 Action on Objectives Phase Step 1
+##### 🔷 4.1) Action on Objectives Phase Step 1
 
 I first examined inbound traffic to the defaced website at IP `192.168.250.70`.
 
@@ -971,7 +971,7 @@ This query looks at inbound network traffic going to the web server 192.168.250.
 
 This was unusual as the logs did not show any external IP communicating with the server.
 
-##### 🔷 Action on Objectives Phase Step 2
+##### 🔷 4.2) Action on Objectives Phase Step 2
 
 Because there were no external IP communicating with the server, I reversed the flow so that 192.168.250.70 was the source. I wanted to see if any outbound traffic originated from the server instead.
 
@@ -999,7 +999,7 @@ This query revealed outbound requests to `prankglassinebracket.jumpingcrab
 
 What was interesting about this output is that web servers don't usually originate traffic. The browser or client would originate the traffic as the source and the server would be the destination. I noticed immediately that the web server initiated large traffic to `40.80.148.42`, `22.23.63.114`, and `192.168.250.40`. 
 
-##### 🔷 Action on Objectives Phase Step 3
+##### 🔷 4.3) Action on Objectives Phase Step 3
 
 I checked Suricata logs for the top three destination IPs and found evidence of defacement from `23.22.63.114`
 
@@ -1027,7 +1027,7 @@ That query filters Suricata logs to show outbound network traffic from the web s
 The `url` field showed 2 PHP files and a JPEG file. The JPEG file looked interesting, so I investigated more into it.
 
 
-##### 🔷 Action on Objectives Phase Step 4
+##### 🔷 4.4) Action on Objectives Phase Step 4
 
 I wanted to investigate the JPEG file and created a table to get a hollistic view
 
@@ -1053,7 +1053,7 @@ The investigation revealed that the file `poisonivy-is-coming-for-you-batman.jpe
 </blockquote>
 
 
-##### 🔷 Action on Objectives Phase Step 5
+##### 🔷 4.5) Action on Objectives Phase Step 5
 
 To deepen my investigaton, I used a query to review firewall logs for traffic sent from the web server to 23.22.63.114</h4>
 
@@ -1074,7 +1074,7 @@ sourcetype=fortigate_utm
 </p>
 
 
-##### 🔷 Action on Objectives Phase Findings & Analysis 
+##### 🔷 4.6) Action on Objectives Phase Findings & Analysis 
 
 The attacker’s intent was to publicly deface the website to demonstrate control.
 
@@ -1113,7 +1113,7 @@ This part of the investigation taught me how to trace adversary objectives using
 
 This part of the investigation focused on identifying if the attacker establed a **Command and Control (C2)** channel with external infrastrucutre. C2 allows threat actors to remotely control infected hosts and execute further commands.
 
-##### 🔷 Command and Control (C2) Phase Step 1
+##### 🔷 5.1) Command and Control (C2) Phase Step 1
 
 I searched firewall and network logs for evidence of communication with the domain `prankglassinebracket.jumpingcrab.com`
 
@@ -1137,7 +1137,7 @@ Immediately I noticed I could see the source IP (`src_ip`), the destination IP (
 </p>
 
 
-##### 🔷 Command and Control (C2) Phase Step 2
+##### 🔷 5.2) Command and Control (C2) Phase Step 2
 
 I verified by looking at other log sources. For this step, I checked HTTP sources
 
@@ -1161,7 +1161,7 @@ I identified the suspicious domain as the C2 server, which seems to where the at
   <em>Figure 34 - HTTP telemetry confirming sustained communication with attacker infrastructure</em>
 </p>
 
-##### 🔷 Command and Control (C2) Phase Findings & Analysis 
+##### 🔷 5.3) Command and Control (C2) Phase Findings & Analysis 
 
 Using Fortigate UTM logs, I discovered that the compromised web server (`192.168.250.70`) reached out to an external IP (`23.22.63.114`) while requesting a suspicious file named `poisonivy-is-coming-for-you-batman.jpeg`. The request’s URL revealed the domain `prankglassinebracket.jumpingcrab.com:1337`, indicating outbound communication to a likely attacker-controlled host. I validated this finding by examining HTTP stream logs, which confirmed consistent traffic between the infected server and the same domain. Finally, DNS logs showed that the attacker used a dynamic DNS to resolve the malicious IP, confirming that `jumpingcrab.com` functioned as the attacker’s C2 domain. This correlation across multiple log sources demonstrated the full command-and-control phase of the attack.
 
@@ -1185,14 +1185,14 @@ I conducted open-source lookups on malicious domains and associated infrastructu
 From the previous objective, we know that the domain `prankglassinebracket.jumpingcrab.com` was associated with the attack.
 </blockquote>
 
-##### 🔷 Weaponization Phase Step 1
+##### 🔷 6.1) Weaponization Phase Step 1
 
 Went to Robtex to find the IP address tied to the domains that may potentially be pre-staged to attack the web server
 
 - I went to [Robotex's website](https://www.robtex.com/) and entered `prankglassinebracket.jumpingcrab.com` in the search field at the top. I was able to identify several other IP addresses associated with this domain. I was also able to see other domains and subdomains associated with this domain.
 - I then entered the attacker's IP (`23.22.63.114`) in the search bar at the top and found this IP associated with domains that looked pretty similar to websites from the fictional company, Wayne Enterprises.
 
-##### 🔷 Weaponization Phase Step 2
+##### 🔷 6.2) Weaponization Phase Step 2
 
 Went on Virustotal to analyze suspicious files, domains, IP, etc, but more specifically to search for the IP address on the virustotal site
 
@@ -1203,7 +1203,7 @@ I investigated the suspicious domain `po1s0n1vy.com` using VirusTotal to identif
 - In the list of domains, I saw the domain that is associated with the attacker (`www.po1s0n1vy.com`). I searched the domain in the search field on Virustotal.
 - I saw that Virustotal listed several related subdomains such as `ftp.po1s0n1vy.com`, `smtp.po1s0n1vy.com`, and `lillian.po1s0n1vy.com`, which might indicate shared hosting or possible attacker infrastructure reuse.
 
-##### 🔷 Weaponization Phase Findings & Analysis
+##### 🔷 6.3) Weaponization Phase Findings & Analysis
 
 The domain was associated with multiple subdomains and related IP addresses used in previous campaigns. This confirmed the attacker leveraged pre-existing malware infrastructure to deliver payloads, a common APT pattern. These lookups linked `jumpingcrab.com` to an email address `lillian.rose@po1son1vy.com`, indicated possible threat-actor attribution.
 
@@ -1226,26 +1226,26 @@ I conducted open-source lookups on malicious domains and using external intellig
 - VirusTotal - I used VirusTotal to check file hashes, URLs, and domains against several antivirus engines. This helped confirm whether the payloads or domains were flagged as malicious and provided more context about known malware behavior.
 - Hybrid Analysis - I used this site to conduct a behavioral analysis of the malicious file identified from ThreatMiner
 
-##### 🔷 Delivery Phase Step 1
+##### 🔷 7.1) Delivery Phase Step 1
 
 ThreatMiner - I found three files and their corresponding hashes, one of which was the malware identified in the Fortigate and Sysmon logs from Objective 3 - Step 4
 
 After identifying the same MD5 hash (`c99131e0169171935c5ac32615ed6261`) of the malicious file (`3791.exe`) found in **Objective 3, Step 4**, I clicked on it and observed that the file appeared under a different name, indicating that although the filenames were different, the file content was identical. The file name appeared as `MirandaTateScreensaver.scr.exe`, and as noted in **Objective 3**, it was delivered via HTTP download and executed through a user interaction.
 
-##### 🔷 Delivery Phase Step 2
+##### 🔷 7.2) Delivery Phase Step 2
 
 VirusTotal - To gather more intelligence, I entered this hash value on VirusTotal and saw other important details
 
 One of the first things I noticed was that this hash value was associated with the IP `23.22.63.114`, was was previously identified and confirmed as the attacker who attacked the website.
 
-##### 🔷 Delivery Phase Step 3
+##### 🔷 7.3) Delivery Phase Step 3
 
 Hybrid Analysis - I entered the malicious executable identified in ThreatMiner to gather more intelligence such as metadata, DNS requests, MITRE ATT&CK mappings, and more
 
 I confirmed that the file `MirandaTateScreensaver.scr.exe` has the same MD5 hash (`c99131e0169171935c5ac32615ed6261`) as the malicious file `3791.exe`, meaning they are identical in content but have different names. The file is a Windows executable compiled with Microsoft C++, confirming it’s the same malware under a new name.
 
 
-##### 🔷 Delivery Phase Findings & Analysis 
+##### 🔷 7.4) Delivery Phase Findings & Analysis 
 
 In this phase, I used OSINT tools to learn more about the malware used in the attack. Through ThreatMiner, I discovered that the attacker’s IP (`23.22.63.114`) was linked to several files, including one matching the same MD5 hash as the malicious file `3791.exe` found earlier. VirusTotal confirmed this file and IP were associated with known malicious activity. Finally, Hybrid Analysis showed that the file was a Windows executable with identical content but a different name (`MirandaTateScreensaver.scr.exe`), confirming it was the same malware reused under a new filename.
 
@@ -1386,6 +1386,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
