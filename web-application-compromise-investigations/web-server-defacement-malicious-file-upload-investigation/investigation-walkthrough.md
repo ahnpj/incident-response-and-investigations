@@ -321,7 +321,7 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 - [🔷 1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findings--analysis)
 -->
 
-*Goal:* Confirm reconnaissance activity, attacker IPs, and technologies being targeted.
+**Goal:** Confirm reconnaissance activity, attacker IPs, and technologies being targeted.
 
 ##### 🔷 1.1) Reconnaissance Phase Step 1
 
@@ -457,7 +457,7 @@ This part of the investigation demonstrated how correlated IDS and network�
 - [🔷 Exploitation Phase Findings & Analysis](#-exploitation-phase-findings--analysis)
 -->
 
-*Goal:* Determine whether credential abuse occurred and identify successful login activity.
+**Goal:** Determine whether credential abuse occurred and identify successful login activity.
 
 The objective was to confirm whether the attacker attempted or succeeded in exploiting vulnerabilities discovered during reconnaissance—specifically targeting the Joomla CMS running on the web server.
 
@@ -793,7 +793,7 @@ This part of the investigation taught me how to use Splunk to detect web-based b
 - [🔷 Installation Phase Findings & Analysis](#-installation-phase-findings--analysis)
 -->
 
-*Goal:* Confirm malware delivery, execution, and persistence on the compromised host.
+**Goal:** Confirm malware delivery, execution, and persistence on the compromised host.
 
 The objective of this task was to now verify whether the attacker successfully installed or executed any malicious payloads following exploitation. In the Cyber Kill Chain, **Installation** represents the stage where adversaries establish persistence within a target environment, typically by deploying malware or backdoors. 
 
@@ -986,7 +986,7 @@ I learned how to validate malware execution through cross‑referencing ne
 - [🔷 Action on Objectives Phase Findings & Analysis](#-action-on-objectives-phase-findings--analysis)
 -->
 
-*Goal:* Identify how web content was modified and how the defacement was delivered.
+**Goal:** Identify how web content was modified and how the defacement was delivered.
 
 The goal of this phase was to determine how the malicious actor defaced the company’s public website, which is a clear indicator of the **Actions on Objectives** stage of the Cyber Kill Chain.
 
@@ -1164,7 +1164,7 @@ This part of the investigation taught me how to trace adversary objectives using
 - [🔷 Command and Control (C2) Phase Findings & Analysis](#-command-and-control-c2-phase-findings--analysis)
 -->
 
-*Goal:* Confirm command-and-control activity and external connections from the server.
+**Goal:** Confirm command-and-control activity and external connections from the server.
 
 This part of the investigation focused on identifying if the attacker establed a **Command and Control (C2)** channel with external infrastrucutre. C2 allows threat actors to remotely control infected hosts and execute further commands.
 
@@ -1236,7 +1236,7 @@ I learned to detect C2 communications by correlating IDS, firewall, and endpoint
 - [🔷 Weaponization Phase Findings & Analysis](#-weaponization-phase-findings--analysis)
 -->
 
-*Goal:* Understand how the attacker prepared payloads and supporting infrastructure.
+**Goal:** Understand how the attacker prepared payloads and supporting infrastructure.
 
 To see how the attacker built and delivered their paylods, I looked up known indicators with OSINT tools. In the Cyber Kill Chain, **Weaponization** is the stage where the attacker creates the malware or exploit files that will later be used in the **Delivery** phase. 
 
@@ -1288,7 +1288,7 @@ Weaponization is rarely observable in internal logs, but threat-based OSINT corr
 - [🔷 Delivery Phase Findings & Analysis](#-delivery-phase-findings--analysis)
 -->
 
-*Goal:* Trace the delivery method and confirm reuse of known malware artifacts.
+**Goal:** Trace the delivery method and confirm reuse of known malware artifacts.
 
 The purpose of this investigation phase was to use the information I have so far about the attack and use various OSINT sites to find any malware identified during the **Weaponization** stage and determine how the malicious payload reached the target.
 
@@ -1460,6 +1460,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
