@@ -277,11 +277,25 @@ Understanding incident handling early clarified how every detection and response
 </details>
 </blockquote>
 
+This section reconstructs the attacker’s actions step-by-step, correlating network, authentication, endpoint, file, and registry evidence across the intrusion lifecycle.
+
+**Note:** Each section is collapsible. Click the ▶ arrow to expand and view the detailed steps.
+
+<!--
+NOTE TO SELF: If you want to change it back, follow these steps:
+1. In the main "Walkthrough Naviation" collapsible toc below this, add "-" (hyphen) between hashtag and number for top level sections only
+2. Remove <details>, <summary>, and <strong> tags (including closing tags)
+3. Add "####" in front of section title
+4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
+-->
+
 #### ▶ 1) Reconnaissance Phase
+<!--
 - [🔷 1.1) Reconnaissance Phase Step 1](#-11-reconnaissance-phase-step-1)
 - [🔷 1.2) Reconnaissance Phase Step 2](#-12-reconnaissance-phase-step-2)
 - [🔷 1.3) Reconnaissance Phase Step 3](#-13-reconnaissance-phase-step-3)
 - [🔷 1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findings--analysis)
+-->
 
 
 ##### 🔷 1.1) Reconnaissance Phase Step 1
@@ -404,11 +418,13 @@ This part of the investigation demonstrated how correlated IDS and network�
 
 
 #### ▶ 2) Exploitation Phase
+<!--
 - [🔷 2.1) Exploitation Phase Step 1](#-21-exploitation-phase-step-1)
 - [🔷 2.2) Exploitation Phase Step 2](#-22-exploitation-phase-step-2)
 - [🔷 2.3) Exploitation Phase Step 3](#-23-exploitation-phase-step-3)
 - [🔷 2.4) Exploitation Phase Step 4](#-24-exploitation-phase-step-4)
 - [🔷 Exploitation Phase Findings & Analysis](#-exploitation-phase-findings--analysis)
+-->
 
 The objective was to confirm whether the attacker attempted or succeeded in exploiting vulnerabilities discovered during reconnaissance—specifically targeting the Joomla CMS running on the web server.
 
@@ -730,12 +746,14 @@ This part of the investigation taught me how to use Splunk to detect web-based b
 
 
 
-#### ▶ Installation Phase
+#### ▶ 3) Installation Phase
+<!--
 - [🔷 Installation Phase Step 1](#-installation-phase-step-1)
 - [🔷 Installation Phase Step 2](#-installation-phase-step-2)
 - [🔷 Installation Phase Step 3](#-installation-phase-step-3)
 - [🔷 Installation Phase Step 4](#-installation-phase-step-4)
 - [🔷 Installation Phase Findings & Analysis](#-installation-phase-findings--analysis)
+-->
 
 The objective of this task was to now verify whether the attacker successfully installed or executed any malicious payloads following exploitation. In the Cyber Kill Chain, **Installation** represents the stage where adversaries establish persistence within a target environment, typically by deploying malware or backdoors. 
 
@@ -913,14 +931,15 @@ I learned how to validate malware execution through cross‑referencing ne
 
 
 
-#### ▶ Action on Objectives Phase
+#### ▶ 4) Action on Objectives Phase
+<!--
 - [🔷 Action on Objectives Phase Step 1](#-action-on-objectives-phase-step-1)
 - [🔷 Action on Objectives Phase Step 2](#-action-on-objectives-phase-step-2)
 - [🔷 Action on Objectives Phase Step 3](#-action-on-objectives-phase-step-3)
 - [🔷 Action on Objectives Phase Step 4](#-action-on-objectives-phase-step-4)
 - [🔷 Action on Objectives Phase Step 5](#-action-on-objectives-phase-step-5)
 - [🔷 Action on Objectives Phase Findings & Analysis](#-action-on-objectives-phase-findings--analysis)
-
+-->
 
 The goal of this phase was to determine how the malicious actor defaced the company’s public website, which is a clear indicator of the **Actions on Objectives** stage of the Cyber Kill Chain.
 
@@ -1085,11 +1104,12 @@ Recommended next steps:
 This part of the investigation taught me how to trace adversary objectives using Splunk by following the attack from reconnaissance to impact. Understanding "Actions on Objectives" is vital for incident classification and damage assessment with a DOC. The technique relates to **MITRE ATT&CK T1491 (Defacement)** and NIST's **Recovery Phase** of incident handling. Documenting such activity supports executive reporting and post-incident remediation plans.
 
 
-#### ▶ Command and Control (C2) Phase
+#### ▶ 5) Command and Control (C2) Phase
+<!--
 - [🔷 Command and Control (C2) Phase Step 1](#-command-and-control-c2-phase-step-1)
 - [🔷 Command and Control (C2) Phase Step 2](#-command-and-control-c2-phase-step-2)
 - [🔷 Command and Control (C2) Phase Findings & Analysis](#-command-and-control-c2-phase-findings--analysis)
-
+-->
 
 This part of the investigation focused on identifying if the attacker establed a **Command and Control (C2)** channel with external infrastrucutre. C2 allows threat actors to remotely control infected hosts and execute further commands.
 
@@ -1147,11 +1167,12 @@ Using Fortigate UTM logs, I discovered that the compromised web server (`192.168
 
 I learned to detect C2 communications by correlating IDS, firewall, and endpoint data. Dynamic DNS is a common tactic for maintaining C2 reachability, and Splunk queries can identify these patterns through consistent destiniation host names and ports. This aligns with **MITRE ATT&CK T1071 (Application Layer Protocol)** and **Securty+ Domain 3.3 (Analyze thread data to support an incident response)**.
 
-#### ▶ Weaponization Phase
-
+#### ▶ 6) Weaponization Phase
+<!--
 - [🔷 Weaponization Phase Step 1](#-weaponization-phase-step-1)
 - [🔷 Weaponization Phase Step 2](#-weaponization-phase-step-2)
 - [🔷 Weaponization Phase Findings & Analysis](#-weaponization-phase-findings--analysis)
+-->
 
 To see how the attacker built and delivered their paylods, I looked up known indicators with OSINT tools. In the Cyber Kill Chain, **Weaponization** is the stage where the attacker creates the malware or exploit files that will later be used in the **Delivery** phase. 
 
@@ -1189,11 +1210,13 @@ The domain was associated with multiple subdomains and related IP addresses used
 Weaponization is rarely observable in internal logs, but threat-based OSINT correlation can expose it indirectly. I learned how OSINT supports SIEM data and helps analysts build context beyond raw data. This related to **MITRE ATT&CK T1587 (Develop Capabilities)** and **Security+ Domain 1.4 (Explain threat actors and attributes)**. 
 
 
-#### ▶ Delivery Phase
+#### ▶ 7) Delivery Phase
+<!--
 - [🔷 Delivery Phase Step 1](#-delivery-phase-step-1)
 - [🔷 Delivery Phase Step 2](#-delivery-phase-step-2)
 - [🔷 Delivery Phase Step 3](#-delivery-phase-step-3)
 - [🔷 Delivery Phase Findings & Analysis](#-delivery-phase-findings--analysis)
+-->
 
 The purpose of this investigation phase was to use the information I have so far about the attack and use various OSINT sites to find any malware identified during the **Weaponization** stage and determine how the malicious payload reached the target.
 
@@ -1363,6 +1386,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
