@@ -144,7 +144,7 @@ NOTE TO SELF: If you want to change it back, follow these steps:
  → identifying which IP address generated the failed login attempts
 </summary><br>
 
-*Goal:* Identify the source IP responsible for the attack.
+**Goal:** Identify the source IP responsible for the attack.
 
 <!--
 - [🔷 1.1) Identifying The Origin Of Failed Login Attempted](#-11-identifying-the-origin-of-failed-login-attempted)
@@ -207,7 +207,7 @@ Evidence supporting this mapping includes:
 - [🔷 2.1) MITRE ATT&CK Technique Reference — Finding 2](#-21-mitre-attck-technique-reference--finding-2)
 -->
 
-*Goal:* Determine if the activity came from automated tooling.
+**Goal:** Determine if the activity came from automated tooling.
 
 After identifying the source IP responsible for the repeated authentication failures, the next step was to analyze the User-Agent values associated with those requests. User-Agent strings provide insight into the client software initiating authentication attempts and can help differentiate between legitimate user behavior and automated tooling.
 
@@ -264,7 +264,7 @@ The uniform User-Agent behavior strengthens the conclusion that the authenticati
 - [🔷 3.2) MITRE ATT&CK Mapping — Finding 3](#-32-mitre-attck-mapping--finding-3)
 -->
 
-*Goal:* Confirm whether account enumeration occurred.
+**Goal:** Confirm whether account enumeration occurred.
 
 After identifying the attacking source IP and confirming the use of a consistent automated User-Agent, the next step was to determine whether the authentication attempts targeted valid user accounts, non-existent accounts, or both.
 
@@ -331,7 +331,7 @@ The differentiation in authentication failure responses enabled the attacker to 
 - [🔷 4.2) MITRE ATT&CK Mapping — Finding 4](#-42-mitre-attck-mapping--finding-4)
 -->
 
-*Goal:* List the valid accounts involved in the attack.
+**Goal:** List the valid accounts involved in the attack.
 
 After identifying authentication attempts against non-existent accounts, the analysis shifted to determining whether the attacker also targeted valid application user accounts.
 
@@ -378,7 +378,7 @@ The targeting of multiple valid accounts aligns with MITRE ATT&CK sub-technique 
 - [🔷 5.1) Determinig Whether Any Attacker Login Attempts Were Successful](#-51-determinig-whether-any-attacker-login-attempts-were-successful)
 -->
 
-*Goal:* Confirm that an account was successfully compromised.
+**Goal:** Confirm that an account was successfully compromised.
 
 After identifying valid accounts targeted during the authentication abuse, the investigation focused on determining whether any of those attempts resulted in a successful login.
 
@@ -419,7 +419,7 @@ All events occurred within a narrow time window and shared identical client meta
 - [🔷 6.2) MITRE ATT&CK Mapping — Finding 6](#-62-mitre-attck-mapping--finding-6)
 -->
 
-*Goal:* Determine whether stolen credentials were reused.
+**Goal:** Determine whether stolen credentials were reused.
 
 Following the initial successful authentication against the webadmin account, the investigation examined whether the compromised credentials were subsequently used from additional sources.
 
@@ -472,7 +472,7 @@ Evidence supporting this mapping includes:
 - [🔷 7.1) Reviewing Authentication Request Events Across All Login Attempts](#-71-reviewing-authentication-request-events-across-all-login-attempts)
 -->
 
-*Goal:* Confirm which application endpoint was targeted
+**Goal:** Confirm which application endpoint was targeted
 
 After confirming credential compromise and subsequent reuse from a secondary source, the investigation shifted to reviewing if any authentication requests were being submitted to the application.
 
@@ -510,7 +510,7 @@ The concentration of activity against `/api/login` also establishes this endpoin
 - [🔷 8.2) MITRE ATT&CK Mapping — Finding 8](#-82-mitre-attck-mapping--finding-8)
 -->
 
-*Goal:* Determine whether credentials were logged in a reversible format.
+**Goal:** Determine whether credentials were logged in a reversible format.
 
 Following confirmation of successful authentication and credential reuse, the next phase was to examine how credential material was being handled within the application logs.
 
@@ -713,6 +713,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
