@@ -236,43 +236,44 @@ Understanding incident handling early clarified how every detection and response
 <details>
 <summary><strong>📚 Walkthrough navigation (click to expand)</strong></summary>
 
-- [1) Reconnaissance Phase](#-1-reconnaissance-phase)
+- [1) Reconnaissance Phase](#-1reconnaissancephase)
   - [1.1) Reconnaissance Phase Step 1](#-11-reconnaissance-phase-step-1)
   - [1.2) Reconnaissance Phase Step 2](#-12-reconnaissance-phase-step-2)
   - [1.3) Reconnaissance Phase Step 3](#-13-reconnaissance-phase-step-3)
-  - [1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findings--analysis)
-- [2) Exploitation Phase](#-2-exploitation-phase)
+  - [1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findingsanalysis)
+- [2) Exploitation Phase](#2exploitationphase)
   - [2.1) Exploitation Phase Step 1](#-21-exploitation-phase-step-1)
   - [2.2) Exploitation Phase Step 2](#-22-exploitation-phase-step-2)
   - [2.3) Exploitation Phase Step 3](#-23-exploitation-phase-step-3)
   - [2.4) Exploitation Phase Step 4](#-24-exploitation-phase-step-4)
-  - [Exploitation Phase Findings & Analysis](#-exploitation-phase-findings--analysis)
-- [3) Installation Phase](#-3-installation-phase)
-  - [Installation Phase Step 1](#-installation-phase-step-1)
-  - [Installation Phase Step 2](#-installation-phase-step-2)
-  - [Installation Phase Step 3](#-installation-phase-step-3)
-  - [Installation Phase Step 4](#-installation-phase-step-4)
-  - [Installation Phase Findings & Analysis](#-installation-phase-findings--analysis)
-- [4) Action on Objectives Phase](#-4-action-on-objectives-phase)
-  - [Action on Objectives Phase Step 1](#-action-on-objectives-phase-step-1)
-  - [Action on Objectives Phase Step 2](#-action-on-objectives-phase-step-2)
-  - [Action on Objectives Phase Step 3](#-action-on-objectives-phase-step-3)
-  - [Action on Objectives Phase Step 4](#-action-on-objectives-phase-step-4)
-  - [Action on Objectives Phase Step 5](#-action-on-objectives-phase-step-5)
-  - [Action on Objectives Phase Findings & Analysis](#-action-on-objectives-phase-findings--analysis)
-- [5) Command and Control (C2) Phase](#-5-command-and-control-c2-phase)
-  - [Command and Control (C2) Phase Step 1](#-command-and-control-c2-phase-step-1)
-  - [Command and Control (C2) Phase Step 2](#-command-and-control-c2-phase-step-2)
-  - [Command and Control (C2) Phase Findings & Analysis](#-command-and-control-c2-phase-findings--analysis)
-- [6) Weaponization Phase](#-6-weaponization-phase)
-  - [Weaponization Phase Step 1](#-weaponization-phase-step-1)
-  - [Weaponization Phase Step 2](#-weaponization-phase-step-2)
-  - [Weaponization Phase Findings & Analysis](#-weaponization-phase-findings--analysis)
-- [7) Delivery Phase](#-7-delivery-phase)
-  - [Delivery Phase Step 1](#-delivery-phase-step-1)
-  - [Delivery Phase Step 2](#-delivery-phase-step-2)
-  - [Delivery Phase Step 3](#-delivery-phase-step-3)
-  - [Delivery Phase Findings & Analysis](#-delivery-phase-findings--analysis)
+  - [2.5) Exploitation Phase Findings & Analysis](#-25-exploitation-phase-findings-analysis)
+- [3) Installation Phase](#-3-installationphase)
+  - [3.1) Installation Phase Step 1](#-31-installation-phase-step-1)
+  - [3.2) Installation Phase Step 2](#-32-installation-phase-step-2)
+  - [3.3) Installation Phase Step 3](#-33-installation-phase-step-3)
+  - [3.4) Installation Phase Step 4](#-34-installation-phase-step-4)
+  - [3.5) Installation Phase Findings & Analysis](#-35-installation-phase-findings-analysis)
+- [4) Action on Objectives Phase](#-4-actiononobjectivesphase)
+  - [4.1) Action on Objectives Phase Step 1](#-41-action-on-objectives-phase-step-1)
+  - [4.2) Action on Objectives Phase Step 2](#-42-action-on-objectives-phase-step-2)
+  - [4.3) Action on Objectives Phase Step 3](#-43-action-on-objectives-phase-step-3)
+  - [4.4) Action on Objectives Phase Step 4](#-44-action-on-objectives-phase-step-4)
+  - [4.5) Action on Objectives Phase Step 5](#-45-action-on-objectives-phase-step-5)
+  - [4.6) Action on Objectives Phase Findings & Analysis](#-46-action-on-objectives-phase-findingsanalysis)
+- [5) Command and Control (C2) Phase](#-5-commandandcontrolc2phase)
+  - [5.1) Command and Control (C2) Phase Step 1](#-51-command-and-control-c2-phase-step-1)
+  - [5.2) Command and Control (C2) Phase Step 2](#-52-command-and-control-c2-phase-step-2)
+  - [5.3) Command and Control (C2) Phase Findings & Analysis](#-53-command-and-control-c2-phase-findingsanalysis)
+- [6) Weaponization Phase](#-6-weaponizationphase)
+  - [6.1) Weaponization Phase Step 1](#-61-weaponization-phase-step-1)
+  - [6.2) Weaponization Phase Step 2](#-62-weaponization-phase-step-2)
+  - [6.3) Weaponization Phase Findings & Analysis](#-63-weaponization-phase-findingsanalysis)
+- [7) Delivery Phase](#-7-deliveryphase)
+  - [7.1) Delivery Phase Step 1](#-71-delivery-phase-step-1)
+  - [7.2) Delivery Phase Step 2](#-72-delivery-phase-step-2)
+  - [7.3) Delivery Phase Step 3](#-73-delivery-phase-step-3)
+  - [7.4) Delivery Phase Findings & Analysis](#-74-delivery-phase-findingsanalysis)
+
 
 </details>
 </blockquote>
@@ -1386,6 +1387,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
