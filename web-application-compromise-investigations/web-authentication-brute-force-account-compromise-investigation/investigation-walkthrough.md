@@ -199,7 +199,7 @@ Evidence supporting this mapping includes:
 
 <details>
 <summary><strong>▶ 2) User-Agent Analysis</strong><br>
- → checking whether the same User-Agent was used across attempts.
+ → checking whether the same User-Agent was used across attempts
 </summary><br>
 <!--
 - [🔷 2.1) MITRE ATT&CK Technique Reference — Finding 2](#-21-mitre-attck-technique-reference--finding-2)
@@ -716,6 +716,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 | Credential Access | **Unsecured Credentials (T1552)** | Plaintext credentials recovered from application logs. |
 
 ---
+
 
 
 
