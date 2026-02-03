@@ -78,10 +78,13 @@ This investigation was conducted within a pre-configured Splunk Enterprise envir
 The investigation was performed in a virtual machine (VM) environment preconfigured for Splunk analysis. Once deployed, the VM was automatically assigned an internal IP address (`MACHINE_IP`) and initialized within a few minutes. The Splunk instance hosted the `botsv1` dataset — a realistic collection of simulated security event logs designed for enterprise-scale analysis. This dataset included various sourcetypes representing web, network, and host activity, allowing for comprehensive event correlation and threat investigation throughout the lab.
 
 <blockquote>
-<strong>Important Note:</strong> IP addresses in this investigation are ephemeral and were recorded at the time of each step (placeholders such as `MACHINE_IP` are used in this write-up when the IP changed between sessions).
+IP addresses in this investigation are ephemeral and were recorded at the time of each step (placeholders such as "MACHINE_IP" are used in this write-up when the IP changed between sessions).
 </blockquote>
 
-##### 🔷 Accessomg Splunk Enterprise on Target Virtual Machine
+**Note:** Each sub-section below is collapsible. Click the ▶ arrow to expand and view the detailed steps.
+
+<details>
+<summary>🔷 Accessing Splunk Enterprise on Target Virtual Machine</summary><br>
 
 I accessed Splunk Enterprise on the target VM (`10.201.17.82`, `http://10.201.33.31`, `10.201.117.123`, `10.201.119.166`, `10.201.5.103`, `10.201.35.24`, `10.201.116.59`, or `10.201.112.116`) using the AttackBox browser (AttackBox IP `10.201.122.5`,  `10.201.117-139`, or `10.201.81.194`). From the provided AttackBox (on the network) I verified reachability with ping, enumerated services with nmap, and inspected any web interfaces by opening `10.201.17.82` or `http://10.201.33.31` in the AttackBox browser.
 
@@ -98,7 +101,10 @@ In Splunk’s Search & Reporting app I confirmed the index=botsv1 dataset with `
        width="800"><br>
   <em>Confirmation that the BOTSv1 dataset is loaded and available for investigation</em>
 
-##### 🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)
+</details>
+
+<details>
+<summary>🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)</summary><br>
 
 My goal here is to quickly confirm  whether the target is reachable from the AttackBox (verifies network connectivity and that the VM is up).
 
@@ -117,8 +123,11 @@ ping -c 3 10.201.17.82
   <em>Figure 2 - AttackBox ping test confirming the target host is reachable</em>
 </p>
 
+</details>
 
-##### 🔷 Discovering Open Ports via Nmap (Attackbox Linux Bash terminal)
+
+<details>
+<summary>🔷 Discovering Open Ports via Nmap (Attackbox Linux Bash terminal)</summary><br>
 
 I also wanted to  enumerate which ports are open and which services are listening so I know where to focus further testing (web, SSH, custom services, etc.).
 
@@ -139,8 +148,10 @@ nmap -sS -sV -p- 10.201.17.82
   <em>Figure 3 - Nmap scan identifying open ports and exposed services on the web server</em>
 </p>
 
+</details>
 
-##### 🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)
+<details>
+<summary>🔷 Checking Basic Connectivity (AttackBox Linux Bash terminal)</summary><br>
 
 My goal here is to try verifying that the web server is present, inspect response headers (server, cookies, redirects, status codes), and quickly retrieve pages for manual review or to inform later automated testing.
 
@@ -161,8 +172,11 @@ curl http://10.201.17.82/index.php
   <em>Figure 4 - Curl request validating HTTP service responsiveness and headers</em>
 </p>
 
+</details>
 
-##### 🔷 Testing Specific TCP Ports via netcat (AttackBox Linux Bash terminal)
+
+<details>
+<summary>🔷 Testing Specific TCP Ports via netcat (AttackBox Linux Bash terminal)</summary><br>
 
 I wanted quick verification of whether a specific port is accepting TCP connections (faster than a full nmap when you want to check individual services).
 
@@ -183,7 +197,10 @@ nc -vz 10.201.17.82 22
   <em>Figure 5 - Netcat checks confirming TCP connectivity to HTTP and SSH ports</em>
 </p>
 
-##### 🔷 Practical Checklist I Used
+</details>
+
+<details>
+<summary>🔷 Practical Checklist I Used</summary><br>
 - Deploy the target VM and copy the target IP. 
 - Open the AttackBox and ensure I am on the network.  
 - Run `ping` to confirm host is up.  
@@ -195,6 +212,7 @@ nc -vz 10.201.17.82 22
 
 All expected sourcetypes were present. Understanding these sources early streamlined later correlation searches across network and host data. This setup phase emphasized the importance of situational awareness before analysis. Knowing data sources and their fields prevents misinterpretation of logs—a skill fundamental to blue‑team operations. This relates to **MITRE ATT&CK TA0001 (Initial Access)** and Security+ objectives covering data collection and correlation.
 
+</details>
 
 ---
 
@@ -1387,6 +1405,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
