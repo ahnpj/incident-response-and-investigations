@@ -308,13 +308,20 @@ NOTE TO SELF: If you want to change it back, follow these steps:
 4. Remove hidden anchor. Example: <a id="1-reconnaissance-activity--service-enumeration-analysis"></a>
 -->
 
-#### ▶ 1) Reconnaissance Phase
+<details>
+<summary><strong>▶ 1) Reconnaissance Phase</strong><br>
+ → placeholder caption
+</summary><br>
 <!--
 - [🔷 1.1) Reconnaissance Phase Step 1](#-11-reconnaissance-phase-step-1)
 - [🔷 1.2) Reconnaissance Phase Step 2](#-12-reconnaissance-phase-step-2)
 - [🔷 1.3) Reconnaissance Phase Step 3](#-13-reconnaissance-phase-step-3)
 - [🔷 1.4) Reconnaissance Phase Findings & Analysis](#-14-reconnaissance-phase-findings--analysis)
 -->
+
+<a id="-1reconnaissancephase"></a>
+
+*Goal:* placeholder goal
 
 
 ##### 🔷 1.1) Reconnaissance Phase Step 1
@@ -435,6 +442,7 @@ Because this activity doesn’t exploit a specific vulnerability but instead map
 
 This part of the investigation demonstrated how correlated IDS and network logs can expose early attacker behavior. Recognizing reconnaissance helps defenders act during the earliest possible stage of an attack, aligning with **Security+ Domain 3 (Threat Detection)** and **NIST IR Phase – Identification** (Woohoo! Earning my CompTIA Sec+ cert was worth it).
 
+</details>
 
 #### ▶ 2) Exploitation Phase
 <!--
@@ -1405,6 +1413,7 @@ This section provides a high-level table summary of observed ATT&CK tactics and 
 This investigation helped me understand how SIEM tools like Splunk can be used to map an entire attack lifecycle and document findings clearly. I learned how to connect each stage of the Cyber Kill Chain to real telemetry data, correlate IOCs using OSINT tools, and validate findings with threat intelligence sites like ThreatMiner, VirusTotal, and Hybrid Analysis. Most importantly, I learned that consistent enrichment, timeline building, and cross-source verification are key to proactive threat hunting and building stronger defensive strategies.
 
 ---
+
 
 
 
