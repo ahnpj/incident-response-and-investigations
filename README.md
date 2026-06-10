@@ -136,9 +136,8 @@ Each category folder may contain **multiple investigation folders**, with each i
 
 Incidents where identity platforms or messaging services are the primary attack surface, including credential abuse, mailbox manipulation, and business email compromise (BEC). Investigations are grouped here when the **core security failure is unauthorized access to accounts or messaging workflows**.
 
-Current investigations:
-
 - **Business Email Compromise (BEC) — Mailbox Rule Abuse and Account Takeover**</br>
+
   - **Summary:** Investigates how attackers abuse Exchange inbox rules to suppress financial communications after compromising executive credentials, including validation of unauthorized rule creation and associated identity activity.
 
 </details>
@@ -149,8 +148,6 @@ Current investigations:
 `endpoint-compromise-and-persistence-investigations/`
 
 Host-based compromise scenarios involving malware execution, persistence mechanisms, and abuse of built-in system utilities. Cases are categorized here when **endpoint telemetry and host artifacts are central to detection and validation**.
-
-Current investigations:
 
 - **Endpoint Cryptominer Infection — Suspicious Process Execution**</br>
   - **Summary:** Detects abnormal process behavior consistent with cryptomining malware using Windows process creation telemetry and execution context.
@@ -170,8 +167,6 @@ Current investigations:
 
 Multi-stage intrusion scenarios involving privilege escalation, remote service exploitation, and movement between systems. Investigations are placed here when the objective is to **reconstruct attacker progression across hosts and network paths**.
 
-Current investigations:
-
 - **Windows Service Exploitation — Print Spooler Remote Code Execution (RCE)**</br>
   - **Summary:** Examines exploitation of the Print Spooler service leading to code execution and elevated privileges on a Windows server.
 
@@ -186,8 +181,6 @@ Current investigations:
 `web-application-compromise-investigations/`
 
 Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
-
-Current investigations:
 
 - **Web Application Account Compromise — Brute-Force Authentication Abuse**</br>
   - **Summary:** Analyzes repeated authentication attempts against a web application leading to successful account takeover.
