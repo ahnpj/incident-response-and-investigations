@@ -3,53 +3,58 @@
 This repository contains **hands-on security investigations** modeled after real SOC and blue-team workflows. Each case simulates how suspicious activity or alerts are triaged, validated, scoped, and resolved using multiple sources of telemetry.
 
 Investigations are organized into category folders based on primary attack surface and investigation focus (such as identity, endpoint, intrusion, and web applications). Each investigation is fully self-contained and represents one complete incident scenario documented end-to-end.
-Rather than focusing on isolated tools or one-off techniques, these investigations emphasize:
 
 These cases emphasize evidence-based analysis, cross-log correlation, attacker behavior mapping (MITRE ATT&CK), and clear documentation of investigative reasoning and outcomes.
 
-> 👉 For **guidance on how investigations are grouped by primary attack surface and how to navigate the repository**, start with the **[Start Here: How to Navigate This Repository](#start-here-how-to-navigate-this-repository)** section below.
+> 👉 **[Category Folders and Current Investigations](#category-folders-and-current-investigations)**</br>
+> **Browse all investigations organized by primary attack surface and investigation focus**
 
-> 👉 To **understand how category folders are defined and what types of incidents belong in each**, see **[How This Repository Is Organized](#how-this-repository-is-organized)** and **[Category Folders and Current Investigations](#category-folders-and-current-investigations)** sections below.
+> 👉 **[How This Repository Is Organized](#how-this-repository-is-organized)**</br>
+> **Understand how categories, investigations, and supporting documentation are structured**
 
-> 👉 For **details on how individual investigations are structured and designed, including standard files and documentation flow**, see **[How Investigations Are Structured & Organized](how-investigations-are-structured--organized)**, **[How These Investigations Are Designed](#how-these-investigations-are-designed)** and **[Standard Files in Each Investigation Folder](#standard-files-in-each-investigation-folder)** sections below.
+> 👉 **[Investigation Structure and Documentation](#investigation-structure-and-documentation)**</br>
+> **Review the standard files and documentation approach used throughout the repository**
 
 ---
 
 ### Start Here: How to Navigate This Repository
 
-👉 **Browse by category folders**  
-At the top level of this repository, you’ll see folders organized by **primary attack surface and investigation focus** (for example: identity, endpoint, intrusion, and web applications). Start by choosing the category that best matches the type of incident you want to explore.
+Investigations are grouped by primary attack surface and organized into fully self-contained investigation folders. Each folder documents one complete incident scenario from initial signal through validation, scoping, analysis, response considerations, and defensive takeaways.
 
-👉 **Each folder represents one complete investigation**  
-Inside each category, every subfolder is a **fully self-contained incident scenario**. Each one documents a single case from initial signal through validation, scoping, and response considerations.
+If you're new to the repository, start with **[Category Folders and Current Investigations](#category-folders-and-current-investigations)** to quickly see the types of incidents represented throughout the portfolio.
 
-👉 **Follow the investigation walkthrough first**  
-Begin with `investigation-walkthrough.md` inside an investigation folder to see how I identified, pivoted on, and validated evidence step by step.
+<details>
+<summary><strong>▶️ Investigation Documentation Structure</strong></summary></br>
 
-👉 **Review findings and conclusions**  
-Move to the `case-report.md` and `incident-summary.md` to understand what happened, what was confirmed, and why it mattered — from both technical and high-level perspectives.
+Most investigation folders include the following supporting files:
 
-👉 **Dig into evidence and detections**  
-For deeper technical detail, review the `detection-artifact-report.md`, supporting screenshots, and extracted artifacts to see exactly how conclusions were supported by telemetry.
+| File / Folder | Purpose |
+|------------|--------|
+| `investigation-walkthrough.md` | Step-by-step analyst workflow and validation process |
+| `case-report.md` | Formal incident narrative and findings |
+| `incident-summary.md` | Executive-level overview of the incident |
+| `detection-artifact-report.md` | Detailed breakdown of technical evidence and detections |
+| `detection-and-hardening-recommendations.md` | Defensive improvements derived from investigation findings |
+| `incident-response-report.md` | Operational response and remediation guidance |
+| `mitre-attack-mapping.md` | Mapping of observed behaviors to MITRE ATT&CK |
+| `images/` or `screenshots/` | Visual and log-based validation artifacts |
 
-👉 **See defensive takeaways**  
-Finish with `detection-and-hardening-recommendations.md` and `mitre-attack-mapping.md` to understand how observed attacker behavior maps to MITRE ATT&CK and where detection or control improvements were identified.
+The documentation is intentionally separated so analyst workflow, incident reconstruction, evidence validation, response guidance, and defensive recommendations can be reviewed independently while remaining tied to the same investigation narrative.
 
-👉 **Use this repository as case-based learning**  
-These investigations are designed to be read like **real SOC case files**, showing not just *what* happened, but *how* an analyst reasoned through the incident using multiple data sources.
-
+</details>
 
 ---
 
 ### How This Repository Is Organized
 
-This repository is organized into **category folders**, which are the top-level folders you see at the top when browsing the repository.  
+This repository is organized into **category folders**, which are the top-level folders you see at the top when browsing the repository.
 
 Each category represents a major security domain and primary attack surface used to group related investigations. Investigations are placed into one of these categories based on **where the attack originates and how the incident is primarily investigated**, not by which tools or logs happen to appear in the case.
 
 Each investigation is fully self-contained inside its own folder and includes all documentation, evidence, and analysis needed to understand that single incident from start to finish.
 
-#### Category Folders (Top-Level Directories)
+<details>
+<summary><strong>▶️ Category Folders</strong></summary></br>
 
 | Category Folder | Investigation Focus | What You Will Find Inside |
 |---------------|----------------------|----------------------------|
@@ -58,26 +63,29 @@ Each investigation is fully self-contained inside its own folder and includes al
 | **Intrusion and Lateral Movement** | Multi-stage intrusions that progress across systems and network paths. | Investigations that reconstruct attacker movement from initial access through credential abuse, privilege escalation, and lateral movement using firewall logs, authentication telemetry, endpoint artifacts, and network indicators. |
 | **Web Application Compromise** | Attacks where web applications or CMS platforms are the initial access vector. | Investigations involving authentication abuse, vulnerability scanning, file upload exploitation, web shells, and defacement. Evidence includes HTTP traffic, IDS alerts, firewall logs, and host telemetry. |
 
+</details>
+
 ---
 
-### How Investigations Are Structured & Organized
+### Investigation Structure and Documentation
 
 Investigations are organized using a two-level hierarchy:
 
-1. **Category folders** — group related incident types by primary attack surface and investigation focus  
-2. **Investigation folders** — each individual incident scenario lives in its own folder inside a category
+| Level | Purpose |
+|---|---|
+| **Category Folders** | Group related incident types by primary attack surface and investigation focus |
+| **Investigation Folders** | Each individual incident scenario lives in its own folder inside a category |
 
 Each investigation folder is fully self-contained and represents **one complete case**.
+
+<details>
+<summary><strong>▶️ How These Investigations Are Designed</strong></summary></br>
 
 **IMPORTANT:** Investigations are grouped by **primary attack surface and investigation focus**, not strictly by which tools or logs were involved.
 
 In real SOC work, incidents commonly span multiple telemetry sources (for example: web logs, firewall telemetry, identity events, and endpoint artifacts in the same case). To reflect that reality, each investigation is categorized by the **security control area where the incident originates or is primarily investigated**, rather than every system touched during analysis.
 
 This structure mirrors how security teams operationally triage incidents and assign investigative ownership.
-
----
-
-### How These Investigations Are Designed
 
 This repository is **investigation-first**, not procedural.
 
@@ -93,9 +101,10 @@ Each investigation documents not just what happened, but how conclusions were re
 
 Operational documentation such as triage guides, response checklists, and standard operating procedures are intentionally maintained in a separate repository so that this repository remains focused on real investigative work, not generalized playbooks.
 
----
+</details>
 
-### Standard Files in Each Investigation Folder
+<details>
+<summary><strong>▶️ Standard Files in Each Investigation Folder</strong></summary></br>
 
 While not every case requires every file, investigations typically include the following supporting documents:
 
@@ -112,70 +121,86 @@ While not every case requires every file, investigations typically include the f
 
 Together, these files separate **analyst workflow**, **incident reconstruction**, and **evidence validation** into clear, reviewable components while remaining tied to the same investigation narrative.
 
+</details>
+
 ---
 
 ### Category Folders and Current Investigations
 
 Each category folder may contain **multiple investigation folders**, with each investigation representing a separate incident scenario.
 
-#### ▶️ Identity and Email Compromise Investigations  
+<details>
+<summary><strong>▶️ Identity and Email Compromise Investigations</strong></summary></br>
+
 `identity-and-email-compromise-investigations/`
 
 Incidents where identity platforms or messaging services are the primary attack surface, including credential abuse, mailbox manipulation, and business email compromise (BEC). Investigations are grouped here when the **core security failure is unauthorized access to accounts or messaging workflows**.
 
 Current investigations:
 
-- **Business Email Compromise (BEC) — Mailbox Rule Abuse and Account Takeover**  
-  Investigates how attackers abuse Exchange inbox rules to suppress financial communications after compromising executive credentials, including validation of unauthorized rule creation and associated identity activity.
+- **Business Email Compromise (BEC) — Mailbox Rule Abuse and Account Takeover**</br>
+  - **Summary:** Investigates how attackers abuse Exchange inbox rules to suppress financial communications after compromising executive credentials, including validation of unauthorized rule creation and associated identity activity.
 
+</details>
 
-#### ▶️ Endpoint Compromise and Persistence Investigations  
+<details>
+<summary><strong>▶️ Endpoint Compromise and Persistence Investigations</strong></summary></br>
+
 `endpoint-compromise-and-persistence-investigations/`
 
 Host-based compromise scenarios involving malware execution, persistence mechanisms, and abuse of built-in system utilities. Cases are categorized here when **endpoint telemetry and host artifacts are central to detection and validation**.
 
 Current investigations:
 
-- **Endpoint Cryptominer Infection — Suspicious Process Execution**  
-  Detects abnormal process behavior consistent with cryptomining malware using Windows process creation telemetry and execution context.
+- **Endpoint Cryptominer Infection — Suspicious Process Execution**</br>
+  - **Summary:** Detects abnormal process behavior consistent with cryptomining malware using Windows process creation telemetry and execution context.
 
-- **Windows Host Compromise — Backdoor Account and Registry-Based Persistence**  
-  Analyzes unauthorized account creation and registry autorun mechanisms used to maintain long-term access to a compromised workstation.
+- **Windows Host Compromise — Backdoor Account and Registry-Based Persistence**</br>
+  - **Summary:** Analyzes unauthorized account creation and registry autorun mechanisms used to maintain long-term access to a compromised workstation.
 
-- **Windows Malware Triage — Living-off-the-Land Binary (LoLBin) Abuse and Payload Validation**  
-  Validates suspicious binaries and persistence techniques using file reputation, digital signatures, scheduled tasks, and registry artifacts.
+- **Windows Malware Triage — Living-off-the-Land Binary (LoLBin) Abuse and Payload Validation**</br>
+  - **Summary:** Validates suspicious binaries and persistence techniques using file reputation, digital signatures, scheduled tasks, and registry artifacts.
 
+</details>
 
-#### ▶️ Intrusion and Lateral Movement Investigations  
+<details>
+<summary><strong>▶️ Intrusion and Lateral Movement Investigations</strong></summary></br>
+
 `intrusion-and-lateral-movement-investigations/`
 
 Multi-stage intrusion scenarios involving privilege escalation, remote service exploitation, and movement between systems. Investigations are placed here when the objective is to **reconstruct attacker progression across hosts and network paths**.
 
 Current investigations:
 
-- **Windows Service Exploitation — Print Spooler Remote Code Execution (RCE)**  
-  Examines exploitation of the Print Spooler service leading to code execution and elevated privileges on a Windows server.
+- **Windows Service Exploitation — Print Spooler Remote Code Execution (RCE)**</br>
+  - **Summary:** Examines exploitation of the Print Spooler service leading to code execution and elevated privileges on a Windows server.
 
-- **Intrusion Lifecycle Investigation — Lateral Movement Across Windows Hosts**  
-  Tracks attacker behavior from initial access through credential-based lateral movement using firewall, authentication, and host telemetry.
+- **Intrusion Lifecycle Investigation — Lateral Movement Across Windows Hosts**</br>
+  - **Summary:** Tracks attacker behavior from initial access through credential-based lateral movement using firewall, authentication, and host telemetry.
 
+</details>
 
-#### ▶️ Web Application Compromise Investigations  
+<details>
+<summary><strong>▶️ Web Application Compromise Investigations</strong></summary></br>
+
 `web-application-compromise-investigations/`
 
 Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
 
 Current investigations:
 
-- **Web Application Account Compromise — Brute-Force Authentication Abuse**  
-  Analyzes repeated authentication attempts against a web application leading to successful account takeover.
+- **Web Application Account Compromise — Brute-Force Authentication Abuse**</br>
+  - **Summary:** Analyzes repeated authentication attempts against a web application leading to successful account takeover.
 
-- **Web Server Defacement — Malicious File Upload Exploitation**  
-  Investigates exploitation of file upload functionality resulting in unauthorized script deployment and website defacement.
+- **Web Server Defacement — Malicious File Upload Exploitation**</br>
+  - **Summary:** Investigates exploitation of file upload functionality resulting in unauthorized script deployment and website defacement.
+
+</details>
 
 ---
 
-### Overlap Between Categories
+<details>
+<summary><strong>▶️ Category Overlap and Repository Scope</strong></summary></br>
 
 Overlap between technical domains is expected and intentional.
 
@@ -190,9 +215,11 @@ Rather than duplicating investigations across multiple categories, each case is 
 
 This reflects how real SOC investigations operate and avoids artificially separating evidence that must be analyzed together.
 
----
+</details>
 
-### Relationship to Workflows and Playbooks
+<!--
+<details>
+<summary><strong>▶️ Relationship to Workflows and Playbooks</strong></summary></br>
 
 This repository documents **what happened and how it was investigated**.
 
@@ -202,20 +229,11 @@ Operational workflows such as triage procedures, enrichment steps, and response 
 
 Where relevant, investigations may reference related workflows to demonstrate how documented procedures translate into real investigative activity and analyst decision-making.
 
+</details>
+
+-->
 ---
 
 ### Ongoing Development
 
 Investigations may be expanded over time as additional analysis techniques, tooling, or contextual validation are added. Updates are intended to reflect iterative improvement, similar to how detection and response processes mature in production environments.
-
-
-
-
-
-
-
-
-
-
-
-
