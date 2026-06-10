@@ -197,8 +197,7 @@ Current investigations:
 
 </details>
 
----
-
+<!--
 <details>
 <summary><strong>▶️ Category Overlap and Repository Scope</strong></summary></br>
 
@@ -217,7 +216,7 @@ This reflects how real SOC investigations operate and avoids artificially separa
 
 </details>
 
-<!--
+
 <details>
 <summary><strong>▶️ Relationship to Workflows and Playbooks</strong></summary></br>
 
