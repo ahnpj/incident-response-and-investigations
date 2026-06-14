@@ -130,7 +130,7 @@ Together, these files separate **analyst workflow**, **incident reconstruction**
 Each category folder may contain **multiple investigation folders**, with each investigation representing a separate incident scenario.
 
 <details>
-<summary><strong>▶ Identity and Access Investigations</strong></summary><br>
+<summary><strong>▶️ Identity and Access Investigations</strong></summary><br>
 
 `identity-and-access-investigations/`
 
