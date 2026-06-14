@@ -130,6 +130,19 @@ Together, these files separate **analyst workflow**, **incident reconstruction**
 Each category folder may contain **multiple investigation folders**, with each investigation representing a separate incident scenario.
 
 <details>
+<summary><strong>▶ Identity and Access Investigations</strong></summary><br>
+
+`identity-and-access-investigations/`
+
+Incidents where identity systems, account management activity, authentication events, and privilege assignments are the primary investigative surface. Investigations are grouped here when the **core security question involves account creation, access control changes, authentication behavior, or privileged account activity** rather than malware execution, network intrusion, or application exploitation.
+
+- **Newly Provisioned Privileged Account Investigation**<br>
+
+  - **Summary:** Investigates suspicious after-hours administrative activity identified in Windows Security Event Logs, including creation of a new user account, assignment to privileged security groups, and subsequent privileged authentication activity. The investigation focuses on reconstructing the account lifecycle using Windows Event Viewer and validating whether the observed activity warrants escalation.
+
+</details>
+
+<details>
 <summary><strong>▶️ Identity and Email Compromise Investigations</strong></summary></br>
 
 `identity-and-email-compromise-investigations/`
