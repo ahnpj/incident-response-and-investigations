@@ -20,29 +20,12 @@ The available log evidence supports the conclusion that a new privileged account
 
 The organization recently implemented security monitoring for Windows event logs and began reviewing employee login behavior. After several days of monitoring, an anomaly was observed involving an administrator account.
 
-The employee account acting strangely was:
-
-```text
-Jeff S
-```
-
-The organization provided the following business context:
+The employee account acting strangely was: `Jeff S`. The organization provided the following business context:
 
 - Jeff S is one of only four employees on the team.
-- The team consists of:
-  - Jeff S
-  - Tony L
-  - Sam D
-  - Jackie H
-- Jeff is only expected to work from:
+- Jeff is only expected to work from: `9 AM - 4 PM, weekdays only`
 
-```text
-9 AM - 4 PM, weekdays only
-```
-
-Monitoring showed that an administrator account associated with Jeff was logging in at unusual times, including times outside his contracted work schedule and possible weekend activity when he was expected to be out of the office.
-
-The organization requested analysis of the Windows event logs collected from the system where the activity occurred. The evidence was provided as an exported Windows Security Event Log file that could be opened in Event Viewer on a Windows system.
+Monitoring showed that an administrator account associated with Jeff was logging in at unusual times, including times outside his contracted work schedule and possible weekend activity when he was expected to be out of the office. The organization requested analysis of the Windows event logs collected from the system where the activity occurred. The evidence was provided as an exported Windows Security Event Log file that could be opened in Event Viewer on a Windows system.
 
 This investigation was therefore triggered by:
 
@@ -114,11 +97,7 @@ This investigation mirrors a SOC workflow where an analyst receives an alert abo
   - privileged logon events
 
 #### ▶ Evidence Sources
-- Exported Windows Security Event Log:
-
-```text
-Security Investigation.evtx
-```
+- Exported Windows Security Event Log: `Security Investigation.evtx`
 
 - Event categories reviewed:
   - Logon / Logoff
