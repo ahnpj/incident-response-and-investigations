@@ -119,7 +119,3 @@ This investigation demonstrates how identity and mailbox audit telemetry can rev
 ---
 
 If you are reviewing this as part of my cybersecurity portfolio: this investigation is intended to demonstrate structured analytical thinking, evidence correlation across cloud telemetry sources, and professional incident documentation aligned with real operational workflows.
-
-
-
-
