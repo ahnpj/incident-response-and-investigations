@@ -1,8 +1,10 @@
 ## Incident Response and Investigations
 
-This repository contains **hands-on security investigations** modeled after real SOC and blue-team workflows. Each case simulates how suspicious activity or alerts are triaged, validated, scoped, and resolved using multiple sources of telemetry.
+This repository contains **hands-on security investigations** modeled after real SOC and blue-team workflows. Each case simulates how suspicious activity or alerts are triaged, validated, scoped, and resolved using multiple sources of telemetry. These cases emphasize evidence-based analysis, cross-log correlation, attacker behavior mapping (MITRE ATT&CK), and clear documentation of investigative reasoning and outcomes.
 
 Investigations are organized into category folders based on primary attack surface and investigation focus (such as identity, endpoint, intrusion, and web applications). Each investigation is fully self-contained and represents one complete incident scenario documented end-to-end.
+
+This repository is organized into **category folders**, which are the top-level folders visible when browsing the repository. Each category represents a major security domain or investigative surface and contains one or more **fully self-contained investigation folders** focused on incidents within that area. Every investigation folder documents a single case from initial detection through validation, analysis, response considerations, and defensive recommendations, and includes supporting documentation such as investigation walkthroughs, case reports, incident summaries, detection artifact reports, incident response reports, ATT&CK mappings, screenshots, and hardening recommendations.
 
 These cases emphasize evidence-based analysis, cross-log correlation, attacker behavior mapping (MITRE ATT&CK), and clear documentation of investigative reasoning and outcomes.
 
