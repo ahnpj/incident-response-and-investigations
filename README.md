@@ -208,11 +208,11 @@ Attacks where web applications or CMS platforms are the initial access vector, i
  
 - **Joomla Administrator Brute-Force Investigation**</br>
   - **Summary:** Investigates a sustained brute-force password guessing campaign targeting a Joomla administrative login portal. Analysis leverages HTTP request telemetry, authentication form submissions, source attribution, and User-Agent metadata to validate automated credential attack activity and assess the likelihood of account compromise.
-</details>
 
 - **Web Application Reconnaissance Vulnerability Scan Investigation**</br>
   - **Summary:** Investigates automated vulnerability scanning activity targeting the public-facing website. Analysis leverages FortiGate UTM telemetry, scanner attribution, source and destination analysis, geographic enrichment, and vulnerability scanner detections to identify reconnaissance activity, validate use of the Acunetix Web Vulnerability Scanner, and assess the risk of future exploitation attempts.
 
+</details>
 
 <!--
 <details>
