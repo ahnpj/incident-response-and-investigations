@@ -36,6 +36,9 @@ Current investigations include:
   (`joomla-administrator-bruteforce-investigation`)</br>
   Investigates a sustained brute-force password guessing campaign targeting the Joomla administrative login portal. Analysis leverages HTTP request telemetry, authentication form submissions, source attribution, and client metadata within Splunk to identify automated credential attack activity, validate password guessing behavior, and assess the likelihood of account compromise.
 
+- **Web Application Reconnaissance Vulnerability Scan Investigation**</br>
+  (`joomla-vulnerability-scanning-reconnaissance`)</br>
+  Investigates automated vulnerability scanning activity targeting the public-facing website. Analysis leverages FortiGate UTM telemetry, scanner attribution, source and destination analysis, geographic enrichment, and vulnerability scanner detections within Splunk to identify reconnaissance activity, attribute the scanning source, validate use of the Acunetix Web Vulnerability Scanner, and assess the risk of future exploitation attempts.
 
 ---
 
