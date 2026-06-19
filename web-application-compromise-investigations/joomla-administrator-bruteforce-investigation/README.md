@@ -14,19 +14,19 @@ This investigation analyzes a brute-force password guessing campaign targeting t
 The analysis focuses on reconstructing attacker behavior using HTTP request telemetry collected within Splunk. By reviewing authentication requests, source attribution, destination targeting, submitted credentials, and client metadata, the investigation validates that an external actor systematically attempted to obtain administrative access through automated password guessing.
 
 > 👉 **Follow the investigation walkthrough first**</br>
-> Begin with `investigation-walkthrough.md` to see how I identified the attack, validated source attribution, reviewed authentication requests, and confirmed brute-force behavior step by step.
+Begin with `investigation-walkthrough.md` to see how I identified the attack, validated source attribution, reviewed authentication requests, and confirmed brute-force behavior step by step.
 
 > 👉 **Review findings and conclusions**</br>
-> Move to `case-report.md` and `incident-summary.md` to understand what occurred, what evidence supported the findings, and how the activity was ultimately classified.
+Move to `case-report.md` and `incident-summary.md` to understand what occurred, what evidence supported the findings, and how the activity was ultimately classified.
 
 > 👉 **Review supporting evidence**</br>
-> Examine the screenshots contained within the `images/` directory to see the exact Splunk searches, event analysis, field review, and credential submission evidence used throughout the investigation.
+Examine the screenshots contained within the `images/` directory to see the exact Splunk searches, event analysis, field review, and credential submission evidence used throughout the investigation.
 
 > 👉 **Review defensive takeaways**</br>
-> Finish with `MITRE-ATTACK-mapping.md` and supporting documentation to understand how the observed behavior maps to known adversary techniques and where detection opportunities were identified.
+Finish with `MITRE-ATTACK-mapping.md` and supporting documentation to understand how the observed behavior maps to known adversary techniques and where detection opportunities were identified.
 
 > 👉 **See what each investigation file contains in full detail**</br>
-> For a complete breakdown of every standard file in an investigation folder, including its purpose and role in the overall investigation package, see the **[Repository Structure & Supporting Documents](#repository-structure--supporting-documents)** section below.
+For a complete breakdown of every standard file in an investigation folder, including its purpose and role in the overall investigation package, see the **[Repository Structure & Supporting Documents](#repository-structure--supporting-documents)** section below.
 
 This investigation demonstrates how an analyst:
 
