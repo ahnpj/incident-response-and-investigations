@@ -32,6 +32,11 @@ Current investigations include:
   (`web-server-defacement-malicious-file-upload-investigation`)  
   Investigates exploitation of vulnerable upload functionality leading to unauthorized script deployment and website defacement, corroborated by IDS, firewall, and host telemetry.
 
+- **Joomla Administrator Brute-Force Investigation**</br>
+  (`joomla-administrator-bruteforce-investigation`)</br>
+  Investigates a sustained brute-force password guessing campaign targeting the Joomla administrative login portal. Analysis leverages HTTP request telemetry, authentication form submissions, source attribution, and client metadata within Splunk to identify automated credential attack activity, validate password guessing behavior, and assess the likelihood of account compromise.
+
+
 ---
 
 ### Investigation Documentation Structure
