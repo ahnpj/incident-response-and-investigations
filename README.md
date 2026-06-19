@@ -195,14 +195,16 @@ Multi-stage intrusion scenarios involving privilege escalation, remote service e
 
 `web-application-compromise-investigations/`
 
-Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
+Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse, brute-force password guessing, credential attacks, and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
 
 - **Web Application Account Compromise — Brute-Force Authentication Abuse**</br>
   - **Summary:** Analyzes repeated authentication attempts against a web application leading to successful account takeover.
 
 - **Web Server Defacement — Malicious File Upload Exploitation**</br>
   - **Summary:** Investigates exploitation of file upload functionality resulting in unauthorized script deployment and website defacement.
-
+ 
+- **Joomla Administrator Brute-Force Investigation**</br>
+  - **Summary:** Investigates a sustained brute-force password guessing campaign targeting a Joomla administrative login portal. Analysis leverages HTTP request telemetry, authentication form submissions, source attribution, and User-Agent metadata to validate automated credential attack activity and assess the likelihood of account compromise.
 </details>
 
 <!--
