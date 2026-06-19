@@ -172,6 +172,9 @@ Host-based compromise scenarios involving malware execution, persistence mechani
 
 - **Windows Malware Triage — Living-off-the-Land Binary (LoLBin) Abuse and Payload Validation**</br>
   - **Summary:** Validates suspicious binaries and persistence techniques using file reputation, digital signatures, scheduled tasks, and registry artifacts.
+ 
+- **Windows Cerber Malware Execution and Command-and-Control Investigation**</br>
+  - **Summary:**  Investigates a malicious executable masquerading as the legitimate Windows On-Screen Keyboard binary (`osk.exe`) and executing from an abnormal user profile directory. Analysis leverages Sysmon process execution telemetry, network connection events, FortiGate UTM detections, Suricata IDS alerts, malware hash enrichment, and external threat intelligence to validate malware execution, attribute activity to the Cerber malware family, identify command-and-control communications, and assess the scope of compromise.
 
 </details>
 
