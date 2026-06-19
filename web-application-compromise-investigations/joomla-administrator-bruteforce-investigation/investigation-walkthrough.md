@@ -31,22 +31,121 @@ An investigation was initiated to determine:
 
 ---
 
-### Investigation Walkthrough
+### Incident Scope
 
-<details>
-<summary><strong>📚 Walkthrough Navigation (Click To Expand)</strong></summary>
+The scope of this investigation is limited to analysis of HTTP request telemetry contained within the `botsv1` dataset and focuses on authentication activity targeting the Joomla administrative login portal hosted on `imreallynotbatman.com`.
 
-- Initial Detection
-- Source IP Analysis
-- Destination Asset Identification
-- HTTP Request Review
-- Credential Analysis
-- Brute-Force Validation
-- Findings Summary
+The investigation is centered on identifying and validating brute-force password guessing activity directed at the Joomla administrator authentication endpoint. Analysis focuses on authentication requests, submitted credential data, source attribution, request metadata, and indicators of automation observed within HTTP traffic.
 
-</details>
+The investigation does not include malware analysis, host-based compromise validation, persistence analysis, command-and-control activity, or recovery actions. No evidence reviewed during the investigation confirmed successful authentication or post-authentication attacker activity.
 
 ---
+
+### Environment, Evidence, and Tools
+
+This investigation was conducted within a pre-configured Splunk Enterprise environment containing the `botsv1` dataset. The dataset simulates enterprise-grade telemetry collected from web applications, network monitoring systems, and supporting security infrastructure.
+
+#### ▶ Environment
+
+* **Application Type:** Joomla Content Management System (CMS)
+* **Authentication Interface:** `/joomla/administrator/index.php`
+* **Target Domain:** `imreallynotbatman.com`
+* **Target Server:** `192.168.250.70`
+* **Access Model:** Username and password authentication
+* **Analysis Scope:** Web application authentication telemetry
+* **Incident Context:** Brute-force password guessing investigation
+
+#### ▶ Evidence Sources
+
+* `stream:http` — HTTP requests, form submissions, URIs, request metadata, and User-Agent information
+* `botsv1` dataset — Simulated enterprise telemetry used throughout the investigation
+
+#### ▶ Tools Used
+
+* Splunk Enterprise — Primary investigation platform
+* Splunk Search & Reporting App — Query development, field analysis, and event review
+* Splunk Field Explorer — Source attribution, event counts, and field analysis
+* HTTP Request Metadata — Authentication request analysis and credential review
+
+#### ▶ Environment Setup
+
+The investigation was performed using a pre-configured Splunk Enterprise instance containing the `botsv1` dataset. Before beginning analysis, event sampling was disabled and the search timeframe was expanded to **All Time** to ensure all historical authentication events were available for review.
+
+Initial validation confirmed that the dataset was loaded correctly and that HTTP telemetry associated with the Joomla application was available for investigation.
+
+This preparation ensured complete visibility into all authentication activity and prevented partial event sampling from affecting investigative findings.
+
+---
+
+### Investigative Questions
+
+This section outlines the core questions used to guide analysis and ensure findings were supported by evidence rather than assumptions.
+
+Key questions included:
+
+* Was the Joomla administrator login portal actively targeted?
+* Which source IP addresses were responsible for authentication activity?
+* Was the activity consistent with normal user behavior or automated credential attacks?
+* Which usernames were targeted during authentication attempts?
+* What password values were submitted during the attack?
+* Did request metadata indicate the use of automated tooling?
+* Was successful authentication observed?
+* Is there evidence that account compromise occurred?
+
+---
+
+### Investigation Timeline
+
+The following timeline summarizes major investigative milestones reconstructed from HTTP request telemetry and authentication activity.
+
+* **T0 — Suspicious Authentication Activity Identified**
+  Security monitoring identified unusual HTTP POST activity targeting the Joomla administrator login portal.
+
+* **T1 — Authentication Endpoint Confirmed**
+  Requests were validated as targeting `/joomla/administrator/index.php`, the Joomla administrative authentication interface.
+
+* **T2 — Source Attribution Performed**
+  Analysis identified `23.22.63.114` as the source responsible for the overwhelming majority of authentication attempts.
+
+* **T3 — Authentication Volume Reviewed**
+  Event review confirmed hundreds of POST requests directed at the login portal, indicating sustained authentication abuse.
+
+* **T4 — Credential Submission Analysis Performed**
+  HTTP form submission data was reviewed to identify usernames and password values submitted during the attack.
+
+* **T5 — Administrative Account Targeting Confirmed**
+  Analysis confirmed repeated targeting of the Joomla administrative username `admin`.
+
+* **T6 — Automated Tooling Identified**
+  User-Agent analysis revealed the use of `Python-urllib/2.7`, indicating scripted authentication attempts rather than normal browser activity.
+
+* **T7 — Brute-Force Activity Validated**
+  Repeated password variation, administrative account targeting, request volume, and automation artifacts collectively confirmed brute-force password guessing behavior.
+
+* **T8 — Investigation Conclusion Reached**
+  Evidence confirmed a brute-force password guessing campaign against the Joomla administrator login portal. No evidence reviewed during the investigation confirmed successful authentication or account compromise.
+
+<blockquote>
+This investigation demonstrates how application-layer telemetry can be used to identify and validate authentication abuse without requiring host-based or network intrusion evidence. The methodology aligns with common SOC investigative workflows focused on credential attacks, authentication monitoring, and web application security operations.
+</blockquote>
+
+---
+
+### Investigation Walkthrough
+
+<blockquote>
+<details>
+<summary><strong>📚 Walkthrough navigation (click to expand)</strong></summary>
+
+- [1) Initial Detection & Scoping](#-1-initial-detection)
+- [2) Source IP Analysis](#-2-source-ip-analysis)
+- [3) Destination Asset Identification](#3-destination-asset-identification)
+- [4) HTTP Request Review](#-4-http-request-review)
+- [5) Credential Analysis](#-5-credential-analysis)
+- [6) Brute-Force Validation](#-6-bruteforce-validation)
+
+</details>
+</blockquote>
 
 <a id="-1-initial-detection"></a>
 
