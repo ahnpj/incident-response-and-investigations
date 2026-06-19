@@ -41,6 +41,10 @@ Current investigations include:
   (`windows-malware-triage-lolbin-validation-investigation`)  
   Validates suspicious payloads and persistence techniques using digital signatures, scheduled tasks, registry startup entries, and file reputation via threat intelligence services.
 
+- **Windows Cerber Malware Execution and Command-and-Control Investigation**  
+  (`windows-cerber-malware-execution-c2-investigation`)  
+  Investigates a malicious executable masquerading as the legitimate Windows On-Screen Keyboard binary (osk.exe) and executing from an abnormal user profile directory. Analysis leverages Sysmon process execution telemetry, network connection events, FortiGate UTM detections, Suricata IDS alerts, malware hash enrichment, and external threat intelligence to validate malware execution, attribute activity to the Cerber malware family, identify command-and-control communications, and assess the scope of compromise.
+
 ---
 
 ### Investigation Documentation Structure
