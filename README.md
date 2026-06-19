@@ -195,7 +195,7 @@ Multi-stage intrusion scenarios involving privilege escalation, remote service e
 
 `web-application-compromise-investigations/`
 
-Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse, brute-force password guessing, credential attacks, and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
+Attacks where web applications or CMS platforms are the initial access vector, including authentication abuse, brute-force password guessing, credential attacks, vulnerability scanning, and file upload exploitation. Cases are grouped here when **application-layer behavior and HTTP activity are the primary investigation surfaces**.
 
 - **Web Application Account Compromise — Brute-Force Authentication Abuse**</br>
   - **Summary:** Analyzes repeated authentication attempts against a web application leading to successful account takeover.
@@ -206,6 +206,10 @@ Attacks where web applications or CMS platforms are the initial access vector, i
 - **Joomla Administrator Brute-Force Investigation**</br>
   - **Summary:** Investigates a sustained brute-force password guessing campaign targeting a Joomla administrative login portal. Analysis leverages HTTP request telemetry, authentication form submissions, source attribution, and User-Agent metadata to validate automated credential attack activity and assess the likelihood of account compromise.
 </details>
+
+- **Web Application Reconnaissance Vulnerability Scan Investigation**</br>
+  - **Summary:** Investigates automated vulnerability scanning activity targeting the public-facing website. Analysis leverages FortiGate UTM telemetry, scanner attribution, source and destination analysis, geographic enrichment, and vulnerability scanner detections to identify reconnaissance activity, validate use of the Acunetix Web Vulnerability Scanner, and assess the risk of future exploitation attempts.
+
 
 <!--
 <details>
