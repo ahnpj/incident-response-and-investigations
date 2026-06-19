@@ -139,7 +139,7 @@ This investigation demonstrates how application-layer telemetry can be used to i
 
 - [1) Initial Detection & Scoping](#-1-initial-detection)
 - [2) Source IP Analysis](#-2-source-ip-analysis)
-- [3) Destination Asset Identification](#3-destination-asset-identification)
+- [3) Destination Asset Identification](#-3-destination-asset-identification)
 - [4) HTTP Request Review](#-4-http-request-review)
 - [5) Credential Analysis](#-5-credential-analysis)
 - [6) Brute-Force Validation](#-6-bruteforce-validation)
