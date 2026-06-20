@@ -175,9 +175,6 @@ Host-based compromise scenarios involving malware execution, persistence mechani
  
 - **Windows Malware Execution — Cerber Command-and-Control Activity and Host Compromise**</br>
   - **Summary:**  Investigates a malicious executable masquerading as the legitimate Windows On-Screen Keyboard binary (`osk.exe`) and executing from an abnormal user profile directory. Analysis leverages Sysmon process execution telemetry, network connection events, FortiGate UTM detections, Suricata IDS alerts, malware hash enrichment, and external threat intelligence to validate malware execution, attribute activity to the Cerber malware family, identify command-and-control communications, and assess the scope of compromise.
- 
-- **Web Exploitation Attempt Investigation — Vulnerability Scanning and Exploitation Analysis**<br/>
-  - **Summary:** Analyzes web application attack activity using Suricata IDS, FortiGate UTM, Sysmon telemetry, and vulnerability intelligence to investigate information disclosure attempts, automated vulnerability scanning, CVE-referenced exploitation activity, reverse shell detections, and host attribution while assessing evidence of successful compromise.
 
 </details>
 
@@ -214,6 +211,9 @@ Attacks where web applications or CMS platforms are the initial access vector, i
 
 - **Web Application Reconnaissance Vulnerability Scan Investigation**</br>
   - **Summary:** Investigates automated vulnerability scanning activity targeting the public-facing website. Analysis leverages FortiGate UTM telemetry, scanner attribution, source and destination analysis, geographic enrichment, and vulnerability scanner detections to identify reconnaissance activity, validate use of the Acunetix Web Vulnerability Scanner, and assess the risk of future exploitation attempts.
+ 
+- **Web Exploitation Attempt Investigation — Vulnerability Scanning and Exploitation Analysis**<br/>
+  - **Summary:** Analyzes web application attack activity using Suricata IDS, FortiGate UTM, Sysmon telemetry, and vulnerability intelligence to investigate information disclosure attempts, automated vulnerability scanning, CVE-referenced exploitation activity, reverse shell detections, and host attribution while assessing evidence of successful compromise.
 
 </details>
 
