@@ -41,7 +41,7 @@ Current investigations include:
   Investigates automated vulnerability scanning activity targeting the public-facing website. Analysis leverages FortiGate UTM telemetry, scanner attribution, source and destination analysis, geographic enrichment, and vulnerability scanner detections within Splunk to identify reconnaissance activity, attribute the scanning source, validate use of the Acunetix Web Vulnerability Scanner, and assess the risk of future exploitation attempts.
 
 - **Web Application Vulnerability Scanning and Exploitation Attempt Investigation**</br>
-  (`web-application-vulnerability-scanning-and-exploitation-attempt-investigation`)</br>
+  (`web-vulnerability-scan-and-exploitation-investigation`)</br>
   Investigates web application attack activity targeting an internally hosted web server. Analysis leverages Suricata IDS alerts, FortiGate UTM detections, Sysmon endpoint telemetry, HTTP request analysis, vulnerability intelligence enrichment, and scanner attribution to identify information disclosure attempts, validate automated Acunetix vulnerability scanning activity, investigate exploitation attempts associated with known CVEs, review reverse shell-related detections, attribute affected assets, and assess whether observed activity resulted in successful compromise.
 
 ---
