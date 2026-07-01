@@ -32,6 +32,10 @@ Current investigations include:
   (`windows-intrusion-lifecycle-lateral-movement-investigation`)  
   Tracks attacker behavior from initial access through credential-based lateral movement, correlating firewall, authentication, and endpoint telemetry across multiple systems.
 
+- **Network Reconnaissance and FTP Credential Compromise Investigation**  
+  (`network-reconnaissance-and-ftp-compromise-investigation`)  
+  Reconstructs a full attack chain from ARP-based host discovery and port scanning through web/FTP service reconnaissance, password-cracking tool acquisition, and a successful FTP dictionary attack resulting in unauthorized access and file exfiltration, using packet capture analysis alone.
+
 ---
 
 ### Investigation Documentation Structure
@@ -56,6 +60,3 @@ Together, these documents support **multi-system investigation workflows** and e
 ### Ongoing Development
 
 Future investigations may expand into Active Directory attacks, pass-the-hash techniques, Kerberos abuse, or internal reconnaissance activity. New cases will continue to focus on tracing attacker movement and validating full intrusion scope using cross-domain telemetry.
-
-
-
