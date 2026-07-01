@@ -191,6 +191,9 @@ Multi-stage intrusion scenarios involving privilege escalation, remote service e
 - **Intrusion Lifecycle Investigation — Lateral Movement Across Windows Hosts**</br>
   - **Summary:** Tracks attacker behavior from initial access through credential-based lateral movement using firewall, authentication, and host telemetry.
 
+- **Network Reconnaissance and FTP Credential Compromise Investigation**</br>
+  - **Summary:** Reconstructs a full attack chain entirely from packet capture analysis, from ARP-based host discovery and port scanning through web/FTP service reconnaissance, password-cracking tool acquisition, and a successful FTP dictionary attack resulting in unauthorized access and file exfiltration.
+
 </details>
 
 <details>
